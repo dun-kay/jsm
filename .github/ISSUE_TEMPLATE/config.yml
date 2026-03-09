@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup questions
+    url: https://github.com/dun-kay/jsm/discussions
+    about: Ask setup and environment questions in Discussions.
