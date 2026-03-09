@@ -1,35 +1,320 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Serif:wght@700&display=swap");
+
 :root {
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-  line-height: 1.4;
-  font-weight: 400;
-  color: #0f172a;
-  background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 100%);
+  --canvas-max-width: 332px;
+  --canvas-max-height: 763px;
+  --gap-col: 10px;
+  --pad-sm: 10px;
+  --pad-lg: 20px;
+
+  --bg: #d9d9d9;
+  --surface: #d9d9d9;
+  --text: #0b0b0b;
+  --text-contrast: #ffffff;
+  --muted: #2a2a2a;
+  --key: #1d9bf0;
+  --key-disabled: #87c4ef;
+  --line: #0d0d0d;
+  --modal: rgba(10, 10, 10, 0.56);
+}
+
+:root[data-theme="dark"] {
+  --bg: #0a0b10;
+  --surface: #0a0b10;
+  --text: #f4f4f4;
+  --text-contrast: #111111;
+  --muted: #d5d5d5;
+  --key: #1d9bf0;
+  --key-disabled: #1a5c89;
+  --line: #f0f0f0;
+  --modal: rgba(0, 0, 0, 0.65);
 }
 
 * {
   box-sizing: border-box;
 }
 
-body {
+html,
+body,
+#root {
   margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.page-shell {
   min-height: 100vh;
+  display: grid;
+  place-items: center;
 }
 
-.app-shell {
-  max-width: 760px;
-  margin: 3rem auto;
-  padding: 2rem;
+.app-canvas {
+  width: min(100vw, var(--canvas-max-width));
+  height: min(100vh, var(--canvas-max-height));
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+  padding: var(--pad-lg);
 }
 
-.status-card {
-  margin-top: 1.5rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  background: #ffffff;
-  padding: 1rem 1.25rem;
+.theme-toggle {
+  position: absolute;
+  top: var(--pad-sm);
+  right: var(--pad-sm);
+  z-index: 4;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-.status-card ul {
-  padding-left: 1rem;
+.screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-home {
+  justify-content: space-between;
+  padding-top: 52px;
+}
+
+.screen-basic,
+.screen-lobby {
+  justify-content: space-between;
+  gap: var(--gap-col);
+  padding-top: 52px;
+}
+
+.screen-header h1 {
+  margin: 0;
+  font-family: "Noto Serif", Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.screen-header {
+  display: grid;
+  gap: var(--gap-col);
+}
+
+.body-text {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.caps {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 15px;
+}
+
+.field-wrap {
+  display: grid;
+  gap: var(--gap-col);
+}
+
+.input-pill {
+  width: 100%;
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  padding: 12px 16px;
+  font-size: 20px;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  outline: none;
+}
+
+.input-pill::placeholder {
+  color: #7d7d7d;
+}
+
+.hint-text {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 14px;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 50px;
+}
+
+.btn:disabled {
+  background: var(--key-disabled);
+  color: #eef7fd;
+  cursor: not-allowed;
+}
+
+.btn-key {
+  background: var(--key);
+  color: #f6fbff;
+}
+
+.btn-soft {
+  border: 2px solid var(--line);
+  background: transparent;
+  color: var(--text);
+}
+
+.bottom-stack {
+  display: grid;
+  gap: var(--gap-col);
+}
+
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-col);
+}
+
+.loading-screen {
+  justify-content: center;
+  gap: var(--gap-col);
+}
+
+.icon-cancel {
+  position: absolute;
+  left: var(--pad-sm);
+  top: var(--pad-sm);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 2px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.link-card {
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  padding: var(--pad-sm);
+  display: grid;
+  gap: var(--gap-col);
+}
+
+.link-text {
+  margin: 0;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.players-panel {
+  display: grid;
+  gap: var(--gap-col);
+  min-height: 0;
+  flex: 1;
+}
+
+.player-grid {
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  padding: var(--pad-sm);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-col);
+  overflow: auto;
+  min-height: 140px;
+}
+
+.player-pill {
+  border: 3px solid currentColor;
+  border-radius: 999px;
+  padding: 8px 10px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.player-grid .player-pill:nth-child(8n + 1) {
+  color: #f2a13d;
+}
+.player-grid .player-pill:nth-child(8n + 2) {
+  color: #e3cf3e;
+}
+.player-grid .player-pill:nth-child(8n + 3) {
+  color: #ff7575;
+}
+.player-grid .player-pill:nth-child(8n + 4) {
+  color: #9a8bf8;
+}
+.player-grid .player-pill:nth-child(8n + 5) {
+  color: #bbbbbb;
+}
+.player-grid .player-pill:nth-child(8n + 6) {
+  color: #f0f0f0;
+}
+.player-grid .player-pill:nth-child(8n + 7) {
+  color: #93df40;
+}
+.player-grid .player-pill:nth-child(8n + 8) {
+  color: #4b83f5;
+}
+
+.waiting-text {
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--modal);
+  display: grid;
+  place-items: center;
+  padding: var(--pad-lg);
+  z-index: 20;
+}
+
+.modal-card {
+  width: min(100%, 320px);
+  border-radius: 18px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  padding: var(--pad-lg);
+  display: grid;
+  gap: var(--gap-col);
+}
+
+.modal-card h2 {
+  margin: 0;
+  font-family: "Noto Serif", Georgia, serif;
+  font-size: 22px;
+}
+
+@media (max-height: 700px) {
+  .app-canvas {
+    overflow-y: auto;
+  }
+}
+.app-error {
+  position: absolute;
+  left: var(--pad-lg);
+  right: var(--pad-lg);
+  bottom: var(--pad-sm);
+  text-align: center;
 }
 
