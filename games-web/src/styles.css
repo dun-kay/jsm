@@ -1,0 +1,35 @@
+:root {
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #0f172a;
+  background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.app-shell {
+  max-width: 760px;
+  margin: 3rem auto;
+  padding: 2rem;
+}
+
+.status-card {
+  margin-top: 1.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 1rem 1.25rem;
+}
+
+.status-card ul {
+  padding-left: 1rem;
+}
+
