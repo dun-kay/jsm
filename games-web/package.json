@@ -1,28 +1,31 @@
 {
-  "name": "jsm-games-web",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.57.4",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
-  },
-  "devDependencies": {
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.0.3",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.7"
-  },
-  "engines": {
-    "node": ">=22.0.0"
-  }
+    "name":  "jsm-games-web",
+    "private":  true,
+    "version":  "0.1.0",
+    "type":  "module",
+    "scripts":  {
+                    "dev":  "vite",
+                    "build":  "tsc -b \u0026\u0026 vite build",
+                    "preview":  "vite preview",
+                    "typecheck":  "tsc --noEmit",
+                    "lint":  "echo \"No linter configured yet\"",
+                    "format":  "echo \"No formatter configured yet\"",
+                    "test":  "echo \"No tests configured yet\"",
+                    "ci":  "npm run typecheck \u0026\u0026 npm run build \u0026\u0026 npm run test"
+                },
+    "dependencies":  {
+                         "@supabase/supabase-js":  "^2.57.4",
+                         "react":  "^19.1.1",
+                         "react-dom":  "^19.1.1"
+                     },
+    "devDependencies":  {
+                            "@types/react":  "^19.1.10",
+                            "@types/react-dom":  "^19.1.7",
+                            "@vitejs/plugin-react":  "^5.0.3",
+                            "typescript":  "^5.9.2",
+                            "vite":  "^7.1.7"
+                        },
+    "engines":  {
+                    "node":  "\u003e=22.0.0"
+                }
 }
-
