@@ -46,21 +46,18 @@ body {
 }
 
 .page-shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
+  padding: 10px;
 }
 
 .app-canvas {
-  text-align: center;
   width: min(calc(100vw - 20px), var(--canvas-max-width));
   height: min(calc(100dvh - 20px), var(--canvas-max-height));
-  background: var(--surface);
-  position: relative;
-  overflow: hidden;
-  padding: var(--pad-lg);
   margin: 0 auto;
 }
+
 
 .theme-toggle {
   position: absolute;
