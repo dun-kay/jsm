@@ -246,7 +246,7 @@ export default function App() {
 
   const title = (() => {
     if (screen === "nameEntry") {
-      return "Enter your name";
+      return "Enter your game name below";
     }
     if (screen === "loading") {
       return "Game loading";
@@ -291,11 +291,9 @@ export default function App() {
           <section className="screen screen-basic">
             <header className="screen-header">
               <h1>{title}</h1>
-              <p className="body-text">Enter your name bellow.</p>
             </header>
 
             <label className="field-wrap" htmlFor="name-input">
-              <span className="body-text small left">Your display name:</span>
               <input
                 id="name-input"
                 className="input-pill"
@@ -303,7 +301,7 @@ export default function App() {
                 value={playerName}
                 onChange={(event) => handleNameChange(event.target.value)}
                 maxLength={MAX_NAME_LENGTH}
-                placeholder="Enter name"
+                placeholder="Enter your display name"
               />
               {nameTouched && playerName.length >= MAX_NAME_LENGTH && (
                 <span className="hint-text">10 character max reached</span>
@@ -367,7 +365,7 @@ export default function App() {
 
             <div className="players-panel">
               <p className="body-text small left">
-                Players ({players.length}/{playerCount})
+                Players: ({players.length}/max {playerCount})
               </p>
               <div className="player-grid">
                 {players.map((player) => (
