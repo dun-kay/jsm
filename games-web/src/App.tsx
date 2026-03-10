@@ -246,13 +246,13 @@ export default function App() {
 
   const title = (() => {
     if (screen === "nameEntry") {
-      return "Your game name";
+      return "Enter your name";
     }
     if (screen === "loading") {
       return "Game loading";
     }
     if (screen === "lobby") {
-      return `Game ${gameId || "..."} lobby`;
+      return `Game lobby: #${gameId || "..."}`;
     }
     return "Notes page";
   })();
@@ -273,7 +273,7 @@ export default function App() {
           <section className="screen screen-home">
             <header className="screen-header">
               <h1>{title}</h1>
-              <p className="body-text">Max 18 players.</p>
+              <p className="body-text">Note summary goes here, simple summary here. Indeed that goes here.</p>
             </header>
 
             <div className="bottom-stack">
@@ -291,11 +291,11 @@ export default function App() {
           <section className="screen screen-basic">
             <header className="screen-header">
               <h1>{title}</h1>
-              <p className="body-text">Max 18 players.</p>
+              <p className="body-text">Enter your name bellow.</p>
             </header>
 
             <label className="field-wrap" htmlFor="name-input">
-              <span className="body-text">Display name:</span>
+              <span className="body-text small left">Your display name:</span>
               <input
                 id="name-input"
                 className="input-pill"
@@ -317,7 +317,7 @@ export default function App() {
                 onClick={() => void continueFromName()}
                 disabled={!canSubmitName || busy || (flow === "join" && !gameId)}
               >
-                {busy ? "Working..." : flow === "host" ? "Create game" : "Join game"}
+                {busy ? "Loading..." : flow === "host" ? "Create game" : "Join game"}
               </button>
               <button className="btn btn-soft" type="button" onClick={goBack} disabled={busy}>
                 Back
@@ -331,8 +331,8 @@ export default function App() {
             <header className="screen-header">
               <h1>{title}</h1>
             </header>
-            <p className="body-text">
-              Tip: turn your phone brightness down so your friends cannot accidentally see your screen.
+            <p className="body-text small">
+              Tip: turn your phone brightness down so your friends can't accidentally see your screen.
             </p>
           </section>
         )}
@@ -348,9 +348,8 @@ export default function App() {
             <header className="screen-header">
               <h1>{title}</h1>
               <p className="body-text">
-                {flow === "host" ? "Join game link" : "Waiting for host to start game."}
+                {flow === "host" ? "Join game link:" : "Waiting for host to start game."}
               </p>
-              <p className="body-text">Max 18 players.</p>
             </header>
 
             <div className="link-card">
@@ -367,7 +366,7 @@ export default function App() {
             </div>
 
             <div className="players-panel">
-              <p className="body-text caps">
+              <p className="body-text small left">
                 Players ({players.length}/{playerCount})
               </p>
               <div className="player-grid">
@@ -402,7 +401,7 @@ export default function App() {
             {modal === "cancel" && (
               <>
                 <h2>Cancel game?</h2>
-                <p className="body-text">
+                <p className="body-text small">
                   Are you sure you want to cancel your game? This returns everyone to the first screen.
                 </p>
                 <div className="bottom-row">
@@ -419,7 +418,7 @@ export default function App() {
             {modal === "start" && (
               <>
                 <h2>Start game?</h2>
-                <p className="body-text">Are you sure? You cannot undo this action.</p>
+                <p className="body-text small">Are you sure? You cannot undo this action.</p>
                 <div className="bottom-row">
                   <button className="btn btn-key" type="button" onClick={() => void confirmStartGame()}>
                     Yes
