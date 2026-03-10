@@ -421,7 +421,7 @@ export default function App() {
       return `Join game: #${gameId || "------"}`;
     }
     if (screen === "nameEntry") {
-      return "Your name";
+      return "Enter your name";
     }
     if (screen === "loading") {
       return "Game loading";
