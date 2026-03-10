@@ -7,7 +7,7 @@
   --pad-sm: 10px;
   --pad-lg: 20px;
 
-  --bg: #d9d9d9;
+  --bg: #F9F9F9;
   --surface: #d9d9d9;
   --text: #0b0b0b;
   --text-contrast: #ffffff;
@@ -54,6 +54,7 @@ body {
 }
 
 .app-canvas {
+  text-align: center;
   width: min(100vw, var(--canvas-max-width));
   height: min(100vh, var(--canvas-max-height));
   background: var(--surface);
@@ -305,11 +306,13 @@ body {
   font-size: 22px;
 }
 
+.app-canvas {
 @media (max-height: 700px) {
-  .app-canvas {
+    text-align: center;
     overflow-y: auto;
   }
 }
+
 .app-error {
   position: absolute;
   left: var(--pad-lg);
@@ -317,4 +320,3 @@ body {
   bottom: var(--pad-sm);
   text-align: center;
 }
-
