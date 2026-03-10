@@ -421,7 +421,7 @@ export default function App() {
       return `Join game: #${gameId || "------"}`;
     }
     if (screen === "nameEntry") {
-      return "Enter your name";
+      return "Start by entering your name";
     }
     if (screen === "loading") {
       return "Game loading";
@@ -499,7 +499,7 @@ export default function App() {
           <section className="screen screen-basic">
             <header className="screen-header">
               <h1>{title}</h1>
-              {flow === "join" && <p className="body-text">Your name</p>}
+              {flow === "join" && <p className="body-text">Enter your game name</p>}
 
             </header>
 
