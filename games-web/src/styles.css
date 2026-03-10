@@ -7,7 +7,7 @@
   --pad-sm: 10px;
   --pad-lg: 20px;
 
-  --bg: #d9d9d9;
+  --bg: #F9F9F9;
   --surface: #d9d9d9;
   --text: #0b0b0b;
   --text-contrast: #ffffff;
@@ -53,7 +53,7 @@ body {
   place-items: center;
 }
 
-.app-canvas {
+  text-align: center;
   width: min(100vw, var(--canvas-max-width));
   height: min(100vh, var(--canvas-max-height));
   background: var(--surface);
@@ -306,7 +306,7 @@ body {
 }
 
 @media (max-height: 700px) {
-  .app-canvas {
+    text-align: center;
     overflow-y: auto;
   }
 }
@@ -317,4 +317,6 @@ body {
   bottom: var(--pad-sm);
   text-align: center;
 }
+
+
 
