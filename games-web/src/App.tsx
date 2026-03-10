@@ -270,7 +270,7 @@ export default function App() {
     if (screen === "lobby") {
       return `Game ${gameId || "..."} lobby`;
     }
-    return "JSM Games";
+    return "Notes page";
   })();
 
   return (
@@ -282,7 +282,7 @@ export default function App() {
           onClick={() => setTheme((old) => (old === "light" ? "dark" : "light"))}
           aria-label="Toggle light and dark mode"
         >
-          {theme === "light" ? "Dark" : "Light"}
+          {theme === "light" ? "Dark mode" : "Light mode"}
         </button>
 
         {screen === "home" && (
@@ -290,7 +290,7 @@ export default function App() {
             <header className="screen-header">
               <h1>{title}</h1>
               <p className="body-text">
-                Your phone replaces physical cards and game boards. Create or join to start.
+                This is notes text that goes here and other things also go here.
               </p>
             </header>
 
