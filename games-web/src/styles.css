@@ -53,6 +53,7 @@ body {
   place-items: center;
 }
 
+.app-canvas {
   text-align: center;
   width: min(100vw, var(--canvas-max-width));
   height: min(100vh, var(--canvas-max-height));
@@ -305,11 +306,13 @@ body {
   font-size: 22px;
 }
 
+.app-canvas {
 @media (max-height: 700px) {
     text-align: center;
     overflow-y: auto;
   }
 }
+
 .app-error {
   position: absolute;
   left: var(--pad-lg);
