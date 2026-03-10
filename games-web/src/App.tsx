@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { type KeyboardEvent, useEffect, useMemo, useState } from "react";
 import {
   cancelGame,
   createGame,
@@ -35,7 +35,7 @@ function readGameIdFromUrl(): string {
 }
 
 function sanitizeName(value: string): string {
-  return value.trim().slice(0, MAX_NAME_LENGTH);
+  return value.replace(/\s+/g, "").slice(0, MAX_NAME_LENGTH);
 }
 
 function parseGameCodeFromInput(value: string): string {
@@ -294,7 +294,7 @@ export default function App() {
 
   function handleNameChange(value: string) {
     setNameTouched(true);
-    setPlayerName(value.slice(0, MAX_NAME_LENGTH));
+    setPlayerName(value.replace(/\s+/g, "").slice(0, MAX_NAME_LENGTH));
     setErrorText("");
   }
 
@@ -309,6 +309,14 @@ export default function App() {
     window.history.replaceState({}, "", `${window.location.pathname}?g=${code}`);
     setScreen("nameEntry");
     setErrorText("");
+  }
+
+  function onJoinLinkInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    event.preventDefault();
+    continueFromJoinLink();
   }
 
   async function continueFromName() {
@@ -352,6 +360,14 @@ export default function App() {
     } finally {
       setBusy(false);
     }
+  }
+
+  function onNameInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    event.preventDefault();
+    void continueFromName();
   }
 
   async function attemptRejoin(code: string, token: string) {
@@ -478,6 +494,7 @@ export default function App() {
                 type="text"
                 value={joinLinkInput}
                 onChange={(event) => setJoinLinkInput(event.target.value)}
+                onKeyDown={onJoinLinkInputKeyDown}
                 placeholder="https://.../?g=ABC123"
               />
             </label>
@@ -510,6 +527,7 @@ export default function App() {
                 type="text"
                 value={playerName}
                 onChange={(event) => handleNameChange(event.target.value)}
+                onKeyDown={onNameInputKeyDown}
                 maxLength={MAX_NAME_LENGTH}
                 placeholder="Enter your display name"
               />
