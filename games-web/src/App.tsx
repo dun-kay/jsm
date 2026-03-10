@@ -499,10 +499,8 @@ export default function App() {
           <section className="screen screen-basic">
             <header className="screen-header">
               <h1>{title}</h1>
-              {flow === "join" ? (
-                <p className="body-text">Your name</p>
-              ) : (
-              )}
+              {flow === "join" && <p className="body-text">Your name</p>}
+
             </header>
 
             <label className="field-wrap" htmlFor="name-input">
