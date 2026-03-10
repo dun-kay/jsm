@@ -1,0 +1,101 @@
+-- Name rules:
+-- 1) No whitespace in names.
+-- 2) No duplicate names in same lobby (case-insensitive).
+
+create or replace function public.create_game(p_host_name text, p_max_players integer)
+returns table(game_code text, host_secret text, host_player_id uuid, host_player_token text)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_code text;
+  v_secret text;
+  v_lobby_id uuid;
+  v_host_name text;
+  v_player_id uuid;
+  v_player_token text;
+begin
+  v_host_name := left(regexp_replace(trim(p_host_name), '\s+', '', 'g'), 10);
+
+  if v_host_name is null or char_length(v_host_name) = 0 then
+    raise exception 'Host name is required.';
+  end if;
+
+  v_code := public.generate_game_code();
+  v_secret := gen_random_uuid()::text;
+
+  insert into public.game_lobbies (game_code, max_players, join_buffer, host_secret)
+  values (v_code, 18, 0, v_secret)
+  returning id into v_lobby_id;
+
+  insert into public.lobby_players as lp (lobby_id, display_name, is_host, last_seen_at)
+  values (v_lobby_id, v_host_name, true, now())
+  returning lp.id, lp.player_token into v_player_id, v_player_token;
+
+  return query select v_code, v_secret, v_player_id, v_player_token;
+end;
+$$;
+
+create or replace function public.join_game(p_game_code text, p_player_name text)
+returns table(player_id uuid, player_token text)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_lobby public.game_lobbies%rowtype;
+  v_count integer;
+  v_name text;
+  v_player_id uuid;
+  v_player_token text;
+begin
+  perform public.cleanup_lobby_presence(p_game_code);
+
+  v_name := left(regexp_replace(trim(p_player_name), '\s+', '', 'g'), 10);
+
+  if v_name is null or char_length(v_name) = 0 then
+    raise exception 'Player name is required.';
+  end if;
+
+  select *
+  into v_lobby
+  from public.game_lobbies
+  where game_code = upper(trim(p_game_code));
+
+  if not found then
+    raise exception 'Lobby not found.';
+  end if;
+
+  if v_lobby.status <> 'lobby' then
+    raise exception 'Lobby is not open for joining.';
+  end if;
+
+  select count(*) into v_count
+  from public.lobby_players
+  where lobby_id = v_lobby.id;
+
+  if v_count >= v_lobby.max_players then
+    raise exception 'Lobby is full.';
+  end if;
+
+  if exists (
+    select 1
+    from public.lobby_players p
+    where p.lobby_id = v_lobby.id
+      and lower(p.display_name) = lower(v_name)
+  ) then
+    raise exception 'Name already taken in this lobby.';
+  end if;
+
+  insert into public.lobby_players as lp (lobby_id, display_name, is_host, last_seen_at)
+  values (v_lobby.id, v_name, false, now())
+  returning lp.id, lp.player_token into v_player_id, v_player_token;
+
+  return query select v_player_id, v_player_token;
+exception
+  when unique_violation then
+    raise exception 'Name already taken in this lobby.';
+end;
+$$;
+
