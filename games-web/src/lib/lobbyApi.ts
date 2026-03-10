@@ -23,12 +23,14 @@ export type CreateGameResult = {
   hostPlayerId: string;
 };
 
-export async function createGame(hostName: string, maxPlayers: number): Promise<CreateGameResult> {
+const MAX_PLAYERS_CAP = 18;
+
+export async function createGame(hostName: string): Promise<CreateGameResult> {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .rpc("create_game", {
       p_host_name: hostName,
-      p_max_players: maxPlayers
+      p_max_players: MAX_PLAYERS_CAP
     })
     .single<{ game_code: string; host_secret: string; host_player_id: string }>();
 

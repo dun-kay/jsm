@@ -10,11 +10,10 @@ import {
 
 type ThemeMode = "light" | "dark";
 type FlowMode = "host" | "join";
-type Screen = "home" | "playerCount" | "nameEntry" | "loading" | "lobby";
+type Screen = "home" | "nameEntry" | "loading" | "lobby";
 type ModalType = "cancel" | "start" | null;
 
-const MIN_PLAYERS = 3;
-const MAX_PLAYERS = 100;
+const MAX_PLAYERS_CAP = 18;
 const MAX_NAME_LENGTH = 10;
 
 function readGameIdFromUrl(): string {
@@ -30,7 +29,7 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeMode>("light");
   const [screen, setScreen] = useState<Screen>("home");
   const [flow, setFlow] = useState<FlowMode | null>(null);
-  const [playerCount, setPlayerCount] = useState<number>(MIN_PLAYERS);
+  const [playerCount, setPlayerCount] = useState<number>(MAX_PLAYERS_CAP);
   const [playerName, setPlayerName] = useState<string>("");
   const [nameTouched, setNameTouched] = useState<boolean>(false);
   const [gameId, setGameId] = useState<string>("");
@@ -38,7 +37,6 @@ export default function App() {
   const [modal, setModal] = useState<ModalType>(null);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
   const [copyState, setCopyState] = useState<"idle" | "ok" | "fail">("idle");
-  const [joinBuffer, setJoinBuffer] = useState<number>(10);
   const [hostSecret, setHostSecret] = useState<string>("");
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
@@ -75,7 +73,6 @@ export default function App() {
 
         setPlayers(state.players);
         setPlayerCount(state.maxPlayers);
-        setJoinBuffer(state.joinBuffer);
         setGameStarted(state.status === "started");
 
         if (state.status === "cancelled") {
@@ -121,7 +118,7 @@ export default function App() {
   function resetAll() {
     setScreen("home");
     setFlow(null);
-    setPlayerCount(MIN_PLAYERS);
+    setPlayerCount(MAX_PLAYERS_CAP);
     setPlayerName("");
     setNameTouched(false);
     setGameId("");
@@ -129,14 +126,13 @@ export default function App() {
     setModal(null);
     setGameStarted(false);
     setCopyState("idle");
-    setJoinBuffer(10);
     setHostSecret("");
     setBusy(false);
   }
 
   function startCreateFlow() {
     setFlow("host");
-    setScreen("playerCount");
+    setScreen("nameEntry");
     setPlayerName("");
     setNameTouched(false);
     setPlayers([]);
@@ -161,17 +157,8 @@ export default function App() {
   function goBack() {
     setErrorText("");
 
-    if (screen === "playerCount") {
-      resetAll();
-      return;
-    }
-
     if (screen === "nameEntry") {
-      if (flow === "host") {
-        setScreen("playerCount");
-      } else {
-        resetAll();
-      }
+      resetAll();
     }
   }
 
@@ -192,7 +179,7 @@ export default function App() {
 
     try {
       if (flow === "host") {
-        const created = await createGame(cleaned, playerCount);
+        const created = await createGame(cleaned);
         setGameId(created.gameCode);
         setHostSecret(created.hostSecret);
         setScreen("loading");
@@ -258,9 +245,6 @@ export default function App() {
   }
 
   const title = (() => {
-    if (screen === "playerCount") {
-      return "How many players?";
-    }
     if (screen === "nameEntry") {
       return "Your game name";
     }
@@ -289,9 +273,7 @@ export default function App() {
           <section className="screen screen-home">
             <header className="screen-header">
               <h1>{title}</h1>
-              <p className="body-text">
-                This is notes text that goes here and other things also go here.
-              </p>
+              <p className="body-text">Max 18 players.</p>
             </header>
 
             <div className="bottom-stack">
@@ -305,50 +287,15 @@ export default function App() {
           </section>
         )}
 
-        {screen === "playerCount" && (
-          <section className="screen screen-basic">
-            <header className="screen-header">
-              <h1>{title}</h1>
-            </header>
-
-            <label className="field-wrap" htmlFor="player-count">
-              <span className="body-text caps">Select player count</span>
-              <select
-                id="player-count"
-                className="input-pill"
-                value={playerCount}
-                onChange={(event) => setPlayerCount(Number(event.target.value))}
-              >
-                {Array.from({ length: MAX_PLAYERS - MIN_PLAYERS + 1 }, (_, index) => {
-                  const value = MIN_PLAYERS + index;
-                  return (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
-
-            <div className="bottom-row">
-              <button className="btn btn-key" type="button" onClick={() => setScreen("nameEntry")}>
-                Next
-              </button>
-              <button className="btn btn-soft" type="button" onClick={goBack}>
-                Back
-              </button>
-            </div>
-          </section>
-        )}
-
         {screen === "nameEntry" && (
           <section className="screen screen-basic">
             <header className="screen-header">
               <h1>{title}</h1>
+              <p className="body-text">Max 18 players.</p>
             </header>
 
             <label className="field-wrap" htmlFor="name-input">
-              <span className="body-text caps">Display name</span>
+              <span className="body-text">Display name:</span>
               <input
                 id="name-input"
                 className="input-pill"
@@ -403,6 +350,7 @@ export default function App() {
               <p className="body-text">
                 {flow === "host" ? "Join game link" : "Waiting for host to start game."}
               </p>
+              <p className="body-text">Max 18 players.</p>
             </header>
 
             <div className="link-card">
@@ -420,7 +368,7 @@ export default function App() {
 
             <div className="players-panel">
               <p className="body-text caps">
-                Players ({players.length}/{playerCount + joinBuffer})
+                Players ({players.length}/{playerCount})
               </p>
               <div className="player-grid">
                 {players.map((player) => (
