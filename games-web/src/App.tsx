@@ -541,7 +541,7 @@ export default function App() {
             <header className="screen-header">
               <h1>{title}</h1>
             </header>
-            <p className="body-text">
+            <p className="body-text small">
               Tip: turn your phone brightness down so your friends can't see your screen.
             </p>
           </section>
@@ -558,7 +558,7 @@ export default function App() {
             <header className="screen-header">
               <h1>{title}</h1>
               <p className="body-text">
-                {flow === "host" ? "Join game link" : "Waiting for host to start game."}
+                {flow === "host" ? "Join game link" : "Waiting for host to start game..."}
               </p>
             </header>
 
@@ -617,7 +617,7 @@ export default function App() {
             {modal === "cancel" && (
               <>
                 <h2>Cancel game?</h2>
-                <p className="body-text">
+                <p className="body-text small">
                   Are you sure you want to cancel your game? This returns everyone to the first screen.
                 </p>
                 <div className="bottom-row">
@@ -634,7 +634,7 @@ export default function App() {
             {modal === "start" && (
               <>
                 <h2>Start game?</h2>
-                <p className="body-text">Are you sure? You cannot undo this action.</p>
+                <p className="body-text small">Are you sure? You cannot undo this action.</p>
                 <div className="bottom-row">
                   <button className="btn btn-key" type="button" onClick={() => void confirmStartGame()}>
                     Yes
