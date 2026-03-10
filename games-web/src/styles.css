@@ -114,6 +114,10 @@ body {
   text-align: center;
 }
 
+.small {
+  font-size: 18px;
+}
+
 .left {
   text-transform: none;
   letter-spacing: 0.02em;
