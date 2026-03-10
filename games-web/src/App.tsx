@@ -421,13 +421,13 @@ export default function App() {
       return `Join game: #${gameId || "------"}`;
     }
     if (screen === "nameEntry") {
-      return "Your game name";
+      return "Your name";
     }
     if (screen === "loading") {
       return "Game loading";
     }
     if (screen === "lobby") {
-      return `Game #${gameId || "..."}`;
+      return `Game lobby: #${gameId || "..."}`;
     }
     return "Notes";
   })();
@@ -448,7 +448,7 @@ export default function App() {
           <section className="screen screen-home">
             <header className="screen-header">
               <h1>{title}</h1>
-              <p className="body-text">Max 18 players.</p>
+              <p className="body-text">Notes description goes here, with a simple description.</p>
             </header>
 
             <div className="bottom-stack">
@@ -500,14 +500,12 @@ export default function App() {
             <header className="screen-header">
               <h1>{title}</h1>
               {flow === "join" ? (
-                <p className="body-text">Enter your name to join.</p>
+                <p className="body-text">Your name</p>
               ) : (
-                <p className="body-text">Max 18 players.</p>
               )}
             </header>
 
             <label className="field-wrap" htmlFor="name-input">
-              <span className="body-text">Display name:</span>
               <input
                 id="name-input"
                 className="input-pill"
@@ -515,7 +513,7 @@ export default function App() {
                 value={playerName}
                 onChange={(event) => handleNameChange(event.target.value)}
                 maxLength={MAX_NAME_LENGTH}
-                placeholder="Enter name"
+                placeholder="Enter your display name"
               />
               {nameTouched && playerName.length >= MAX_NAME_LENGTH && (
                 <span className="hint-text">10 character max reached</span>
@@ -546,7 +544,7 @@ export default function App() {
               <h1>{title}</h1>
             </header>
             <p className="body-text">
-              Tip: turn your phone brightness down so your friends cannot accidentally see your screen.
+              Tip: turn your phone brightness down so your friends can't see your screen.
             </p>
           </section>
         )}
@@ -564,7 +562,6 @@ export default function App() {
               <p className="body-text">
                 {flow === "host" ? "Join game link" : "Waiting for host to start game."}
               </p>
-              <p className="body-text">Max 18 players.</p>
             </header>
 
             <div className="link-card">
@@ -577,8 +574,8 @@ export default function App() {
             </div>
 
             <div className="players-panel">
-              <p className="body-text caps">
-                Players ({players.length}/{playerCount})
+              <p className="body-text left">
+                Players: {players.length} (max {playerCount})
               </p>
               <div className="player-grid">
                 {players.map((player) => (

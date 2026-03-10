@@ -8,7 +8,7 @@
   --pad-lg: 20px;
 
   --bg: #F9F9F9;
-  --surface: #d9d9d9;
+  --surface: #F9F9F9;
   --text: #0b0b0b;
   --line: #0d0d0d;
   --inverse-bg: #0d0d0d;
@@ -114,10 +114,11 @@ body {
   line-height: 1.25;
 }
 
-.caps {
-  text-transform: uppercase;
+.left {
+  text-transform: none;
   letter-spacing: 0.02em;
-  font-size: 15px;
+  font-size: 16px;
+  text-align: left;
 }
 
 .field-wrap {
@@ -157,7 +158,7 @@ body {
   border-radius: 999px;
   padding: 10px 14px;
   font-family: "Inter", "Segoe UI", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   cursor: pointer;
   min-height: 48px;
@@ -178,6 +179,7 @@ body {
   border: 2px solid var(--inverse-bg);
   background: transparent;
   color: var(--inverse-bg);
+  margin-top: 10px;
 }
 
 .bottom-stack {
