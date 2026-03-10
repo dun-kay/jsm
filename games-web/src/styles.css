@@ -8,7 +8,7 @@
   --pad-lg: 20px;
 
   --bg: #F9F9F9;
-  --surface: #d9d9d9;
+  --surface: #F9F9F9;
   --text: #0b0b0b;
   --text-contrast: #ffffff;
   --muted: #2a2a2a;
@@ -48,20 +48,18 @@ body {
 }
 
 .page-shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   place-items: center;
+  padding: 10px;
 }
 
 .app-canvas {
-  text-align: center;
-  width: min(100vw, var(--canvas-max-width));
-  height: min(100vh, var(--canvas-max-height));
-  background: var(--surface);
-  position: relative;
-  overflow: hidden;
-  padding: var(--pad-lg);
+  width: min(calc(100vw - 20px), var(--canvas-max-width));
+  height: min(calc(100dvh - 20px), var(--canvas-max-height));
+  margin: 0 auto;
 }
+
 
 .theme-toggle {
   position: absolute;
@@ -153,7 +151,7 @@ body {
   border-radius: 999px;
   padding: 12px 14px;
   font-family: "Inter", "Segoe UI", sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   cursor: pointer;
   min-height: 50px;
