@@ -49,7 +49,7 @@ body {
   min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: 10px;
+  padding: 20px;
 }
 
 .app-canvas {
@@ -98,17 +98,20 @@ body {
   font-size: 26px;
   font-weight: 700;
   line-height: 1.25;
+  text-align: center;
 }
 
 .screen-header {
   display: grid;
   gap: var(--gap-col);
+  text-align: center;
 }
 
 .body-text {
   margin: 0;
   font-size: 20px;
   line-height: 1.25;
+  text-align: center;
 }
 
 .left {
@@ -143,11 +146,13 @@ body {
   margin: 0;
   font-size: 12px;
   font-weight: 700;
+  text-align: center;
 }
 
 .error-text {
   margin-top: 10px;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .btn {
@@ -286,7 +291,8 @@ body {
 .modal-card h2 {
   margin: 0;
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 22px;
+  font-size: 20px;
+  text-align: center;
 }
 
 @media (max-height: 700px) {
