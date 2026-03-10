@@ -12,7 +12,6 @@ export type LobbyState = {
   gameCode: string;
   status: LobbyStatus;
   maxPlayers: number;
-  joinBuffer: number;
   playerCount: number;
   players: LobbyPlayer[];
 };
@@ -21,18 +20,17 @@ export type CreateGameResult = {
   gameCode: string;
   hostSecret: string;
   hostPlayerId: string;
+  hostPlayerToken: string;
 };
-
-const MAX_PLAYERS_CAP = 18;
 
 export async function createGame(hostName: string): Promise<CreateGameResult> {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .rpc("create_game", {
       p_host_name: hostName,
-      p_max_players: MAX_PLAYERS_CAP
+      p_max_players: 18
     })
-    .single<{ game_code: string; host_secret: string; host_player_id: string }>();
+    .single<{ game_code: string; host_secret: string; host_player_id: string; host_player_token: string }>();
 
   if (error || !data) {
     throw new Error(error?.message || "Failed to create game.");
@@ -41,24 +39,51 @@ export async function createGame(hostName: string): Promise<CreateGameResult> {
   return {
     gameCode: data.game_code,
     hostSecret: data.host_secret,
-    hostPlayerId: data.host_player_id
+    hostPlayerId: data.host_player_id,
+    hostPlayerToken: data.host_player_token
   };
 }
 
-export async function joinGame(gameCode: string, playerName: string): Promise<{ playerId: string }> {
+export async function joinGame(gameCode: string, playerName: string): Promise<{ playerId: string; playerToken: string }> {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .rpc("join_game", {
       p_game_code: gameCode,
       p_player_name: playerName
     })
-    .single<{ player_id: string }>();
+    .single<{ player_id: string; player_token: string }>();
 
   if (error || !data) {
     throw new Error(error?.message || "Failed to join game.");
   }
 
-  return { playerId: data.player_id };
+  return { playerId: data.player_id, playerToken: data.player_token };
+}
+
+export async function rejoinGame(gameCode: string, playerToken: string): Promise<void> {
+  const supabase = getSupabaseClient();
+  const { error } = await supabase.rpc("rejoin_game", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
+  });
+
+  if (error) {
+    throw new Error(error.message || "Failed to rejoin game.");
+  }
+}
+
+export async function touchPlayer(gameCode: string, playerToken: string): Promise<boolean> {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.rpc("touch_player", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
+  });
+
+  if (error) {
+    throw new Error(error.message || "Failed to keep session alive.");
+  }
+
+  return data === true;
 }
 
 export async function getLobbyState(gameCode: string): Promise<LobbyState> {
@@ -75,7 +100,6 @@ export async function getLobbyState(gameCode: string): Promise<LobbyState> {
     gameCode: string;
     status: LobbyStatus;
     maxPlayers: number;
-    joinBuffer: number;
     playerCount: number;
     players: LobbyPlayer[];
   };
@@ -84,7 +108,6 @@ export async function getLobbyState(gameCode: string): Promise<LobbyState> {
     gameCode: state.gameCode,
     status: state.status,
     maxPlayers: state.maxPlayers,
-    joinBuffer: state.joinBuffer,
     playerCount: state.playerCount,
     players: state.players || []
   };
