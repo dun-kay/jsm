@@ -1,13 +1,20 @@
 import type { GameConfig } from "../games/types";
 
+type ThemeMode = "light" | "dark";
+
 type HomeGamesGridProps = {
   games: GameConfig[];
   onOpenGame: (game: GameConfig) => void;
+  theme: ThemeMode;
+  onToggleTheme: () => void;
 };
 
-export default function HomeGamesGrid({ games, onOpenGame }: HomeGamesGridProps) {
+export default function HomeGamesGrid({ games, onOpenGame, theme, onToggleTheme }: HomeGamesGridProps) {
   return (
     <div className="site-shell">
+      <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
+        {theme === "light" ? "Dark mode" : "Light mode"}
+      </button>
       <header className="site-header">
         <h1>Games with friends</h1>
       </header>

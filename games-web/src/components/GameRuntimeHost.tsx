@@ -7,9 +7,17 @@ type GameRuntimeHostProps = {
   gameCode: string;
   initialSession: GameSessionContext | null;
   onBackToHome: () => void;
+  theme: "light" | "dark";
+  onToggleTheme: () => void;
 };
 
-export default function GameRuntimeHost({ gameCode, initialSession, onBackToHome }: GameRuntimeHostProps) {
+export default function GameRuntimeHost({
+  gameCode,
+  initialSession,
+  onBackToHome,
+  theme,
+  onToggleTheme
+}: GameRuntimeHostProps) {
   const [gameSlug, setGameSlug] = useState<string>(initialSession?.gameSlug || "");
   const [errorText, setErrorText] = useState<string>("");
 
@@ -39,6 +47,9 @@ export default function GameRuntimeHost({ gameCode, initialSession, onBackToHome
 
   return (
     <div className="site-shell">
+      <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
+        {theme === "light" ? "Dark mode" : "Light mode"}
+      </button>
       <header className="site-header">
         <h1>{game?.title || "Game"}</h1>
       </header>
@@ -54,4 +65,3 @@ export default function GameRuntimeHost({ gameCode, initialSession, onBackToHome
     </div>
   );
 }
-
