@@ -10,6 +10,7 @@ export type LobbyPlayer = {
 
 export type LobbyState = {
   gameCode: string;
+  gameSlug: string;
   status: LobbyStatus;
   maxPlayers: number;
   playerCount: number;
@@ -23,12 +24,13 @@ export type CreateGameResult = {
   hostPlayerToken: string;
 };
 
-export async function createGame(hostName: string): Promise<CreateGameResult> {
+export async function createGame(hostName: string, gameSlug: string): Promise<CreateGameResult> {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .rpc("create_game", {
       p_host_name: hostName,
-      p_max_players: 18
+      p_max_players: 18,
+      p_game_slug: gameSlug
     })
     .single<{ game_code: string; host_secret: string; host_player_id: string; host_player_token: string }>();
 
@@ -98,6 +100,7 @@ export async function getLobbyState(gameCode: string): Promise<LobbyState> {
 
   const state = data as {
     gameCode: string;
+    gameSlug: string;
     status: LobbyStatus;
     maxPlayers: number;
     playerCount: number;
@@ -106,6 +109,7 @@ export async function getLobbyState(gameCode: string): Promise<LobbyState> {
 
   return {
     gameCode: state.gameCode,
+    gameSlug: state.gameSlug,
     status: state.status,
     maxPlayers: state.maxPlayers,
     playerCount: state.playerCount,
