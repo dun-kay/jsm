@@ -35,5 +35,6 @@ Run these SQL files in Supabase SQL Editor, in order:
 6. `migrations/20260311_0006_game_slug_routing.sql`
 7. `migrations/20260311_0007_secret_category_runtime.sql`
 8. `migrations/20260311_0008_secret_category_reroll.sql`
+9. `migrations/20260311_0009_secret_category_vote_fix.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
