@@ -323,6 +323,8 @@ body {
   font-family: "Noto Serif", Georgia, serif;
   font-size: 32px;
   line-height: 1.2;
+  text-align: center;
+  padding-bottom: 20px;
 }
 
 .games-grid {
@@ -343,13 +345,27 @@ body {
   gap: 10px;
 }
 
-.game-card h2,
+.game-card h2 {
+  font-family: "Noto Serif", Georgia, serif;
+  font-size: 20px;
+}
+
 .game-card p {
   margin: 0;
+  font-size: 18px;
 }
 
 .game-card-meta {
-  font-size: 14px;
+  font-size: 16px;
+}
+
+.gridimage {
+  display: block;
+  width: calc(100% + 40px);
+  height: 100px;
+  margin: -20px -20px 0 -20px;
+  object-fit: cover;
+  border-radius: 14px 14px 0 0;
 }
 
 .runtime-card {
