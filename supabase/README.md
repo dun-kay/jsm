@@ -31,5 +31,7 @@ Run these SQL files in Supabase SQL Editor, in order:
 2. `migrations/20260309_0002_lobby_flow.sql`
 3. `migrations/20260310_0003_fixed_cap_18.sql`
 4. `migrations/20260310_0004_session_timeout_and_join_updates.sql`
+5. `migrations/20260311_0005_name_rules.sql`
+6. `migrations/20260311_0006_game_slug_routing.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.

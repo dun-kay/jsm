@@ -88,9 +88,9 @@ begin
   values (v_code, 18, 0, v_secret)
   returning id into v_lobby_id;
 
-  insert into public.lobby_players (lobby_id, display_name, is_host, last_seen_at)
+  insert into public.lobby_players as lp (lobby_id, display_name, is_host, last_seen_at)
   values (v_lobby_id, v_host_name, true, now())
-  returning id, player_token into v_player_id, v_player_token;
+  returning lp.id, lp.player_token into v_player_id, v_player_token;
 
   return query select v_code, v_secret, v_player_id, v_player_token;
 end;
@@ -138,9 +138,9 @@ begin
     raise exception 'Lobby is full.';
   end if;
 
-  insert into public.lobby_players (lobby_id, display_name, is_host, last_seen_at)
+  insert into public.lobby_players as lp (lobby_id, display_name, is_host, last_seen_at)
   values (v_lobby.id, v_name, false, now())
-  returning id, player_token into v_player_id, v_player_token;
+  returning lp.id, lp.player_token into v_player_id, v_player_token;
 
   return query select v_player_id, v_player_token;
 exception
