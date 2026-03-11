@@ -33,5 +33,7 @@ Run these SQL files in Supabase SQL Editor, in order:
 4. `migrations/20260310_0004_session_timeout_and_join_updates.sql`
 5. `migrations/20260311_0005_name_rules.sql`
 6. `migrations/20260311_0006_game_slug_routing.sql`
+7. `migrations/20260311_0007_secret_category_runtime.sql`
+8. `migrations/20260311_0008_secret_category_reroll.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
