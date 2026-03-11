@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getGameBySlug } from "../games/registry";
+import SecretCategoryRuntime from "../games/secret-category/SecretCategoryRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState } from "../lib/lobbyApi";
 
@@ -44,6 +45,24 @@ export default function GameRuntimeHost({
   }, [gameCode]);
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined;
+
+  if (game?.slug === "secret-category" && initialSession?.playerToken) {
+    return (
+      <div className="site-shell">
+        <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
+          {theme === "light" ? "Dark mode" : "Light mode"}
+        </button>
+        <header className="site-header">
+          <h1>{game.title}</h1>
+        </header>
+        <SecretCategoryRuntime
+          gameCode={gameCode}
+          playerToken={initialSession.playerToken}
+          onExit={onBackToHome}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="site-shell">

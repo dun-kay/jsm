@@ -324,6 +324,7 @@ body {
   font-size: 32px;
   line-height: 1.2;
   text-align: center;
+  padding-top: 10px;
   padding-bottom: 20px;
 }
 
@@ -347,7 +348,8 @@ body {
 
 .game-card h2 {
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 20px;
+  font-size: 22px;
+  margin: 0;
 }
 
 .game-card p {
@@ -362,7 +364,7 @@ body {
 .gridimage {
   display: block;
   width: calc(100% + 40px);
-  height: 100px;
+  height: 150px;
   margin: -20px -20px 0 -20px;
   object-fit: cover;
   border-radius: 14px 14px 0 0;
@@ -389,4 +391,26 @@ body {
   padding: 10px 16px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.runtime-flow {
+  position: relative;
+  display: grid;
+  gap: 10px;
+}
+
+.runtime-flow h2,
+.runtime-flow p {
+  margin: 0;
+}
+
+.runtime-exit {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.runtime-list {
+  display: grid;
+  gap: 10px;
 }
