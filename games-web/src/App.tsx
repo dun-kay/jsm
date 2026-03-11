@@ -9,6 +9,7 @@ type RouteState =
   | { kind: "home" }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
+type ThemeMode = "light" | "dark";
 
 const SESSION_CONTEXT_KEY = "notes_runtime_session";
 
@@ -63,6 +64,11 @@ function readRuntimeSession(): GameSessionContext | null {
 export default function App() {
   const [route, setRoute] = useState<RouteState>(() => parseRoute(window.location.pathname));
   const [runtimeSession, setRuntimeSession] = useState<GameSessionContext | null>(() => readRuntimeSession());
+  const [theme, setTheme] = useState<ThemeMode>("light");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     const onPopState = () => setRoute(parseRoute(window.location.pathname));
@@ -71,21 +77,38 @@ export default function App() {
   }, []);
 
   const enabledGames = useMemo(() => GAMES.filter((game) => game.enabled), []);
+  const toggleTheme = () => setTheme((old) => (old === "light" ? "dark" : "light"));
 
   if (route.kind === "home") {
-    return <HomeGamesGrid games={enabledGames} onOpenGame={(game) => navigate(game.route)} />;
+    return (
+      <HomeGamesGrid
+        games={enabledGames}
+        onOpenGame={(game) => navigate(game.route)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+    );
   }
 
   if (route.kind === "onboarding") {
     const game = getGameBySlug(route.slug);
     if (!game) {
-      return <HomeGamesGrid games={enabledGames} onOpenGame={(entry) => navigate(entry.route)} />;
+      return (
+        <HomeGamesGrid
+          games={enabledGames}
+          onOpenGame={(entry) => navigate(entry.route)}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
+      );
     }
 
     return (
       <GameOnboardingFlow
         game={game}
         onExit={() => navigate("/")}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onLaunchGame={(session) => {
           saveRuntimeSession(session);
           setRuntimeSession(session);
@@ -99,6 +122,8 @@ export default function App() {
     <GameRuntimeHost
       gameCode={route.gameCode}
       initialSession={runtimeSession}
+      theme={theme}
+      onToggleTheme={toggleTheme}
       onBackToHome={() => navigate("/")}
     />
   );

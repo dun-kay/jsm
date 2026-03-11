@@ -29,6 +29,8 @@ type GameOnboardingFlowProps = {
   game: GameConfig;
   onExit: () => void;
   onLaunchGame: (session: GameSessionContext) => void;
+  theme: ThemeMode;
+  onToggleTheme: () => void;
 };
 
 const MIN_PLAYERS_TO_START = 3;
@@ -63,7 +65,13 @@ function parseGameCodeFromInput(value: string): string {
   }
 }
 
-export default function GameOnboardingFlow({ game, onExit, onLaunchGame }: GameOnboardingFlowProps) {
+export default function GameOnboardingFlow({
+  game,
+  onExit,
+  onLaunchGame,
+  theme,
+  onToggleTheme
+}: GameOnboardingFlowProps) {
   const sessionKey = `notes_session_${game.slug}`;
 
   const readStoredSession = (): StoredSession | null => {
@@ -94,7 +102,6 @@ export default function GameOnboardingFlow({ game, onExit, onLaunchGame }: GameO
     window.localStorage.setItem(sessionKey, JSON.stringify(payload));
   };
 
-  const [theme, setTheme] = useState<ThemeMode>("light");
   const [screen, setScreen] = useState<Screen>("home");
   const [flow, setFlow] = useState<FlowMode | null>(null);
   const [playerCount, setPlayerCount] = useState<number>(game.maxPlayers);
@@ -110,10 +117,6 @@ export default function GameOnboardingFlow({ game, onExit, onLaunchGame }: GameO
   const [playerToken, setPlayerToken] = useState<string>("");
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
 
   useEffect(() => {
     const stored = readStoredSession();
@@ -480,7 +483,7 @@ export default function GameOnboardingFlow({ game, onExit, onLaunchGame }: GameO
         <button
           className="theme-toggle"
           type="button"
-          onClick={() => setTheme((old) => (old === "light" ? "dark" : "light"))}
+          onClick={onToggleTheme}
           aria-label="Toggle light and dark mode"
         >
           {theme === "light" ? "Dark mode" : "Light mode"}
