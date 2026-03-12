@@ -1,0 +1,77 @@
+[
+  {
+    "mainCategory": "TV Sitcoms",
+    "secretOptions": [
+      "Seinfeld",
+      "Friends",
+      "Big Bang Theory",
+      "The Simpsons",
+      "The Office",
+      "Parks and Recreation",
+      "Brooklyn Nine-Nine",
+      "Modern Family",
+      "How I Met Your Mother",
+      "Community"
+    ]
+  },
+  {
+    "mainCategory": "Cars",
+    "secretOptions": [
+      "Ford",
+      "Ferrari",
+      "Fiat",
+      "Honda",
+      "Toyota",
+      "Mazda",
+      "Nissan",
+      "Porsche",
+      "Tesla",
+      "BMW"
+    ]
+  },
+  {
+    "mainCategory": "Sports",
+    "secretOptions": [
+      "Soccer",
+      "Basketball",
+      "Tennis",
+      "Golf",
+      "Cricket",
+      "Rugby",
+      "Baseball",
+      "Hockey",
+      "Formula 1",
+      "MMA"
+    ]
+  },
+  {
+    "mainCategory": "Food",
+    "secretOptions": [
+      "Pizza",
+      "Burger",
+      "Sushi",
+      "Tacos",
+      "Pasta",
+      "Steak",
+      "Salad",
+      "Curry",
+      "Ramen",
+      "Dumplings"
+    ]
+  },
+  {
+    "mainCategory": "Travel",
+    "secretOptions": [
+      "Tokyo",
+      "Paris",
+      "London",
+      "New York",
+      "Sydney",
+      "Rome",
+      "Bangkok",
+      "Barcelona",
+      "Dubai",
+      "Singapore"
+    ]
+  }
+]
