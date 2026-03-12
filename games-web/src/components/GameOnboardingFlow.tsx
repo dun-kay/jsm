@@ -466,7 +466,7 @@ export default function GameOnboardingFlow({
       return `Join game: #${gameId || "------"}`;
     }
     if (screen === "nameEntry") {
-      return "Start by entering your name";
+      return "Enter your name";
     }
     if (screen === "loading") {
       return "Game loading";
@@ -478,8 +478,7 @@ export default function GameOnboardingFlow({
   })();
 
   return (
-    <div className="page-shell">
-      <main className="app-canvas">
+    <div className="site-shell">
         <button
           className="theme-toggle"
           type="button"
@@ -497,6 +496,8 @@ export default function GameOnboardingFlow({
               <p className="body-text small">{game.shortRules}</p>
             </header>
 
+            {errorText && <p className="hint-text error-text">{errorText}</p>}
+
             <div className="bottom-stack">
               <button className="btn btn-key" type="button" onClick={startCreateFlow}>
                 Create game
@@ -508,7 +509,6 @@ export default function GameOnboardingFlow({
                 Back to games
               </button>
             </div>
-            {errorText && <p className="hint-text error-text">{errorText}</p>}
           </section>
         )}
 
@@ -516,11 +516,11 @@ export default function GameOnboardingFlow({
           <section className="screen screen-basic">
             <header className="screen-header">
               <h1>{title}</h1>
-              <p className="body-text">Paste a join URL or enter a 6 character code.</p>
+              <p className="body-text">Enter a join URL or 6 character code.</p>
             </header>
 
             <label className="field-wrap" htmlFor="join-link-input">
-              <span className="body-text">Join URL or code</span>
+              <br></br><span className="body-text">Paste URL or code:</span>
               <input
                 id="join-link-input"
                 className="input-pill"
@@ -528,13 +528,13 @@ export default function GameOnboardingFlow({
                 value={joinLinkInput}
                 onChange={(event) => setJoinLinkInput(event.target.value)}
                 onKeyDown={onJoinLinkInputKeyDown}
-                placeholder="https://.../?g=ABC123"
+                placeholder=""
               />
             </label>
 
             {errorText && <p className="hint-text error-text">{errorText}</p>}
 
-            <div className="bottom-row">
+            <div className="bottom-stack">
               <button className="btn btn-key" type="button" onClick={continueFromJoinLink}>
                 Next
               </button>
@@ -548,7 +548,7 @@ export default function GameOnboardingFlow({
         {screen === "nameEntry" && (
           <section className="screen screen-basic">
             <header className="screen-header">
-              <h1>{title}</h1>
+              <h1>{title}</h1><br></br>
               {flow === "join" && <p className="body-text">Enter your game name</p>}
             </header>
 
@@ -570,7 +570,7 @@ export default function GameOnboardingFlow({
 
             {errorText && <p className="hint-text error-text">{errorText}</p>}
 
-            <div className="bottom-row">
+            <div className="bottom-stack">
               <button
                 className="btn btn-key"
                 type="button"
@@ -599,11 +599,7 @@ export default function GameOnboardingFlow({
 
         {screen === "lobby" && (
           <section className="screen screen-lobby">
-            {flow === "host" && (
-              <button className="icon-cancel" type="button" onClick={() => setModal("cancel")}>
-                X
-              </button>
-            )}
+
 
             <header className="screen-header">
               <h1>{title}</h1>
@@ -651,6 +647,12 @@ export default function GameOnboardingFlow({
                 </button>
               </>
             )}
+            {flow === "host" && (
+
+            <button className="btn btn-soft" type="button" onClick={() => setModal("cancel")}>
+                Cancel
+              </button>
+            )}
 
             {!gameStarted && flow === "join" && (
               <div className="waiting-text">Waiting for host to start game.</div>
@@ -659,7 +661,7 @@ export default function GameOnboardingFlow({
             {gameStarted && <div className="waiting-text">Game started. Game screen comes next.</div>}
           </section>
         )}
-      </main>
+      
 
       {modal && (
         <div className="modal-backdrop" role="dialog" aria-modal="true">
