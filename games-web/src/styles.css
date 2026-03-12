@@ -1,13 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Serif:wght@700&display=swap");
 
 :root {
-  --canvas-max-width: 332px;
-  --canvas-max-height: 763px;
   --gap-col: 10px;
   --pad-sm: 10px;
   --pad-lg: 20px;
-
   --bg: #F9F9F9;
+  --bgp: #0a0b10;
+  --textp: #f4f4f4;
   --surface: #F9F9F9;
   --text: #0b0b0b;
   --line: #0d0d0d;
@@ -19,6 +18,8 @@
 
 :root[data-theme="dark"] {
   --bg: #0a0b10;
+  --bgp: #f9f9f9;
+  --textp: #0b0b0b;
   --surface: #0a0b10;
   --text: #f4f4f4;
   --line: #f0f0f0;
@@ -46,32 +47,59 @@ body {
 }
 
 .page-shell {
-  min-height: 100dvh;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 0px;
 }
 
 .app-canvas {
-  width: min(calc(100vw - 20px), var(--canvas-max-width));
-  height: min(calc(100dvh - 20px), var(--canvas-max-height));
   margin: 0 auto;
 }
 
+.site-shell {
+  border: 2px solid var(--line);
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: min(100%, 380px) max(100%, 500px);
+  min-width: 0;
+  max-width: 400px;
+  min-height: 750px;
+  max-height: 850px;
+  margin: 5px auto;
+  padding: 15px;
+}
 
 .theme-toggle {
-  position: absolute;
+  position: auto;
+  width: 90px;
   top: var(--pad-sm);
   right: var(--pad-sm);
   z-index: 4;
+  background: var(--bgp);
   border: 2px solid var(--line);
   border-radius: 999px;
   padding: 4px 10px;
-  background: transparent;
-  color: var(--text);
+  color: var(--textp);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.top-actions {
+  display: flex;
+  gap: var(--gap-col);
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.quit-toggle {
+  width: 70px;
+  background: transparent;
+  border: 2px solid var(--inverse-bg);
+  color: var(--inverse-bg);
 }
 
 .screen {
@@ -95,7 +123,7 @@ body {
 .screen-header h1 {
   margin: 0;
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 26px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.25;
   text-align: center;
@@ -109,38 +137,42 @@ body {
 
 .body-text {
   margin: 0;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1.25;
   text-align: center;
 }
 
 .small {
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .left {
   text-transform: none;
   letter-spacing: 0.02em;
-  font-size: 16px;
+  font-size: 14px;
   text-align: left;
 }
 
 .field-wrap {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: var(--gap-col);
 }
 
 .input-pill {
   width: 100%;
-  border: 3px solid var(--line);
+  max-width: 300px;
+  border: 2px solid var(--line);
   border-radius: 999px;
   background: transparent;
   color: var(--text);
   padding: 12px 16px;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px;
   font-family: "Inter", "Segoe UI", sans-serif;
   outline: none;
+  align-items: center;
 }
 
 .input-pill::placeholder {
@@ -155,8 +187,8 @@ body {
 }
 
 .error-text {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px 0 0;
+  font-size: 13px;
   text-align: center;
 }
 
@@ -165,10 +197,16 @@ body {
   border-radius: 999px;
   padding: 10px 14px;
   font-family: "Inter", "Segoe UI", sans-serif;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  min-height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  min-height: 44px;
+  margin: auto;
 }
 
 .btn:disabled {
@@ -189,8 +227,13 @@ body {
 }
 
 .bottom-stack {
-  display: grid;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: var(--gap-col);
+  width: 100%;
 }
 
 .bottom-row {
@@ -205,9 +248,7 @@ body {
 }
 
 .icon-cancel {
-  position: absolute;
-  left: var(--pad-sm);
-  top: var(--pad-sm);
+  position: auto;
   width: 36px;
   height: 36px;
   border-radius: 999px;
@@ -242,6 +283,7 @@ body {
   gap: var(--gap-col);
   min-height: 0;
   flex: 1;
+  padding: 20px 0px;
 }
 
 .player-grid {
@@ -249,7 +291,7 @@ body {
   border-radius: 18px;
   padding: var(--pad-sm);
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: var(--gap-col);
   overflow: auto;
   min-height: 140px;
@@ -257,10 +299,9 @@ body {
 }
 
 .player-pill {
-  border: 2px solid var(--line);
-  border-radius: 99px;
   padding: 5px;
   text-align: center;
+  text-decoration: underline;
   font-size: 16px;
   font-weight: 700;
   min-height: 34px;
@@ -300,7 +341,7 @@ body {
 .modal-card h2 {
   margin: 0;
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 20px;
+  font-size: 18px;
   text-align: center;
 }
 
@@ -310,28 +351,21 @@ body {
   }
 }
 
-.site-shell {
-  width: min(100vw, 960px);
-  margin: 0 auto;
-  padding: 20px;
-  display: grid;
-  gap: 20px;
-}
-
 .site-header h1 {
   margin: 0;
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 32px;
+  font-size: 22px;
   line-height: 1.2;
   text-align: center;
-  padding-top: 10px;
+  padding-top: 30px;
   padding-bottom: 20px;
 }
 
 .games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
+  justify-items: center;
 }
 
 .game-card {
@@ -340,21 +374,23 @@ body {
   color: var(--text);
   border-radius: 16px;
   padding: 20px;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   display: grid;
   gap: 10px;
+  width: 100%;
+
 }
 
 .game-card h2 {
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 22px;
+  font-size: 18px;
   margin: 0;
 }
 
 .game-card p {
   margin: 0;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .game-card-meta {
@@ -364,7 +400,7 @@ body {
 .gridimage {
   display: block;
   width: calc(100% + 40px);
-  height: 150px;
+  height: 100px;
   margin: -20px -20px 0 -20px;
   object-fit: cover;
   border-radius: 14px 14px 0 0;
@@ -373,13 +409,15 @@ body {
 .runtime-card {
   border: 2px solid var(--line);
   border-radius: 16px;
-  padding: 20px;
+  padding: 15px;
   display: grid;
   gap: 10px;
+  text-align: center;
 }
 
 .runtime-card p {
   margin: 0;
+  font-size: 14px;
 }
 
 .runtime-back-btn {
@@ -399,9 +437,24 @@ body {
   gap: 10px;
 }
 
-.runtime-flow h2,
-.runtime-flow p {
+.runtime-flow h2 {
+  font-size: 18px;
   margin: 0;
+}
+.runtime-flow p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.runtime-reroll-btn {
+  min-height: 26px;
+  max-width: 130px;
+  padding: 2px 4px;
+  font-size: 12px;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
 }
 
 .runtime-exit {
@@ -413,4 +466,10 @@ body {
 .runtime-list {
   display: grid;
   gap: 10px;
+  width: 100%;
+}
+
+.runtime-list .btn {
+  width: 100%;
+  max-width: 100%;
 }

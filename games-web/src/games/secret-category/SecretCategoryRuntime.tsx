@@ -13,10 +13,9 @@ import {
 type SecretCategoryRuntimeProps = {
   gameCode: string;
   playerToken: string;
-  onExit: () => void;
 };
 
-export default function SecretCategoryRuntime({ gameCode, playerToken, onExit }: SecretCategoryRuntimeProps) {
+export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretCategoryRuntimeProps) {
   const [state, setState] = useState<SecretCategoryState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
@@ -165,19 +164,27 @@ export default function SecretCategoryRuntime({ gameCode, playerToken, onExit }:
     return (
       <section className="runtime-card">
         <p>Loading game...</p>
-        {errorText && <p>{errorText}</p>}
+        {errorText && <p className="hint-text error-text">{errorText}</p>}
       </section>
     );
   }
 
   return (
     <section className="runtime-card runtime-flow">
-      <button type="button" className="icon-cancel runtime-exit" onClick={onExit}>
-        X
-      </button>
-
-      <h2>Secret Categories</h2>
-      <p>Round {state.roundNo}</p>
+                {state.you.isHost && (
+            <button
+              type="button"
+              className="btn btn-soft runtime-reroll-btn"
+              onClick={() => void doRerollCategory()}
+              disabled={busy}
+            >
+              Re-spin category
+            </button>
+          )}
+      <p><b>Main category: {state.mainCategory}</b></p>
+      {!state.isSpy && state.secretCategory && <p><u>Secret category: {state.secretCategory}</u></p>}
+          {state.isSpy && (
+            <p><u>You are the Spy.</u></p>)}
 
       {state.phase === "rules" && (
         <>
@@ -194,23 +201,11 @@ export default function SecretCategoryRuntime({ gameCode, playerToken, onExit }:
 
       {state.phase === "role_reveal" && (
         <>
-          {state.you.isHost && (
-            <button
-              type="button"
-              className="btn btn-soft"
-              style={{ minHeight: "36px", padding: "6px 10px", fontSize: "14px" }}
-              onClick={() => void doRerollCategory()}
-              disabled={busy}
-            >
-              Re-spin category
-            </button>
-          )}
-          {!state.you.isHost && <p>Ask the host to re-spin the category if needed.</p>}
-          <p>Main category: {state.mainCategory}</p>
-          {!state.isSpy && state.secretCategory && <p>Secret category: {state.secretCategory}</p>}
-          {state.isSpy && (
+
+          
+        {state.isSpy && (
             <p>
-              You are the Spy. Do not reveal this to any other players. Your job is to uncover this round's
+              Do not reveal this to any other players. Your job is to uncover this round's
               Secret Category without getting caught.
             </p>
           )}
@@ -308,7 +303,7 @@ export default function SecretCategoryRuntime({ gameCode, playerToken, onExit }:
         </>
       )}
 
-      {errorText && <p>{errorText}</p>}
+      {errorText && <p className="hint-text error-text">{errorText}</p>}
     </section>
   );
 }

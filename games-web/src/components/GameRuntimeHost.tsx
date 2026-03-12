@@ -49,16 +49,20 @@ export default function GameRuntimeHost({
   if (game?.slug === "secret-category" && initialSession?.playerToken) {
     return (
       <div className="site-shell">
-        <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
-          {theme === "light" ? "Dark mode" : "Light mode"}
-        </button>
+        <div className="top-actions">
+          <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
+            {theme === "light" ? "Dark mode" : "Light mode"}
+          </button>
+          <button type="button" className="theme-toggle quit-toggle" onClick={onBackToHome}>
+            Quit
+          </button>
+        </div>
         <header className="site-header">
           <h1>{game.title}</h1>
         </header>
         <SecretCategoryRuntime
           gameCode={gameCode}
           playerToken={initialSession.playerToken}
-          onExit={onBackToHome}
         />
       </div>
     );
@@ -66,9 +70,11 @@ export default function GameRuntimeHost({
 
   return (
     <div className="site-shell">
-      <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
-        {theme === "light" ? "Dark mode" : "Light mode"}
-      </button>
+      <div className="top-actions">
+        <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
+          {theme === "light" ? "Dark mode" : "Light mode"}
+        </button>
+      </div>
       <header className="site-header">
         <h1>{game?.title || "Game"}</h1>
       </header>
@@ -76,11 +82,13 @@ export default function GameRuntimeHost({
         <p>Game code: {gameCode}</p>
         {game && <p>Runtime route loaded for: {game.slug}</p>}
         {!game && !errorText && <p>Loading runtime...</p>}
-        {errorText && <p>{errorText}</p>}
+        {errorText && <p className="hint-text error-text">{errorText}</p>}
       </section>
-      <button type="button" className="runtime-back-btn" onClick={onBackToHome}>
-        Back to games
-      </button>
+      <div className="bottom-stack">
+        <button type="button" className="btn btn-soft" onClick={onBackToHome}>
+          Back to games
+        </button>
+      </div>
     </div>
   );
 }

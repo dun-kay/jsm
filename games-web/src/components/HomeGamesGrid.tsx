@@ -16,14 +16,14 @@ export default function HomeGamesGrid({ games, onOpenGame, theme, onToggleTheme 
         {theme === "light" ? "Dark mode" : "Light mode"}
       </button>
       <header className="site-header">
-        <h1>Games with friends</h1>
+        <h1>Games with friends</h1><br></br>
       </header>
       <section className="games-grid">
         {games.map((game) => (
           <button key={game.id} type="button" className="game-card" onClick={() => onOpenGame(game)}>
             <img
               className="gridimage"
-              src="/assets/jump-ship-media_trains_tile.png"
+              src="/assets/secret-categories-logo.png"
               alt="Secret Categories image"
             />
             <h2>{game.title}</h2>

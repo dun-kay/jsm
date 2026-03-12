@@ -7,7 +7,7 @@ This folder stores SQL migrations and setup notes for the JSM Games backend.
 - Lobby backend wiring for create/join/start/cancel flow.
 - Security-definer RPC functions for client access from anon key.
 - Fixed max cap of 18 players.
-- Session resume with 120-second timeout and cleanup rules.
+- Session resume with timeout and cleanup rules (hardened to 20 minutes for active gameplay).
 
 ## Dashboard settings to confirm
 
@@ -36,5 +36,6 @@ Run these SQL files in Supabase SQL Editor, in order:
 7. `migrations/20260311_0007_secret_category_runtime.sql`
 8. `migrations/20260311_0008_secret_category_reroll.sql`
 9. `migrations/20260311_0009_secret_category_vote_fix.sql`
+10. `migrations/20260312_0010_session_hardening.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.

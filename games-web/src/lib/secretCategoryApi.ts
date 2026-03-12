@@ -57,12 +57,55 @@ function mapState(data: unknown): SecretCategoryState {
   };
 }
 
-async function rpcState(fn: string, params: Record<string, unknown>): Promise<SecretCategoryState> {
-  const supabase = getSupabaseClient();
-  const { data, error } = await supabase.rpc(fn, params);
-  if (error || !data) {
-    throw new Error(error?.message || "Secret Categories request failed.");
+function messageFromError(error: unknown): string {
+  if (error && typeof error === "object" && "message" in error) {
+    return String((error as { message: unknown }).message || "");
   }
+  return "";
+}
+
+async function callRpc(fn: string, params: Record<string, unknown>) {
+  const supabase = getSupabaseClient();
+  return supabase.rpc(fn, params);
+}
+
+async function rpcState(fn: string, params: Record<string, unknown>): Promise<SecretCategoryState> {
+  let { data, error } = await callRpc(fn, params);
+
+  const isSessionExpired = error && messageFromError(error).toLowerCase().includes("session expired");
+  if (isSessionExpired) {
+    const rejoin = await callRpc("rejoin_game", {
+      p_game_code: params.p_game_code,
+      p_player_token: params.p_player_token
+    });
+    if (!rejoin.error) {
+      const retry = await callRpc(fn, params);
+      data = retry.data;
+      error = retry.error;
+    }
+  }
+
+  const isRuntimeNotReady =
+    error &&
+    messageFromError(error).toLowerCase().includes("game runtime not initialized") &&
+    fn !== "sc_init_game";
+
+  if (isRuntimeNotReady) {
+    const init = await callRpc("sc_init_game", {
+      p_game_code: params.p_game_code,
+      p_player_token: params.p_player_token
+    });
+    if (!init.error) {
+      const retry = await callRpc(fn, params);
+      data = retry.data;
+      error = retry.error;
+    }
+  }
+
+  if (error || !data) {
+    throw new Error(messageFromError(error) || "Secret Categories request failed.");
+  }
+
   return mapState(data);
 }
 
