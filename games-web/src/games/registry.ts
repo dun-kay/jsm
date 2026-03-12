@@ -5,9 +5,9 @@ export const GAMES: GameConfig[] = [
     id: "A",
     slug: "secret-category",
     title: "Secret Categories",
-    description: "Description of screte categories",
-    shortRules: "Short game rules go here.",
-    heroImage: "",
+    description: "One Spy. One secret. One-word clues.",
+    shortRules: "Everyone sees the main category. Only non-spies see the secret. Give one-word clues & try find the spy (or the secret).",
+    heroImage: "/assets/secret-categories-logo.png",
     theme: "default",
     minPlayers: 3,
     maxPlayers: 18,
@@ -20,4 +20,3 @@ export const GAMES: GameConfig[] = [
 export function getGameBySlug(slug: string): GameConfig | undefined {
   return GAMES.find((game) => game.slug === slug && game.enabled);
 }
-

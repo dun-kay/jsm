@@ -37,5 +37,12 @@ Run these SQL files in Supabase SQL Editor, in order:
 8. `migrations/20260311_0008_secret_category_reroll.sql`
 9. `migrations/20260311_0009_secret_category_vote_fix.sql`
 10. `migrations/20260312_0010_session_hardening.sql`
+11. `migrations/20260312_0011_secret_category_pool_table.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
+
+## Secret Categories data
+
+- Runtime now pulls category data from `public.secret_category_pool` (database table).
+- Reference JSON lives at `games-web/src/games/secret-category/categoryPool.json`.
+- Edit the DB table in Supabase if you want instant updates without redeploying.
