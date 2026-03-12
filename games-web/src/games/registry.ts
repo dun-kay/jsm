@@ -6,7 +6,7 @@ export const GAMES: GameConfig[] = [
     slug: "secret-category",
     title: "Secret Categories",
     description: "One Spy. One secret. One-word clues.",
-    shortRules: "Everyone sees the main category. Only non-spies see the secret. Give one-word clues & try find the spy (or the secret).",
+    shortRules: "Everyone sees the main category. Only non-spies see the secret category. Give one-word clues & try find the spy (or the secret).",
     heroImage: "/assets/secret-categories-logo.png",
     theme: "default",
     minPlayers: 3,
