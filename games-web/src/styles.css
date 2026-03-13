@@ -113,14 +113,14 @@ body {
 
 .screen-home {
   justify-content: space-between;
-  padding-top: 52px;
+  padding-top: 25px;
 }
 
 .screen-basic,
 .screen-lobby {
   justify-content: space-between;
   gap: var(--gap-col);
-  padding-top: 52px;
+  padding-top: 65px;
 }
 
 .screen-header h1 {
@@ -416,11 +416,11 @@ body {
 }
 
 .landing-hero-image {
-  height: 150px;
+  height: auto;
   width: auto;
   max-width: 100%;
-  border-radius: 16px;
-  border: 2px solid var(--line);
+  border-radius: 20px;
+  margin-bottom: 20px;
 }
 
 .gridimage {
@@ -511,7 +511,7 @@ body {
   font-size: 16px;
   font-weight: 700;
   border-radius: 999px;
-  border: solid 3px #a600ff;
+  border: solid 3px #AB9DFF;
   color: var(--text);
 }
 
@@ -521,6 +521,18 @@ body {
   font-size: 16px;
   font-weight: 700;
   border-radius: 999px;
-  background: #a600ff;
+  background: #AB9DFF;
   color: #F9F9F9;
+}
+
+.play {
+  text-align: center;
+  background: var(--bgp);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  color: var(--textp);
+  font-size: 12px;
+  font-weight: 700;
+  margin: auto;
 }

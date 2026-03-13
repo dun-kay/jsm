@@ -491,7 +491,6 @@ export default function GameOnboardingFlow({
         {screen === "home" && (
           <section className="screen screen-home">
             <header className="screen-header">
-              <h1>{title}</h1>
               <div className="landing-hero-wrap">
                 <img
                   className="landing-hero-image"
@@ -499,9 +498,10 @@ export default function GameOnboardingFlow({
                   alt={`${game.title} image`}
                 />
               </div>
+              <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
+              <h1>{title}</h1>
               <p className="body-text">{game.description}</p>
-              <p className="body-text small">{game.minPlayers} to {game.maxPlayers} players</p>
-              <p className="body-text small">{game.shortRules}</p>
+              <p className="body-text small">{game.shortRules}</p><br></br>
             </header>
 
             {errorText && <p className="hint-text error-text">{errorText}</p>}
@@ -600,7 +600,7 @@ export default function GameOnboardingFlow({
               <h1>{title}</h1>
             </header>
             <p className="body-text small">
-              Tip: turn your phone brightness down so your friends can't see your screen.
+              Tip: make sure your friends can't see your screen & don't forget to have fun.
             </p>
           </section>
         )}

@@ -16,7 +16,7 @@ export default function HomeGamesGrid({ games, onOpenGame, theme, onToggleTheme 
         {theme === "light" ? "Dark mode" : "Light mode"}
       </button>
       <header className="site-header">
-        <h1>Games with friends</h1><br></br>
+        <h1>Games With Friends</h1>
       </header>
       <section className="games-grid">
         {games.map((game) => (
@@ -28,7 +28,7 @@ export default function HomeGamesGrid({ games, onOpenGame, theme, onToggleTheme 
             />
             <h2>{game.title}</h2>
             <p>{game.description}</p>
-            <p className="game-card-meta">{game.minPlayers} to {game.maxPlayers} players</p>
+            <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
           </button>
         ))}
       </section>
