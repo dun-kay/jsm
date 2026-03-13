@@ -27,7 +27,6 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
   const [errorText, setErrorText] = useState<string>("");
   const [celebOne, setCelebOne] = useState<string>("");
   const [celebTwo, setCelebTwo] = useState<string>("");
-  const [guessInput, setGuessInput] = useState<string>("");
   const [nowMs, setNowMs] = useState<number>(Date.now());
 
   useEffect(() => {
@@ -168,7 +167,6 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
     try {
       const next = await pickCelebTarget(gameCode, playerToken, targetPlayerId);
       setState(next);
-      setGuessInput("");
     } catch (error) {
       setErrorText((error as Error).message || "Unable to pick target.");
     } finally {
@@ -180,15 +178,10 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
     if (!state || busy) {
       return;
     }
-    const cleaned = capCelebLength(guessInput);
-    if (!cleaned.trim()) {
-      setErrorText("Enter a celebrity guess.");
-      return;
-    }
     setBusy(true);
     setErrorText("");
     try {
-      const next = await submitCelebGuess(gameCode, playerToken, cleaned);
+      const next = await submitCelebGuess(gameCode, playerToken, "Verbal guess");
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to submit guess.");
@@ -313,24 +306,13 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
         <>
           {isMyTurnToGuess ? (
             <>
-              <p>You are asking {targetName}. Enter your guess.</p>
-              <label className="field-wrap" htmlFor="guess-input">
-                <input
-                  id="guess-input"
-                  className="input-pill"
-                  type="text"
-                  value={guessInput}
-                  onChange={(event) => setGuessInput(capCelebLength(event.target.value))}
-                  maxLength={MAX_CELEB_LENGTH}
-                  placeholder="Your celebrity guess"
-                />
-              </label>
+              <p>You are asking {targetName}. Ask your guess out loud.</p>
               <button type="button" className="btn btn-key" onClick={() => void doSubmitGuess()} disabled={busy}>
-                Submit guess
+                Continue to confirmation
               </button>
             </>
           ) : (
-            <p>{askerName} is preparing a guess for {targetName}.</p>
+            <p>{askerName} is asking {targetName} a verbal guess.</p>
           )}
         </>
       )}
