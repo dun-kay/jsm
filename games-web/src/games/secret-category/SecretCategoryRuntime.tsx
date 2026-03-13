@@ -324,10 +324,14 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
 
           {state.you.isHost && (
             <button type="button" className="btn btn-key" onClick={() => void doNextRound()} disabled={busy}>
-              Play another round
+              Play again
             </button>
           )}
-          {!state.you.isHost && <p><u>Want to play again? (ask the host)</u></p>}
+          {!state.you.isHost && (
+            <button type="button" className="btn btn-soft" disabled>
+              Ask host to play again
+            </button>
+          )}
         </>
       )}
 
