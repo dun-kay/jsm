@@ -505,23 +505,33 @@ export default function GameOnboardingFlow({
 
   return (
     <div className="site-shell">
-        <button
-          className={`theme-toggle${screen === "lobby" && flow === "join" && !gameStarted ? " onboarding-theme-left" : ""}`}
-          type="button"
-          onClick={onToggleTheme}
-          aria-label="Toggle light and dark mode"
-        >
-          {theme === "light" ? "Dark mode" : "Light mode"}
-        </button>
-
-        {screen === "lobby" && flow === "join" && !gameStarted && (
+        {screen === "lobby" && flow === "join" && !gameStarted ? (
+          <div className="top-actions">
+            <button
+              className="theme-toggle quit-toggle"
+              type="button"
+              onClick={() => void leaveLobbyAndGoBack()}
+              disabled={busy}
+            >
+              Back
+            </button>
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={onToggleTheme}
+              aria-label="Toggle light and dark mode"
+            >
+              {theme === "light" ? "Dark mode" : "Light mode"}
+            </button>
+          </div>
+        ) : (
           <button
-            className="theme-toggle quit-toggle onboarding-back-top"
+            className="theme-toggle"
             type="button"
-            onClick={() => void leaveLobbyAndGoBack()}
-            disabled={busy}
+            onClick={onToggleTheme}
+            aria-label="Toggle light and dark mode"
           >
-            Back
+            {theme === "light" ? "Dark mode" : "Light mode"}
           </button>
         )}
 
