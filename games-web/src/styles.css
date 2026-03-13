@@ -105,6 +105,14 @@ body {
   margin-left: 0;
 }
 
+.onboarding-theme-left {
+  margin-left: 0;
+}
+
+.onboarding-back-top {
+  margin-left: auto;
+}
+
 .screen {
   height: 100%;
   display: flex;

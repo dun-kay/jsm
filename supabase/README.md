@@ -41,6 +41,7 @@ Run these SQL files in Supabase SQL Editor, in order:
 12. `migrations/20260313_0012_celebrities_runtime.sql`
 13. `migrations/20260313_0013_celebrities_submit_fix.sql`
 14. `migrations/20260313_0014_celebrities_duplicate_guard.sql`
+15. `migrations/20260313_0015_leave_game_rpc.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
 

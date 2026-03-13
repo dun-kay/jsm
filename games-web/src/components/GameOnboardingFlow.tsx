@@ -4,6 +4,7 @@ import {
   createGame,
   getLobbyState,
   joinGame,
+  leaveGame,
   rejoinGame,
   startGame,
   touchPlayer,
@@ -457,6 +458,32 @@ export default function GameOnboardingFlow({
     }
   }
 
+  async function leaveLobbyAndGoBack() {
+    if (!gameId || !playerToken || busy) {
+      return;
+    }
+
+    setBusy(true);
+    setErrorText("");
+    try {
+      await leaveGame(gameId, playerToken);
+      clearStoredSession();
+      setPlayers([]);
+      setPlayerToken("");
+      setHostSecret("");
+      setGameStarted(false);
+      setCopyState("idle");
+      setPlayerName("");
+      setNameTouched(false);
+      setFlow("join");
+      setScreen("nameEntry");
+    } catch (error) {
+      setErrorText((error as Error).message || "Failed to leave game.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const title = (() => {
     if (screen === "joinLink") {
       return `Join a game of ${game.title}`;
@@ -479,13 +506,24 @@ export default function GameOnboardingFlow({
   return (
     <div className="site-shell">
         <button
-          className="theme-toggle"
+          className={`theme-toggle${screen === "lobby" && flow === "join" && !gameStarted ? " onboarding-theme-left" : ""}`}
           type="button"
           onClick={onToggleTheme}
           aria-label="Toggle light and dark mode"
         >
           {theme === "light" ? "Dark mode" : "Light mode"}
         </button>
+
+        {screen === "lobby" && flow === "join" && !gameStarted && (
+          <button
+            className="theme-toggle quit-toggle onboarding-back-top"
+            type="button"
+            onClick={() => void leaveLobbyAndGoBack()}
+            disabled={busy}
+          >
+            Back
+          </button>
+        )}
 
         {screen === "home" && (
           <section className="screen screen-home">
