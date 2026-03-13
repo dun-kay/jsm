@@ -74,6 +74,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
   }, []);
 
   const myId = state?.you.id || "";
+  const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
   const isMyTurnToPick = state?.phase === "guess_pick" && state.currentAskerId === myId;
   const isMyTurnToGuess = state?.phase === "guess_input" && state.currentAskerId === myId;
   const isMyTurnToConfirm =
@@ -225,8 +226,13 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
           <p>Everyone must read the rules, then tap Begin.</p>
           <p>Each player enters 2 celebrities.</p>
           <p>Study the list, then ask and confirm guesses face to face.</p>
-          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy}>
-            Begin
+          <button
+            type="button"
+            className="btn btn-key"
+            onClick={() => void doContinue()}
+            disabled={busy || !isWaitingOnYou}
+          >
+            {busy ? "Loading..." : isWaitingOnYou ? "Begin" : "Waiting for others"}
           </button>
         </>
       )}
@@ -257,8 +263,9 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
             />
           </label>
           <button type="button" className="btn btn-key" onClick={() => void doSubmitCelebrities()} disabled={busy}>
-            Submit celebrities
+            {busy ? "Submitting..." : "Submit celebrities"}
           </button>
+          {state.yourSubmitted && <p>Submitted. Waiting for others...</p>}
         </>
       )}
 
@@ -266,13 +273,13 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
         <>
           <p>Study the celebrity list.</p>
           <p>{revealSecondsLeft}s remaining</p>
-          <div className="player-grid">
+          <div className="player-grid cele">
             {state.celebrityList.map((name, index) => (
               <div key={`${name}-${index}`} className="player-pill">{name}</div>
             ))}
           </div>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || revealSecondsLeft > 0}>
-            {revealSecondsLeft > 0 ? "Wait..." : "Continue"}
+            {busy ? "Loading..." : revealSecondsLeft > 0 ? "Wait..." : isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
         </>
       )}
@@ -342,7 +349,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
         <>
           <p>Game complete.</p>
           <p>Final team leader: {teamSummary[0]?.leaderName || "Unknown"}</p>
-          <div className="player-grid">
+          <div className="player-grid cele">
             {state.celebrityList.map((name, index) => (
               <div key={`${name}-${index}`} className="player-pill">{name}</div>
             ))}
@@ -352,10 +359,10 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
 
       <div className="players-panel">
         <p className="body-text left">Teams</p>
-        <div className="player-grid">
+        <div className="player-grid teams">
           {teamSummary.map((team) => (
-            <div key={team.leaderId} className="player-pill">
-              {team.leaderName}: {team.members.map((m) => m.name).join(", ")}
+            <div key={team.leaderId} className="player-pill team">
+              {team.members.map((m) => m.name).join(", ")}
             </div>
           ))}
         </div>

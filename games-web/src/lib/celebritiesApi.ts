@@ -11,6 +11,8 @@ export type CelebritiesState = {
   phase: "rules" | "input" | "reveal" | "guess_pick" | "guess_input" | "guess_confirm" | "result";
   revealRound: number;
   revealEndsAt: string | null;
+  waitingOn: string[];
+  yourSubmitted: boolean;
   currentAskerId: string | null;
   currentTargetId: string | null;
   currentGuess: string | null;
@@ -35,6 +37,8 @@ function mapState(data: unknown): CelebritiesState {
     phase: (raw.phase as CelebritiesState["phase"]) ?? "rules",
     revealRound: Number(raw.revealRound ?? 0),
     revealEndsAt: (raw.revealEndsAt as string | null) ?? null,
+    waitingOn: ((raw.waitingOn as string[]) || []).map(String),
+    yourSubmitted: Boolean(raw.yourSubmitted),
     currentAskerId: (raw.currentAskerId as string | null) ?? null,
     currentTargetId: (raw.currentTargetId as string | null) ?? null,
     currentGuess: (raw.currentGuess as string | null) ?? null,
@@ -126,4 +130,3 @@ export function confirmCelebGuess(gameCode: string, playerToken: string, isCorre
     p_is_correct: isCorrect
   });
 }
-
