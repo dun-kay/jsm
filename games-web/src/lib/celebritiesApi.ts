@@ -130,3 +130,10 @@ export function confirmCelebGuess(gameCode: string, playerToken: string, isCorre
     p_is_correct: isCorrect
   });
 }
+
+export function playAgainCelebrities(gameCode: string, playerToken: string): Promise<CelebritiesState> {
+  return rpcState("cc_play_again", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
+  });
+}

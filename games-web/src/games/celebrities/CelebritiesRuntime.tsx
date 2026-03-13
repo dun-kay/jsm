@@ -5,6 +5,7 @@ import {
   getCelebritiesState,
   initCelebrities,
   pickCelebTarget,
+  playAgainCelebrities,
   submitCelebGuess,
   submitCelebrities,
   type CelebritiesState
@@ -207,6 +208,24 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
     }
   }
 
+  async function doPlayAgain() {
+    if (!state || busy || !state.you.isHost) {
+      return;
+    }
+    setBusy(true);
+    setErrorText("");
+    try {
+      const next = await playAgainCelebrities(gameCode, playerToken);
+      setState(next);
+      setCelebOne("");
+      setCelebTwo("");
+    } catch (error) {
+      setErrorText((error as Error).message || "Unable to start another round.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!state) {
     return (
       <section className="runtime-card">
@@ -354,6 +373,16 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
               <div key={`${name}-${index}`} className="player-pill">{name}</div>
             ))}
           </div>
+          {state.you.isHost && (
+            <button type="button" className="btn btn-key" onClick={() => void doPlayAgain()} disabled={busy}>
+              Play again
+            </button>
+          )}
+          {!state.you.isHost && (
+            <button type="button" className="btn btn-key" disabled>
+              Ask the host to play again
+            </button>
+          )}
         </>
       )}
 
