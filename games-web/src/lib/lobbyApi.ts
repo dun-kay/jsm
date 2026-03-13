@@ -140,3 +140,15 @@ export async function cancelGame(gameCode: string, hostSecret: string): Promise<
     throw new Error(error?.message || "Failed to cancel game.");
   }
 }
+
+export async function leaveGame(gameCode: string, playerToken: string): Promise<void> {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.rpc("leave_game", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
+  });
+
+  if (error || data !== true) {
+    throw new Error(error?.message || "Failed to leave game.");
+  }
+}

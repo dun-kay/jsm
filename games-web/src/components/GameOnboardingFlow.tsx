@@ -4,6 +4,7 @@ import {
   createGame,
   getLobbyState,
   joinGame,
+  leaveGame,
   rejoinGame,
   startGame,
   touchPlayer,
@@ -33,7 +34,6 @@ type GameOnboardingFlowProps = {
   onToggleTheme: () => void;
 };
 
-const MIN_PLAYERS_TO_START = 3;
 const MAX_NAME_LENGTH = 10;
 const SESSION_TTL_MS = 120_000;
 
@@ -458,6 +458,32 @@ export default function GameOnboardingFlow({
     }
   }
 
+  async function leaveLobbyAndGoBack() {
+    if (!gameId || !playerToken || busy) {
+      return;
+    }
+
+    setBusy(true);
+    setErrorText("");
+    try {
+      await leaveGame(gameId, playerToken);
+      clearStoredSession();
+      setPlayers([]);
+      setPlayerToken("");
+      setHostSecret("");
+      setGameStarted(false);
+      setCopyState("idle");
+      setPlayerName("");
+      setNameTouched(false);
+      setFlow("join");
+      setScreen("nameEntry");
+    } catch (error) {
+      setErrorText((error as Error).message || "Failed to leave game.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const title = (() => {
     if (screen === "joinLink") {
       return `Join a game of ${game.title}`;
@@ -479,14 +505,35 @@ export default function GameOnboardingFlow({
 
   return (
     <div className="site-shell">
-        <button
-          className="theme-toggle"
-          type="button"
-          onClick={onToggleTheme}
-          aria-label="Toggle light and dark mode"
-        >
-          {theme === "light" ? "Dark mode" : "Light mode"}
-        </button>
+        {screen === "lobby" && flow === "join" && !gameStarted ? (
+          <div className="top-actions">
+            <button
+              className="theme-toggle quit-toggle"
+              type="button"
+              onClick={() => void leaveLobbyAndGoBack()}
+              disabled={busy}
+            >
+              Back
+            </button>
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={onToggleTheme}
+              aria-label="Toggle light and dark mode"
+            >
+              {theme === "light" ? "Dark mode" : "Light mode"}
+            </button>
+          </div>
+        ) : (
+          <button
+            className="theme-toggle"
+            type="button"
+            onClick={onToggleTheme}
+            aria-label="Toggle light and dark mode"
+          >
+            {theme === "light" ? "Dark mode" : "Light mode"}
+          </button>
+        )}
 
         {screen === "home" && (
           <section className="screen screen-home">
@@ -642,14 +689,14 @@ export default function GameOnboardingFlow({
 
             {!gameStarted && flow === "host" && (
               <>
-                {players.length < MIN_PLAYERS_TO_START && (
-                  <p className="hint-text error-text">At least 3 players are required to start.</p>
+                {players.length < game.minPlayers && (
+                  <p className="hint-text error-text">At least {game.minPlayers} players are required to start.</p>
                 )}
                 <button
                   className="btn btn-key"
                   type="button"
                   onClick={() => setModal("start")}
-                  disabled={players.length < MIN_PLAYERS_TO_START || busy}
+                  disabled={players.length < game.minPlayers || busy}
                 >
                   Start game
                 </button>
