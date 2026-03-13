@@ -14,6 +14,20 @@ export const GAMES: GameConfig[] = [
     joinPrefix: "A",
     route: "/g/secret-category/",
     enabled: true
+  },
+  {
+    id: "B",
+    slug: "celebrities",
+    title: "Celebrities",
+    description: "Collect players by guessing their celebrity.",
+    shortRules: "Add 2 celebrities each. Study the list, then ask and confirm guesses face to face.",
+    heroImage: "/assets/celebrities-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    joinPrefix: "B",
+    route: "/g/celebrities/",
+    enabled: true
   }
 ];
 

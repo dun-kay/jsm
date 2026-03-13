@@ -33,7 +33,6 @@ type GameOnboardingFlowProps = {
   onToggleTheme: () => void;
 };
 
-const MIN_PLAYERS_TO_START = 3;
 const MAX_NAME_LENGTH = 10;
 const SESSION_TTL_MS = 120_000;
 
@@ -642,14 +641,14 @@ export default function GameOnboardingFlow({
 
             {!gameStarted && flow === "host" && (
               <>
-                {players.length < MIN_PLAYERS_TO_START && (
-                  <p className="hint-text error-text">At least 3 players are required to start.</p>
+                {players.length < game.minPlayers && (
+                  <p className="hint-text error-text">At least {game.minPlayers} players are required to start.</p>
                 )}
                 <button
                   className="btn btn-key"
                   type="button"
                   onClick={() => setModal("start")}
-                  disabled={players.length < MIN_PLAYERS_TO_START || busy}
+                  disabled={players.length < game.minPlayers || busy}
                 >
                   Start game
                 </button>

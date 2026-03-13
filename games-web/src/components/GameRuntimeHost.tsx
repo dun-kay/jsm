@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getGameBySlug } from "../games/registry";
 import SecretCategoryRuntime from "../games/secret-category/SecretCategoryRuntime";
+import CelebritiesRuntime from "../games/celebrities/CelebritiesRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState } from "../lib/lobbyApi";
 
@@ -47,7 +48,7 @@ export default function GameRuntimeHost({
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined;
 
-  if (game?.slug === "secret-category" && initialSession?.playerToken) {
+  if ((game?.slug === "secret-category" || game?.slug === "celebrities") && initialSession?.playerToken) {
     return (
       <div className="site-shell">
         <div className="top-actions">
@@ -58,10 +59,12 @@ export default function GameRuntimeHost({
             {theme === "light" ? "Dark mode" : "Light mode"}
           </button>
         </div>
-        <SecretCategoryRuntime
-          gameCode={gameCode}
-          playerToken={initialSession.playerToken}
-        />
+        {game.slug === "celebrities" && (
+          <CelebritiesRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
+        )}
+        {game.slug === "secret-category" && (
+          <SecretCategoryRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
+        )}
         {showQuitConfirm && (
           <div className="modal-backdrop" role="dialog" aria-modal="true">
             <div className="modal-card">
