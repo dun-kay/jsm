@@ -28,6 +28,7 @@ export default function HomeGamesGrid({ games, onOpenGame, theme, onToggleTheme 
             />
             <h2>{game.title}</h2>
             <p>{game.description}</p>
+            <p className="game-card-meta">{game.minPlayers} to {game.maxPlayers} players</p>
           </button>
         ))}
       </section>
