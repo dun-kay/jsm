@@ -317,10 +317,10 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
 
       {state.phase === "result" && (
         <>
-          {state.roundResult === "spy_not_found" && <p><h2>The Spy survived!</h2><p>They won this round, but who was it...</p><br></br></p>}
+          {state.roundResult === "spy_not_found" && <p><h2>The Spy survived!</h2><p>They won this round, but who was the spy...</p><br></br></p>}
           {state.roundResult === "spy_guessed_correct" && <p><h2>The Spy guessed the Secret!</h2><p>They won this round.</p><br></br></p>}
-          {state.roundResult === "spy_guessed_wrong" && <p><h2>The Spy guessed wrong!</h2><p>They loose this round.</p><br></br></p>}
-          {state.roundResult === "spy_found" && <p><h2>The Spy was found out!</h2><p>They loose this round.</p><br></br></p>}
+          {state.roundResult === "spy_guessed_wrong" && <p><h2>The Spy guessed wrong!</h2><p>The non-Spies won this round.</p><br></br></p>}
+          {state.roundResult === "spy_found" && <p><h2>The Spy was found out!</h2><p>The non-Spies won this round.</p><br></br></p>}
 
           {state.you.isHost && (
             <button type="button" className="btn btn-key" onClick={() => void doNextRound()} disabled={busy}>
