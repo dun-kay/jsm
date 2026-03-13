@@ -49,6 +49,19 @@ function saveRuntimeSession(session: GameSessionContext) {
   window.sessionStorage.setItem(SESSION_CONTEXT_KEY, JSON.stringify(session));
 }
 
+function clearRuntimeSession() {
+  window.sessionStorage.removeItem(SESSION_CONTEXT_KEY);
+}
+
+function clearOnboardingSessions() {
+  for (let i = window.localStorage.length - 1; i >= 0; i -= 1) {
+    const key = window.localStorage.key(i);
+    if (key && key.startsWith("notes_session_")) {
+      window.localStorage.removeItem(key);
+    }
+  }
+}
+
 function readRuntimeSession(): GameSessionContext | null {
   try {
     const raw = window.sessionStorage.getItem(SESSION_CONTEXT_KEY);
@@ -78,6 +91,13 @@ export default function App() {
 
   const enabledGames = useMemo(() => GAMES.filter((game) => game.enabled), []);
   const toggleTheme = () => setTheme((old) => (old === "light" ? "dark" : "light"));
+  const exitRuntimeToHome = () => {
+    clearRuntimeSession();
+    clearOnboardingSessions();
+    setRuntimeSession(null);
+    window.history.replaceState({}, "", "/");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
 
   if (route.kind === "home") {
     return (
@@ -124,7 +144,7 @@ export default function App() {
       initialSession={runtimeSession}
       theme={theme}
       onToggleTheme={toggleTheme}
-      onBackToHome={() => navigate("/")}
+      onBackToHome={exitRuntimeToHome}
     />
   );
 }
