@@ -23,8 +23,8 @@ export default function HomeGamesGrid({ games, onOpenGame, theme, onToggleTheme 
           <button key={game.id} type="button" className="game-card" onClick={() => onOpenGame(game)}>
             <img
               className="gridimage"
-              src="/assets/secret-categories-logo.png"
-              alt="Secret Categories image"
+              src={game.heroImage || "/assets/secret-categories-logo.png"}
+              alt={`${game.title} image`}
             />
             <h2>{game.title}</h2>
             <p>{game.description}</p>

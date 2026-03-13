@@ -123,7 +123,7 @@ body {
 .screen-header h1 {
   margin: 0;
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   line-height: 1.25;
   text-align: center;
@@ -137,19 +137,19 @@ body {
 
 .body-text {
   margin: 0;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.25;
   text-align: center;
 }
 
 .small {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .left {
   text-transform: none;
   letter-spacing: 0.02em;
-  font-size: 14px;
+  font-size: 16px;
   text-align: left;
 }
 
@@ -169,7 +169,7 @@ body {
   background: transparent;
   color: var(--text);
   padding: 12px 16px;
-  font-size: 16px;
+  font-size: 18px;
   font-family: "Inter", "Segoe UI", sans-serif;
   outline: none;
   align-items: center;
@@ -181,14 +181,14 @@ body {
 
 .hint-text {
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   text-align: center;
 }
 
 .error-text {
   margin: 10px 0 0;
-  font-size: 13px;
+  font-size: 14px;
   text-align: center;
 }
 
@@ -224,6 +224,12 @@ body {
   border: 2px solid var(--inverse-bg);
   background: transparent;
   color: var(--inverse-bg);
+}
+
+.vote {
+  font-size: 15px;
+  color: var(--inverse-text);
+  background: var(--inverse-bg);
 }
 
 .bottom-stack {
@@ -299,12 +305,16 @@ body {
 }
 
 .player-pill {
-  padding: 5px;
+  padding: 3px;
   text-align: center;
-  text-decoration: underline;
-  font-size: 16px;
+  text-decoration: none;
+  color: var(--textp);
+  font-size: 12px;
   font-weight: 700;
-  min-height: 34px;
+  min-height: 20px;
+  background: var(--bgp);
+  border: 2px solid var(--line);
+  border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -341,7 +351,7 @@ body {
 .modal-card h2 {
   margin: 0;
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 18px;
+  font-size: 20px;
   text-align: center;
 }
 
@@ -384,17 +394,17 @@ body {
 
 .game-card h2 {
   font-family: "Noto Serif", Georgia, serif;
-  font-size: 18px;
+  font-size: 20px;
   margin: 0;
 }
 
 .game-card p {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .game-card-meta {
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .gridimage {
@@ -407,12 +417,16 @@ body {
 }
 
 .runtime-card {
-  border: 2px solid var(--line);
+  border: 0px solid var(--line);
   border-radius: 16px;
-  padding: 15px;
+  padding: 0px;
   display: grid;
-  gap: 10px;
+  gap: 0px;
   text-align: center;
+  margin-top: 40px;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 0px;
 }
 
 .runtime-card p {
@@ -438,12 +452,13 @@ body {
 }
 
 .runtime-flow h2 {
-  font-size: 18px;
+  font-family: "Noto Serif", Georgia, serif;
+  font-size: 20px;
   margin: 0;
 }
 .runtime-flow p {
-  font-size: 14px;
-  margin: 0;
+  font-size: 16px;
+  margin: auto;
 }
 
 .runtime-reroll-btn {
@@ -453,8 +468,8 @@ body {
   font-size: 12px;
   margin-bottom: 15px;
   margin-top: 0px;
-  background: var(--inverse-bg);
-  color: var(--inverse-text);
+  background: var(--bg);
+  color: var(--text);
 }
 
 .runtime-exit {
@@ -472,4 +487,24 @@ body {
 .runtime-list .btn {
   width: 100%;
   max-width: 100%;
+}
+
+.maincat {
+  min-height: 30px;
+  padding: 5px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: solid 3px #a600ff;
+  color: var(--text);
+}
+
+.secretcat {
+  min-height: 30px;
+  padding: 7px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 999px;
+  background: #a600ff;
+  color: #F9F9F9;
 }

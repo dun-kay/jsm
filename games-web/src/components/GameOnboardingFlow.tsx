@@ -549,7 +549,7 @@ export default function GameOnboardingFlow({
           <section className="screen screen-basic">
             <header className="screen-header">
               <h1>{title}</h1><br></br>
-              {flow === "join" && <p className="body-text">Enter your game name</p>}
+              {flow === "join" && <p className="body-text">Enter your name</p>}
             </header>
 
             <label className="field-wrap" htmlFor="name-input">
@@ -561,7 +561,7 @@ export default function GameOnboardingFlow({
                 onChange={(event) => handleNameChange(event.target.value)}
                 onKeyDown={onNameInputKeyDown}
                 maxLength={MAX_NAME_LENGTH}
-                placeholder="Enter your display name"
+                placeholder="Enter your name"
               />
               {nameTouched && playerName.length >= MAX_NAME_LENGTH && (
                 <span className="hint-text">10 character max reached</span>
