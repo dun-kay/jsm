@@ -15,7 +15,7 @@
     ]
   },
   {
-    "mainCategory": "Cars",
+    "mainCategory": "Car Brands",
     "secretOptions": [
       "Ford",
       "Ferrari",
@@ -30,7 +30,7 @@
     ]
   },
   {
-    "mainCategory": "Sports",
+    "mainCategory": "Professional Sports",
     "secretOptions": [
       "Soccer",
       "Basketball",
@@ -45,7 +45,7 @@
     ]
   },
   {
-    "mainCategory": "Food",
+    "mainCategory": "Takeaway Foods",
     "secretOptions": [
       "Pizza",
       "Burger",
@@ -60,7 +60,7 @@
     ]
   },
   {
-    "mainCategory": "Travel",
+    "mainCategory": "Destination Cities",
     "secretOptions": [
       "Tokyo",
       "Paris",
