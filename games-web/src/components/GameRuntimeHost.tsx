@@ -21,6 +21,7 @@ export default function GameRuntimeHost({
 }: GameRuntimeHostProps) {
   const [gameSlug, setGameSlug] = useState<string>(initialSession?.gameSlug || "");
   const [errorText, setErrorText] = useState<string>("");
+  const [showQuitConfirm, setShowQuitConfirm] = useState<boolean>(false);
 
   useEffect(() => {
     let active = true;
@@ -50,17 +51,33 @@ export default function GameRuntimeHost({
     return (
       <div className="site-shell">
         <div className="top-actions">
+          <button type="button" className="theme-toggle quit-toggle" onClick={() => setShowQuitConfirm(true)}>
+            Quit
+          </button>
           <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
             {theme === "light" ? "Dark mode" : "Light mode"}
-          </button>
-          <button type="button" className="theme-toggle quit-toggle" onClick={onBackToHome}>
-            Quit
           </button>
         </div>
         <SecretCategoryRuntime
           gameCode={gameCode}
           playerToken={initialSession.playerToken}
         />
+        {showQuitConfirm && (
+          <div className="modal-backdrop" role="dialog" aria-modal="true">
+            <div className="modal-card">
+              <h2>Quit game?</h2>
+              <p className="body-text small">Are you sure you want to quit?</p>
+              <div className="bottom-row">
+                <button className="btn btn-key" type="button" onClick={onBackToHome}>
+                  Yes
+                </button>
+                <button className="btn btn-soft" type="button" onClick={() => setShowQuitConfirm(false)}>
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

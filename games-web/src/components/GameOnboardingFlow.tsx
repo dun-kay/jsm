@@ -460,10 +460,10 @@ export default function GameOnboardingFlow({
 
   const title = (() => {
     if (screen === "joinLink") {
-      return "Join game";
+      return `Join a game of ${game.title}`;
     }
     if (screen === "nameEntry" && flow === "join") {
-      return `Join game: #${gameId || "------"}`;
+      return `Join ${game.title} game: ${gameId || "------"}`;
     }
     if (screen === "nameEntry") {
       return "Enter your name";
@@ -472,7 +472,7 @@ export default function GameOnboardingFlow({
       return "Game loading";
     }
     if (screen === "lobby") {
-      return `Game lobby: #${gameId || "..."}`;
+      return `${game.title} game lobby: ${gameId || "..."}`;
     }
     return game.title;
   })();
@@ -492,7 +492,15 @@ export default function GameOnboardingFlow({
           <section className="screen screen-home">
             <header className="screen-header">
               <h1>{title}</h1>
+              <div className="landing-hero-wrap">
+                <img
+                  className="landing-hero-image"
+                  src={game.heroImage || "/assets/secret-categories-logo.png"}
+                  alt={`${game.title} image`}
+                />
+              </div>
               <p className="body-text">{game.description}</p>
+              <p className="body-text small">{game.minPlayers} to {game.maxPlayers} players</p>
               <p className="body-text small">{game.shortRules}</p>
             </header>
 

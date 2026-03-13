@@ -85,6 +85,8 @@ body {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  display: block;
+  margin-left: auto;
 }
 
 .top-actions {
@@ -100,6 +102,7 @@ body {
   background: transparent;
   border: 2px solid var(--inverse-bg);
   color: var(--inverse-bg);
+  margin-left: 0;
 }
 
 .screen {
@@ -405,6 +408,19 @@ body {
 
 .game-card-meta {
   font-size: 18px;
+}
+
+.landing-hero-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.landing-hero-image {
+  height: 150px;
+  width: auto;
+  max-width: 100%;
+  border-radius: 16px;
+  border: 2px solid var(--line);
 }
 
 .gridimage {
