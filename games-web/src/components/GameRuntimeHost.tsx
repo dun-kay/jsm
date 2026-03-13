@@ -57,9 +57,6 @@ export default function GameRuntimeHost({
             Quit
           </button>
         </div>
-        <header className="site-header">
-          <h1>{game.title}</h1>
-        </header>
         <SecretCategoryRuntime
           gameCode={gameCode}
           playerToken={initialSession.playerToken}

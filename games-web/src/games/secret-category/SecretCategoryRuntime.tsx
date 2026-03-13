@@ -171,7 +171,30 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
 
   return (
     <section className="runtime-card runtime-flow">
-                {state.you.isHost && (
+      {state.phase === "rules" && (
+        <>
+        <h2>Let's play... Secret Categories</h2>
+          <p></p><p>The game starts by revealing the <b>Main Category</b> to everyone.</p>
+          <p>The <b>Secret Category</b> is then revealed. One player does not see it. <b>They are the Spy</b>.</p>
+          <br></br>
+          <p>The Spy must figure out the Secret Category. <b>Other players must figure out who the Spy is</b>.</p>
+          <br></br>
+          <p><b>Each round one player gives a one-word clue.</b> The clue should relate to the main category & the secret category (if you know what it is).</p>
+          <br></br>
+          <p>When the Spy gives a clue, they <b>try & sound like they know the secret</b>. Other players <b>try & show they know the secret</b> without saying it.</p>
+          <br></br>
+          <p>"If the Category is Car Brands and the Secret is Ferrari, <b>Fast</b> is a better clue than <b>Horse</b>."</p>
+          <br></br>
+          <p>Once everyone gives a clue, you discuss & vote to try find the Spy.</p><p></p>
+          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
+            {isWaitingOnYou ? "Begin" : "Waiting for others"}
+          </button>
+        </>
+      )}
+
+      {state.phase === "role_reveal" && (
+        <>
+        {state.you.isHost && (
             <button
               type="button"
               className="btn btn-soft runtime-reroll-btn"
@@ -181,44 +204,26 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
               Re-spin category
             </button>
           )}
-      <p><b>Main category: {state.mainCategory}</b></p>
-      {!state.isSpy && state.secretCategory && <p><u>Secret category: {state.secretCategory}</u></p>}
-          {state.isSpy && (
-            <p><u><b>You are the Spy</b></u> (do not reveal this to anyone).</p>)}
-
-      {state.phase === "rules" && (
-        <>
-        <br></br>
-          <p><b>How to play:</b></p>
-          <p>The game starts by revealing the <b>main category</b> to everyone (you can see it above).</p>
-          <p>The <b>secret category</b> is revealed under that.</p>
-          <p>One player does not see it. <u><b>They are the Spy.</b></u></p>
-          <br></br>
-          <p>The Spy must figure out the secret category.</p>
-          <p>The other players must figure out who the Spy is.</p>
-          <br></br>
-          <p><b>Each round, one player gives a one-word clue.</b></p>
-          <p>The clue should relate to the main category and the secret category.</p>
-          <p>If you are the Spy, sound believable so others think you know the secret.</p>
-          <p>If you are not the Spy try & show others with the clue you give, without revealing the secret.</p>
-          <br></br>
-          <p>Example: If the category is Cars and the secret is Ferrari. <b>Horse</b> is a bad clue. <b>Fast</b> is better.</p>
-          <br></br>
-          <p>After everyone gives clues, you discuss and vote.</p>
-          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-            {isWaitingOnYou ? "Begin" : "Waiting for others"}
-          </button>
-        </>
-      )}
-
-      {state.phase === "role_reveal" && (
-        <>
-          {!state.isSpy && <p>Keep the secret safe. Use smart, subtle clues.</p>}
-        {state.isSpy && (
-            <p>
-              Stay hidden. Blend in, avoid suspicion, and figure out the secret category.
-            </p>
+                  {!state.you.isHost && (
+            <button
+              type="button"
+              className="btn btn-soft runtime-reroll-btn"
+            >
+              Host can re-spin
+            </button>
           )}
+
+              {!state.isSpy && <p><h2>You are <u>not</u> the spy.</h2><p>Shhh, don't tell anyone.</p><br></br></p>}
+              {state.isSpy && <p><h2>You are <u>the</u> spy.</h2><p>Shhh, don't tell anyone.</p><br></br></p>}
+              <p className="maincat"><p><b>Main Category: </b>{state.mainCategory}</p></p>
+      {!state.isSpy && state.secretCategory && <p className="secretcat">Secret Category: {state.secretCategory}</p>}
+          {state.isSpy && (<p className="secretcat">Secret Category: You are the Spy</p>)}
+
+
+
+
+          {!state.isSpy && <p><br></br><p>Keep the secret safe.</p><p>Use smart, subtle clues.</p><br></br></p>}
+        {state.isSpy && (<p><br></br><p>Blend in. Avoid suspicion.</p><p>Try & figure out the secret category.</p><br></br></p>)}
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
@@ -229,12 +234,16 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
         <>
           {state.currentTurnPlayerId === state.you.id ? (
             <p>
-              Your turn. Say one word linked to the main category without exposing the secret category.
-            </p>
+              <h2>It's your turn.</h2><p>Say a one word clue related to the main category. Don't expose the secret category<p>(or that you don't know what it is).</p>
+            </p></p>
           ) : (
-            <p>{currentTurnName} is giving a clue.</p>
+            <p><h2>It's {currentTurnName}'s turn.</h2><p>Listen for their clue.</p></p>
           )}
-          {state.isSpy && <p>You are the Spy. Sound convincing and gather information. Don't reveal your role to anyone.</p>}
+                        <br></br><p className="maincat"><p><b>Main Category: </b>{state.mainCategory}</p></p>
+      {!state.isSpy && state.secretCategory && <p className="secretcat">Secret Category: {state.secretCategory}</p>}
+          {state.isSpy && (<p className="secretcat">Secret Category: You are the Spy</p>)}<br></br>
+          
+          
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
@@ -243,7 +252,17 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
 
       {state.phase === "discussion" && (
         <>
-          <p>Discuss, who is the Spy?</p>
+          <h2>Discuss, who is the Spy?</h2><p>Voting next...</p>
+         <br></br><div className="player-grid">
+            {state.players.map((player) => (
+              <div 
+                key={player.id}
+                className="player-pill"
+              >
+                {player.name}
+              </div>
+            ))}
+          </div><br></br>             
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
@@ -252,22 +271,22 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
 
       {state.phase === "vote" && (
         <>
-          <p>Vote for the Spy. A majority is required.</p>
+          <h2>Vote for who you think the Spy is.</h2><p>A majority is required.</p><br></br>
           {state.voteAttempt > 1 && <p>No majority last round. Vote again.</p>}
           <div className="runtime-list">
             {state.players.map((player) => (
               <button
                 key={player.id}
                 type="button"
-                className="btn btn-soft"
+                className="btn btn-soft vote"
                 onClick={() => void doVote(player.id)}
                 disabled={busy || hasVoted}
               >
-                Vote {player.name}
+              {player.name} is the Spy
               </button>
             ))}
           </div>
-          {hasVoted && <p>Vote locked. Waiting for the rest of the table.</p>}
+          {hasVoted && <p>Vote cast. Waiting for the rest of the table...</p>}
         </>
       )}
 
@@ -275,7 +294,7 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
         <>
           {state.isSpy ? (
             <>
-              <p>You were caught. Make one final guess to steal the win.</p>
+              <p><h2>You were caught...</h2><br></br><p>Guess the Secret Category & win the game.</p></p>
               <div className="runtime-list">
                 {state.secretOptions.map((option) => (
                   <button
@@ -291,24 +310,24 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
               </div>
             </>
           ) : (
-            <p>The Spy is making a final guess...</p>
+            <p><h2>You caught the Spy...</h2><br></br><p>They are trying to guess the Secret Category & win the game.</p></p>
           )}
         </>
       )}
 
       {state.phase === "result" && (
         <>
-          {state.roundResult === "spy_not_found" && <p>The Spy survived. Spy wins.</p>}
-          {state.roundResult === "spy_guessed_correct" && <p>The Spy guessed correctly. Spy wins.</p>}
-          {state.roundResult === "spy_guessed_wrong" && <p>The Spy missed. Team wins.</p>}
-          {state.roundResult === "spy_found" && <p>The Spy was found.</p>}
+          {state.roundResult === "spy_not_found" && <p><h2>The Spy survived!</h2><p>They won this round, but who was it...</p><br></br></p>}
+          {state.roundResult === "spy_guessed_correct" && <p><h2>The Spy guessed the Secret!</h2><p>They won this round.</p><br></br></p>}
+          {state.roundResult === "spy_guessed_wrong" && <p><h2>The Spy guessed wrong!</h2><p>They loose this round.</p><br></br></p>}
+          {state.roundResult === "spy_found" && <p><h2>The Spy was found out!</h2><p>They loose this round.</p><br></br></p>}
 
           {state.you.isHost && (
             <button type="button" className="btn btn-key" onClick={() => void doNextRound()} disabled={busy}>
               Play another round
             </button>
           )}
-          {!state.you.isHost && <p>Waiting for host to start next round.</p>}
+          {!state.you.isHost && <p><u>Want to play again? (ask the host)</u></p>}
         </>
       )}
 
