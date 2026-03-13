@@ -17,8 +17,8 @@ type CelebritiesRuntimeProps = {
 
 const MAX_CELEB_LENGTH = 20;
 
-function cleanCeleb(value: string): string {
-  return value.trim().slice(0, MAX_CELEB_LENGTH);
+function capCelebLength(value: string): string {
+  return value.slice(0, MAX_CELEB_LENGTH);
 }
 
 export default function CelebritiesRuntime({ gameCode, playerToken }: CelebritiesRuntimeProps) {
@@ -141,9 +141,9 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
     if (!state || busy) {
       return;
     }
-    const first = cleanCeleb(celebOne);
-    const second = cleanCeleb(celebTwo);
-    if (!first || !second) {
+    const first = capCelebLength(celebOne);
+    const second = capCelebLength(celebTwo);
+    if (!first.trim() || !second.trim()) {
       setErrorText("Enter 2 celebrities.");
       return;
     }
@@ -180,8 +180,8 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
     if (!state || busy) {
       return;
     }
-    const cleaned = cleanCeleb(guessInput);
-    if (!cleaned) {
+    const cleaned = capCelebLength(guessInput);
+    if (!cleaned.trim()) {
       setErrorText("Enter a celebrity guess.");
       return;
     }
@@ -247,7 +247,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
               className="input-pill"
               type="text"
               value={celebOne}
-              onChange={(event) => setCelebOne(cleanCeleb(event.target.value))}
+              onChange={(event) => setCelebOne(capCelebLength(event.target.value))}
               maxLength={MAX_CELEB_LENGTH}
               placeholder="Celebrity one"
             />
@@ -258,7 +258,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
               className="input-pill"
               type="text"
               value={celebTwo}
-              onChange={(event) => setCelebTwo(cleanCeleb(event.target.value))}
+              onChange={(event) => setCelebTwo(capCelebLength(event.target.value))}
               maxLength={MAX_CELEB_LENGTH}
               placeholder="Celebrity two"
             />
@@ -320,7 +320,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
                   className="input-pill"
                   type="text"
                   value={guessInput}
-                  onChange={(event) => setGuessInput(cleanCeleb(event.target.value))}
+                  onChange={(event) => setGuessInput(capCelebLength(event.target.value))}
                   maxLength={MAX_CELEB_LENGTH}
                   placeholder="Your celebrity guess"
                 />
@@ -383,4 +383,3 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
     </section>
   );
 }
-
