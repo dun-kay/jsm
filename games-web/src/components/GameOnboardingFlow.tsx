@@ -600,7 +600,7 @@ export default function GameOnboardingFlow({
               <h1>{title}</h1>
             </header>
             <p className="body-text small">
-              Tip: turn your phone brightness down so your friends can't see your screen.
+              Tip: make sure your friends can't see your screen & don't forget to have fun.
             </p>
           </section>
         )}

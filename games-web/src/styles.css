@@ -511,7 +511,7 @@ body {
   font-size: 16px;
   font-weight: 700;
   border-radius: 999px;
-  border: solid 3px #a600ff;
+  border: solid 3px #AB9DFF;
   color: var(--text);
 }
 
@@ -521,7 +521,7 @@ body {
   font-size: 16px;
   font-weight: 700;
   border-radius: 999px;
-  background: #a600ff;
+  background: #AB9DFF;
   color: #F9F9F9;
 }
 
