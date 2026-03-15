@@ -9,9 +9,9 @@ import {
   submitCelebGuess,
   submitCelebrities,
   type CelebritiesState
-} from "../../lib/celebritiesApi";
+} from "../../lib/popularPeopleApi";
 
-type CelebritiesRuntimeProps = {
+type PopularPeopleRuntimeProps = {
   gameCode: string;
   playerToken: string;
 };
@@ -22,7 +22,7 @@ function capCelebLength(value: string): string {
   return value.slice(0, MAX_CELEB_LENGTH);
 }
 
-export default function CelebritiesRuntime({ gameCode, playerToken }: CelebritiesRuntimeProps) {
+export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularPeopleRuntimeProps) {
   const [state, setState] = useState<CelebritiesState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
@@ -229,7 +229,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
   if (!state) {
     return (
       <section className="runtime-card">
-        <h2>Celebrities</h2>
+        <h2>Popular People</h2>
         <p>Loading game...</p>
         {errorText && <p className="hint-text error-text">{errorText}</p>}
       </section>
@@ -238,12 +238,12 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
 
   return (
     <section className="runtime-card runtime-flow">
-      <h2>Celebrities</h2>
+      <h2>Popular People</h2>
 
       {state.phase === "rules" && (
         <>
           <p>Everyone must read the rules, then tap Begin.</p>
-          <p>Each player enters 2 celebrities.</p>
+          <p>Each player enters 1 popular person.</p>
           <p>Study the list, then ask and confirm guesses face to face.</p>
           <button
             type="button"
@@ -277,7 +277,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
             <span className="hint-text">20 character max reached</span>
           )}
           <button type="button" className="btn btn-key" onClick={() => void doSubmitCelebrities()} disabled={busy}>
-            {busy ? "Submitting..." : "Submit celebrities"}
+            {busy ? "Submitting..." : "Submit person"}
           </button>
           {state.yourSubmitted && <p>Submitted. Waiting for others...</p>}
         </>

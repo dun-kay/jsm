@@ -111,6 +111,11 @@ export default function App() {
   }
 
   if (route.kind === "onboarding") {
+    if (route.slug === "celebrities") {
+      navigate("/g/popular-people/");
+      return null;
+    }
+
     const game = getGameBySlug(route.slug);
     if (!game) {
       return (

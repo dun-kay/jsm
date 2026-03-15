@@ -17,20 +17,21 @@ export const GAMES: GameConfig[] = [
   },
   {
     id: "B",
-    slug: "celebrities",
-    title: "Celebrities",
-    description: "Collect players by guessing their celebrity.",
-    shortRules: "Add 2 celebrities each. Study the list, then ask and confirm guesses face to face.",
+    slug: "popular-people",
+    title: "Popular People",
+    description: "Collect players by guessing their person.",
+    shortRules: "Add 1 popular person each. Study the list, then ask and confirm guesses face to face.",
     heroImage: "/assets/celebrities-logo.png",
     theme: "default",
     minPlayers: 2,
     maxPlayers: 18,
     joinPrefix: "B",
-    route: "/g/celebrities/",
+    route: "/g/popular-people/",
     enabled: true
   }
 ];
 
 export function getGameBySlug(slug: string): GameConfig | undefined {
-  return GAMES.find((game) => game.slug === slug && game.enabled);
+  const normalized = slug === "celebrities" ? "popular-people" : slug;
+  return GAMES.find((game) => game.slug === normalized && game.enabled);
 }

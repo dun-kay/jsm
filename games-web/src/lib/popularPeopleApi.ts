@@ -67,7 +67,7 @@ async function rpcState(fn: string, params: Record<string, unknown>): Promise<Ce
   const supabase = getSupabaseClient();
   const { data, error } = await supabase.rpc(fn, params);
   if (error || !data) {
-    throw new Error(error?.message || "Celebrities request failed.");
+    throw new Error(error?.message || "Popular People request failed.");
   }
   return mapState(data);
 }

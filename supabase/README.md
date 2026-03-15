@@ -45,6 +45,7 @@ Run these SQL files in Supabase SQL Editor, in order:
 16. `migrations/20260313_0016_celebrities_countdown_and_waiting_state.sql`
 17. `migrations/20260313_0017_celebrities_30s_and_play_again.sql`
 18. `migrations/20260315_0018_celebrities_single_input_logic.sql`
+19. `migrations/20260315_0019_popular_people_rename.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
 
