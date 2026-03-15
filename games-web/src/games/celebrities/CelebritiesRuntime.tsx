@@ -27,7 +27,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
   const [celebOne, setCelebOne] = useState<string>("");
-  const [celebTwo, setCelebTwo] = useState<string>("");
+  const [celebTouched, setCelebTouched] = useState<boolean>(false);
   const [nowMs, setNowMs] = useState<number>(Date.now());
 
   useEffect(() => {
@@ -143,15 +143,15 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
       return;
     }
     const first = capCelebLength(celebOne);
-    const second = capCelebLength(celebTwo);
-    if (!first.trim() || !second.trim()) {
-      setErrorText("Enter 2 celebrities.");
+    if (!first.trim()) {
+      setErrorText("Enter a celebrity.");
       return;
     }
     setBusy(true);
     setErrorText("");
     try {
-      const next = await submitCelebrities(gameCode, playerToken, first, second);
+      // Backend currently expects two values; send the same value for slot 2.
+      const next = await submitCelebrities(gameCode, playerToken, first, first);
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to submit celebrities.");
@@ -218,7 +218,7 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
       const next = await playAgainCelebrities(gameCode, playerToken);
       setState(next);
       setCelebOne("");
-      setCelebTwo("");
+      setCelebTouched(false);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to start another round.");
     } finally {
@@ -258,29 +258,24 @@ export default function CelebritiesRuntime({ gameCode, playerToken }: Celebritie
 
       {state.phase === "input" && (
         <>
-          <p>Enter 2 celebrities (max 20 characters each).</p>
+          <p>Enter a celebrity (max 20 characters).</p>
           <label className="field-wrap" htmlFor="celeb-one">
             <input
               id="celeb-one"
               className="input-pill"
               type="text"
               value={celebOne}
-              onChange={(event) => setCelebOne(capCelebLength(event.target.value))}
+              onChange={(event) => {
+                setCelebTouched(true);
+                setCelebOne(capCelebLength(event.target.value));
+              }}
               maxLength={MAX_CELEB_LENGTH}
-              placeholder="Celebrity one"
+              placeholder="Celebrity"
             />
           </label>
-          <label className="field-wrap" htmlFor="celeb-two">
-            <input
-              id="celeb-two"
-              className="input-pill"
-              type="text"
-              value={celebTwo}
-              onChange={(event) => setCelebTwo(capCelebLength(event.target.value))}
-              maxLength={MAX_CELEB_LENGTH}
-              placeholder="Celebrity two"
-            />
-          </label>
+          {celebTouched && celebOne.length >= MAX_CELEB_LENGTH && (
+            <span className="hint-text">20 character max reached</span>
+          )}
           <button type="button" className="btn btn-key" onClick={() => void doSubmitCelebrities()} disabled={busy}>
             {busy ? "Submitting..." : "Submit celebrities"}
           </button>
