@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { type KeyboardEvent, useEffect, useMemo, useState } from "react";
 import {
   confirmCelebGuess,
   continueCelebrities,
@@ -160,6 +160,14 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
     }
   }
 
+  function onPersonInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== "Enter") {
+      return;
+    }
+    event.preventDefault();
+    void doSubmitCelebrities();
+  }
+
   async function doPickTarget(targetPlayerId: string) {
     if (!state || busy) {
       return;
@@ -269,6 +277,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
                 setCelebTouched(true);
                 setCelebOne(capCelebLength(event.target.value));
               }}
+              onKeyDown={onPersonInputKeyDown}
               maxLength={MAX_CELEB_LENGTH}
               placeholder="Celebrity"
             />
