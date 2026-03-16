@@ -112,7 +112,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
       return [];
     }
     const myLeader = state.you.leaderId;
-    return state.players.filter((p) => p.id !== myId && p.leaderId !== myLeader);
+    return state.players.filter((p) => p.id !== myId && p.leaderId !== myLeader && p.leaderId === p.id);
   }, [state, myId, isMyTurnToPick]);
 
   const teamSummary = useMemo(() => {
