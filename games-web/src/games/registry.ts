@@ -23,7 +23,7 @@ export const GAMES: GameConfig[] = [
     shortRules: "Add 1 popular person each. Study the list, then ask and confirm guesses face to face.",
     heroImage: "/assets/celebrities-logo.png",
     theme: "default",
-    minPlayers: 2,
+    minPlayers: 3,
     maxPlayers: 18,
     joinPrefix: "B",
     route: "/g/popular-people/",
