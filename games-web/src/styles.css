@@ -10,8 +10,10 @@
   --surface: #F9F9F9;
   --text: #0b0b0b;
   --line: #0d0d0d;
-  --inverse-bg: #0d0d0d;
+  --inverse-bg: #0a0b10;
   --inverse-text: #f9f9f9;
+  --inverse-textp: #0b0b0b;
+  --inverse-line: #f0f0f0;
   --key-disabled: #8e8e8e;
   --modal: rgba(10, 10, 10, 0.56);
 }
@@ -23,8 +25,10 @@
   --surface: #0a0b10;
   --text: #f4f4f4;
   --line: #f0f0f0;
-  --inverse-bg: #f0f0f0;
+  --inverse-bg: #F9F9F9;
   --inverse-text: #0a0b10;
+  --inverse-textp: #f4f4f4;
+  --inverse-line: #0d0d0d;
   --key-disabled: #6e6e6e;
   --modal: rgba(0, 0, 0, 0.65);
 }
@@ -66,7 +70,6 @@ body {
   min-width: 0;
   max-width: 400px;
   min-height: 750px;
-  max-height: 850px;
   margin: 5px auto;
   padding: 15px;
 }
@@ -279,6 +282,7 @@ body {
 .link-text {
   margin: 0;
   font-size: 13px;
+  text-align: center;
   text-decoration: underline;
   padding-top: 10px;
   padding-bottom: 20px;
@@ -307,6 +311,18 @@ body {
   align-content: start;
 }
 
+.cele {
+  grid-template-columns: 1fr 1fr;
+  min-height: 250px
+}
+
+.teams {
+  grid-template-columns: 1fr;
+  min-height: 200px;
+  background: #5891FF;
+}
+
+
 .player-pill {
   padding: 3px;
   text-align: center;
@@ -321,6 +337,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.team {
+  color: var(--inverse-textp);
+  background: var(--bg);
+  border: 2px solid var(--inverse-line);
 }
 
 .waiting-text {
