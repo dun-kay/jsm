@@ -80,6 +80,11 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
   const isMyTurnToGuess = state?.phase === "guess_input" && state.currentAskerId === myId;
   const isMyTurnToConfirm =
     state?.phase === "guess_confirm" && (state.currentAskerId === myId || state.currentTargetId === myId);
+  const hasSubmittedMyConfirm = Boolean(
+    state?.phase === "guess_confirm" &&
+      ((state.currentAskerId === myId && state.askerConfirm !== null) ||
+        (state.currentTargetId === myId && state.targetConfirm !== null))
+  );
 
   const revealSecondsLeft = useMemo(() => {
     if (!state?.revealEndsAt) {
@@ -121,8 +126,17 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
     }
     return state.teamLeaders.map((leaderId) => {
       const members = state.players.filter((p) => p.leaderId === leaderId);
+      const orderedMembers = [...members].sort((a, b) => {
+        if (a.id === leaderId && b.id !== leaderId) {
+          return -1;
+        }
+        if (b.id === leaderId && a.id !== leaderId) {
+          return 1;
+        }
+        return 0;
+      });
       const leaderName = state.players.find((p) => p.id === leaderId)?.name || members[0]?.name || "Team";
-      return { leaderId, leaderName, members };
+      return { leaderId, leaderName, members: orderedMembers };
     });
   }, [state]);
 
@@ -205,7 +219,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
   }
 
   async function doConfirm(isCorrect: boolean) {
-    if (!state || busy) {
+    if (!state || busy || hasSubmittedMyConfirm) {
       return;
     }
     setBusy(true);
@@ -255,15 +269,15 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
       {state.phase === "rules" && (
         <>
           <h2>Let's play... Popular People</h2>
-          <p>Each player enters one popular person (max 20 characters).</p>
-          <p>Pick someone most players would recognize: celebrity, character, athlete, creator, or public figure.</p>
-          <p>After everyone submits, all players get 30 seconds to study the full list.</p>
-          <p>A random team leader starts by asking one uncollected player a face-to-face guess.</p>
-          <p>If correct, that player joins the asker's team and the same leader asks again.</p>
-          <p>If incorrect, the asked player's team leader takes the next turn.</p>
-          <p>After the first full turn cycle, everyone gets one more 30-second list review.</p>
-          <p>Collected players should help their leader, but only team leaders ask questions.</p>
-          <p>The game ends when one team collects everyone.</p>
+          <p></p><p><b>Each player enters one popular person.</b><p>Don't reveal this person to the other players.</p></p>
+          <p>Pick someone most players would recognise, a <b>celebrity, character, athlete, or public person.</b></p><br></br>
+          <p>After everyone submits, <b>all players get 30 seconds to study the full list of people.</b></p>
+          <p><b>One player starts by guessing another players popular person.</b></p><br></br>
+          <p>If correct, that player joins the guessers team. <b>They are now collected by that player </b>& the same person gets to ask again.</p>
+          <p>If incorrect, <b>the asked player asks next.</b></p>
+          <p>After the first guess, everyone gets 30 more seconds to review the list. <b>After, the list is hidden for the remainder of the game.</b></p><br></br>
+          <p><b>The game ends when one team collects all the players by guessing their celebrities.</b></p>
+          <p>Collected players can help with advice, but only non-collected players ask questions.</p><p></p>
           <button
             type="button"
             className="btn btn-key"
@@ -277,7 +291,8 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
       {state.phase === "input" && (
         <>
-          <p>Enter a celebrity (max 20 characters).</p>
+          <h2>Enter your popular person.</h2>
+          <p>Don't tell reveal this to any of the other players.</p>
           <label className="field-wrap" htmlFor="celeb-one">
             <input
               id="celeb-one"
@@ -290,14 +305,14 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
               }}
               onKeyDown={onPersonInputKeyDown}
               maxLength={MAX_CELEB_LENGTH}
-              placeholder="Celebrity"
+              placeholder="Enter celebrity..."
             />
           </label>
           {celebTouched && celebOne.length >= MAX_CELEB_LENGTH && (
             <span className="hint-text">20 character max reached</span>
           )}
           <button type="button" className="btn btn-key" onClick={() => void doSubmitCelebrities()} disabled={busy}>
-            {busy ? "Submitting..." : "Submit person"}
+            {busy ? "Submitting..." : "Submit"}
           </button>
           {state.yourSubmitted && <p>Submitted. Waiting for others...</p>}
         </>
@@ -305,8 +320,9 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
       {state.phase === "reveal" && (
         <>
-          <p>Study the celebrity list.</p>
-          <p>{revealSecondsLeft}s remaining</p>
+          <h2>Study the popular people list.</h2>
+          <p>It might help you to remember the list if one player reads it aloud.</p>
+          <br></br><p>{revealSecondsLeft}s remaining</p>
           <div className="player-grid cele">
             {state.celebrityList.map((name, index) => (
               <div key={`${name}-${index}`} className="player-pill">{name}</div>
@@ -322,7 +338,8 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
         <>
           {isMyTurnToPick ? (
             <>
-              <p>Your turn. Pick a player to ask.</p>
+              <h2>Your turn. Pick a player to ask.</h2>
+              <p>Guess who their popular person is.</p><br></br>
               <div className="runtime-list">
                 {availableTargets.map((player) => (
                   <button
@@ -339,60 +356,107 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
             </>
           ) : isMyTeamLeaderAsking ? (
             <p>
-              {askerName} is asking the questions, your team leader. Contribute helpfully to help your team win by
-              collecting all players.
+            <h2>{askerName} is asking the questions.</h2>
+              <br></br><p>Contribute to help your team win by
+              collecting all players.</p>
             </p>
           ) : (
-            <p>{askerName}'s turn to pick someone.</p>
+            <p><h2>It's {askerName}'s turn to pick someone.</h2><br></br>
+            <p>They'll guess who their popular person is. Consider giving some advice, or sabotage.</p></p>
           )}
+
+                <div className="players-panel">
+        <p className="body-text left">Teams</p>
+        <div className="player-grid teams">
+          {teamSummary.map((team) => (
+            <div key={team.leaderId} className="player-pill team">
+              {team.members.map((m) => m.name).join(", ")}
+            </div>
+          ))}
+        </div>
+      </div>
+
         </>
+        
       )}
+
+      
 
       {state.phase === "guess_input" && (
         <>
           {isMyTurnToGuess ? (
             <>
-              <p>You are asking {targetName}. Ask your guess out loud.</p>
+              <h2>Ask {targetName} who their popular person is.</h2>
+              <p>Ask your guess out loud, you'll confirm their response on the next screen.</p>
               <button type="button" className="btn btn-key" onClick={() => void doSubmitGuess()} disabled={busy}>
-                Continue to confirmation
+                Confirm guess...
               </button>
             </>
           ) : isMyTeamLeaderAsking ? (
-            <p>
-              {askerName} is asking {targetName}. Your team leader is in control this turn. Help your team by
-              contributing useful ideas.
-            </p>
+            <p><h2>
+              {askerName} is asking {targetName}.
+            </h2>
+            <br></br>
+            <p>Your team leader is asking the questions. Help by
+              contributing your ideas.</p></p>
           ) : (
-            <p>{askerName} is asking {targetName} a verbal guess.</p>
+            <p><h2>{askerName} is guessing {targetName}'s popular person.</h2><br></br>
+            <p>Don't forget to keep a mental note of their answer...</p></p>
           )}
+
+          <div className="players-panel">
+        <p className="body-text left">Current Teams</p>
+        <div className="player-grid teams">
+          {teamSummary.map((team) => (
+            <div key={team.leaderId} className="player-pill team">
+              {team.members.map((m) => m.name).join(", ")}
+            </div>
+          ))}
+        </div>
+      </div>
+
         </>
       )}
 
       {state.phase === "guess_confirm" && (
         <>
-          <p>{askerName} guessed: <b>{state.currentGuess || "..."}</b> for {targetName}</p>
+        
           {isMyTurnToConfirm ? (
             <>
-              <p>Confirm if that guess was correct.</p>
+              <h2>{targetName} & {askerName}</h2>
+              <br></br><p>Confirm if {askerName} guessed {targetName}'s popular person correctly.</p>
+              <p></p>
               <div className="bottom-row">
-                <button type="button" className="btn btn-key" onClick={() => void doConfirm(true)} disabled={busy}>
+                <button
+                  type="button"
+                  className="btn btn-key"
+                  onClick={() => void doConfirm(true)}
+                  disabled={busy || hasSubmittedMyConfirm}
+                >
                   Correct
                 </button>
-                <button type="button" className="btn btn-soft" onClick={() => void doConfirm(false)} disabled={busy}>
+                <button
+                  type="button"
+                  className="btn btn-soft"
+                  onClick={() => void doConfirm(false)}
+                  disabled={busy || hasSubmittedMyConfirm}
+                >
                   Incorrect
                 </button>
               </div>
             </>
           ) : (
-            <p>Waiting for asker + target confirmation.</p>
+            <p><h2>Waiting for guess confirmation...</h2><br></br>
+            <p>Check what the result was & keep a mental note of it.</p></p>
           )}
         </>
       )}
 
       {state.phase === "result" && (
         <>
-          <p>Game complete.</p>
-          <p>Final team leader: {teamSummary[0]?.leaderName || "Unknown"}</p>
+        <h2>{teamSummary[0]?.leaderName || "Unknown"} won the game.</h2>
+          <p>Game complete, ready to play again?</p>
+          <br></br>
           <div className="player-grid cele">
             {state.celebrityList.map((name, index) => (
               <div key={`${name}-${index}`} className="player-pill">{name}</div>
@@ -409,20 +473,22 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
             </button>
           )}
         </>
+        
       )}
+      
 
-      <div className="players-panel">
-        <p className="body-text left">Teams</p>
-        <div className="player-grid teams">
-          {teamSummary.map((team) => (
-            <div key={team.leaderId} className="player-pill team">
-              {team.leaderName}: {team.members.map((m) => m.name).join(", ")}
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       {(state.lastError || errorText) && <p className="hint-text error-text">{state.lastError || errorText}</p>}
+
+      {state.phase === "guess_confirm" && hasSubmittedMyConfirm && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Waiting for confirmation">
+          <div className="modal-card">
+            <h2>Answer submitted</h2>
+            <p>Waiting for the other player to confirm.</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
