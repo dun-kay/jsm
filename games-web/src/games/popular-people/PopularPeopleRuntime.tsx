@@ -103,6 +103,10 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
     return state.players.find((p) => p.id === state.currentTargetId)?.name || "";
   }, [state]);
 
+  const isMyTeamLeaderAsking = Boolean(
+    state?.currentAskerId && state.you.leaderId === state.currentAskerId && state.currentAskerId !== myId
+  );
+
   const availableTargets = useMemo(() => {
     if (!state || !isMyTurnToPick) {
       return [];
@@ -326,6 +330,11 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
                 ))}
               </div>
             </>
+          ) : isMyTeamLeaderAsking ? (
+            <p>
+              {askerName} is asking the questions, your team leader. Contribute helpfully to help your team win by
+              collecting all players.
+            </p>
           ) : (
             <p>{askerName}'s turn to pick someone.</p>
           )}
@@ -341,6 +350,11 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
                 Continue to confirmation
               </button>
             </>
+          ) : isMyTeamLeaderAsking ? (
+            <p>
+              {askerName} is asking {targetName}. Your team leader is in control this turn. Help your team by
+              contributing useful ideas.
+            </p>
           ) : (
             <p>{askerName} is asking {targetName} a verbal guess.</p>
           )}
