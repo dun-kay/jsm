@@ -250,13 +250,20 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
   return (
     <section className="runtime-card runtime-flow">
-      <h2>Popular People</h2>
+      
 
       {state.phase === "rules" && (
         <>
-          <p>Everyone must read the rules, then tap Begin.</p>
-          <p>Each player enters 1 popular person.</p>
-          <p>Study the list, then ask and confirm guesses face to face.</p>
+          <h2>Let's play... Popular People</h2>
+          <p>Each player enters one popular person (max 20 characters).</p>
+          <p>Pick someone most players would recognize: celebrity, character, athlete, creator, or public figure.</p>
+          <p>After everyone submits, all players get 30 seconds to study the full list.</p>
+          <p>A random team leader starts by asking one uncollected player a face-to-face guess.</p>
+          <p>If correct, that player joins the asker's team and the same leader asks again.</p>
+          <p>If incorrect, the asked player's team leader takes the next turn.</p>
+          <p>After the first full turn cycle, everyone gets one more 30-second list review.</p>
+          <p>Collected players should help their leader, but only team leaders ask questions.</p>
+          <p>The game ends when one team collects everyone.</p>
           <button
             type="button"
             className="btn btn-key"
@@ -409,7 +416,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
         <div className="player-grid teams">
           {teamSummary.map((team) => (
             <div key={team.leaderId} className="player-pill team">
-              {team.members.map((m) => m.name).join(", ")}
+              {team.leaderName}: {team.members.map((m) => m.name).join(", ")}
             </div>
           ))}
         </div>
