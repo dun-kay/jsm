@@ -46,6 +46,7 @@ Run these SQL files in Supabase SQL Editor, in order:
 17. `migrations/20260313_0017_celebrities_30s_and_play_again.sql`
 18. `migrations/20260315_0018_celebrities_single_input_logic.sql`
 19. `migrations/20260315_0019_popular_people_rename.sql`
+20. `migrations/20260316_0020_popular_people_randomize_bot_pool.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
 
