@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getGameBySlug } from "../games/registry";
 import SecretCategoryRuntime from "../games/secret-category/SecretCategoryRuntime";
 import PopularPeopleRuntime from "../games/popular-people/PopularPeopleRuntime";
+import FruitBowlRuntime from "../games/fruit-bowl/FruitBowlRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState } from "../lib/lobbyApi";
 
@@ -48,7 +49,7 @@ export default function GameRuntimeHost({
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined;
 
-  if ((game?.slug === "secret-category" || game?.slug === "popular-people") && initialSession?.playerToken) {
+  if ((game?.slug === "secret-category" || game?.slug === "popular-people" || game?.slug === "fruit-bowl") && initialSession?.playerToken) {
     return (
       <div className="site-shell">
         <div className="top-actions">
@@ -64,6 +65,9 @@ export default function GameRuntimeHost({
         )}
         {game.slug === "secret-category" && (
           <SecretCategoryRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
+        )}
+        {game.slug === "fruit-bowl" && (
+          <FruitBowlRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
         {showQuitConfirm && (
           <div className="modal-backdrop" role="dialog" aria-modal="true">

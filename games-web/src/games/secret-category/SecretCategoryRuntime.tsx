@@ -163,7 +163,7 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
   if (!state) {
     return (
       <section className="runtime-card">
-        <p>Loading game...</p>
+        <h2>Loading game...</h2>
         {errorText && <p className="hint-text error-text">{errorText}</p>}
       </section>
     );
@@ -173,7 +173,7 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
     <section className="runtime-card runtime-flow">
       {state.phase === "rules" && (
         <>
-        <h2>Let's play... Secret Categories</h2>
+        <h2>You are now playing...<p></p>Secret Categories</h2>
           <p></p><p>The game starts by revealing the <b>Main Category</b> to everyone.</p>
           <p>The <b>Secret Category</b> is then revealed. One player does not see it. <b>They are the Spy</b>.</p>
           <br></br>
@@ -187,7 +187,7 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
           <br></br>
           <p>Once everyone gives a clue, you discuss & vote to try find the Spy.</p><p></p>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-            {isWaitingOnYou ? "Begin" : "Waiting for others"}
+            {isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
         </>
       )}
@@ -328,8 +328,8 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
             </button>
           )}
           {!state.you.isHost && (
-            <button type="button" className="btn btn-soft" disabled>
-              Ask host to play again
+            <button type="button" className="btn btn-key" disabled>
+              Ask the host to play again
             </button>
           )}
         </>
