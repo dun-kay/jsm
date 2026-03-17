@@ -3,6 +3,7 @@ import { getGameBySlug } from "../games/registry";
 import SecretCategoryRuntime from "../games/secret-category/SecretCategoryRuntime";
 import PopularPeopleRuntime from "../games/popular-people/PopularPeopleRuntime";
 import FruitBowlRuntime from "../games/fruit-bowl/FruitBowlRuntime";
+import MurderClubRuntime from "../games/murder-club/MurderClubRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState } from "../lib/lobbyApi";
 
@@ -49,7 +50,13 @@ export default function GameRuntimeHost({
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined;
 
-  if ((game?.slug === "secret-category" || game?.slug === "popular-people" || game?.slug === "fruit-bowl") && initialSession?.playerToken) {
+  if (
+    (game?.slug === "secret-category" ||
+      game?.slug === "popular-people" ||
+      game?.slug === "fruit-bowl" ||
+      game?.slug === "murder-club") &&
+    initialSession?.playerToken
+  ) {
     return (
       <div className="site-shell">
         <div className="top-actions">
@@ -68,6 +75,9 @@ export default function GameRuntimeHost({
         )}
         {game.slug === "fruit-bowl" && (
           <FruitBowlRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
+        )}
+        {game.slug === "murder-club" && (
+          <MurderClubRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
         {showQuitConfirm && (
           <div className="modal-backdrop" role="dialog" aria-modal="true">

@@ -34,13 +34,27 @@ export const GAMES: GameConfig[] = [
     slug: "fruit-bowl",
     title: "Fruit Bowl",
     description: "Race to guess prompts across 3 chaotic rounds.",
-    shortRules: "Each dd 2 words to the bowl. Across 3 rounds: describe it, act it, & one word only.",
+    shortRules: "Players add 2 words to the bowl. Across 3 rounds you: describe it, act it, & one word it.",
     heroImage: "/assets/fruit-bowl-logo.png",
     theme: "default",
     minPlayers: 4,
     maxPlayers: 18,
     joinPrefix: "C",
     route: "/g/fruit-bowl/",
+    enabled: true
+  },
+  {
+    id: "D",
+    slug: "murder-club",
+    title: "Murder Club",
+    description: "Hidden killers. Public decisions. Fast rounds.",
+    shortRules: "Pick mission teams, debate fast, vote publicly, then vote missions secretly. First to 3 wins.",
+    heroImage: "/assets/murder-club-logo.png",
+    theme: "default",
+    minPlayers: 4,
+    maxPlayers: 18,
+    joinPrefix: "D",
+    route: "/g/murder-club/",
     enabled: true
   }
 ];
