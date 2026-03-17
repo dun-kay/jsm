@@ -143,18 +143,6 @@ export default function GameOnboardingFlow({
   }, [game.slug]);
 
   useEffect(() => {
-    if (screen !== "loading") {
-      return;
-    }
-
-    const timer = window.setTimeout(() => {
-      setScreen("lobby");
-    }, 3000);
-
-    return () => window.clearTimeout(timer);
-  }, [screen]);
-
-  useEffect(() => {
     if (screen !== "lobby" || !gameId || !playerToken) {
       return;
     }
@@ -362,7 +350,7 @@ export default function GameOnboardingFlow({
           playerToken: created.hostPlayerToken,
           hostSecret: created.hostSecret
         });
-        setScreen("loading");
+        setScreen("lobby");
       } else {
         if (!gameId) {
           throw new Error("Missing game code.");
@@ -495,7 +483,7 @@ export default function GameOnboardingFlow({
       return "Enter your name";
     }
     if (screen === "loading") {
-      return "Game loading";
+      return "Game loading...";
     }
     if (screen === "lobby") {
       return `${game.title} game lobby: ${gameId || "..."}`;
@@ -644,10 +632,10 @@ export default function GameOnboardingFlow({
         {screen === "loading" && (
           <section className="screen screen-basic loading-screen">
             <header className="screen-header">
-              <h1>{title}</h1>
+              <br></br><br></br><h1>{title}</h1>
             </header>
             <p className="body-text small">
-              Tip: make sure your friends can't see your screen & don't forget to have fun.
+              
             </p>
           </section>
         )}
