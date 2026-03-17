@@ -21,17 +21,31 @@ export const GAMES: GameConfig[] = [
     title: "Popular People",
     description: "Guess your friends' favourite popular person before they guess yours.",
     shortRules: "Each player picks one popular person in secret. Use social deduction and cunning to figure out everyone's choice before they figure out yours.",
-    heroImage: "/assets/celebrities-logo.png",
+    heroImage: "/assets/popular-people-logo.png",
     theme: "default",
     minPlayers: 3,
     maxPlayers: 18,
     joinPrefix: "B",
     route: "/g/popular-people/",
     enabled: true
+  },
+  {
+    id: "C",
+    slug: "fruit-bowl",
+    title: "Fruit Bowl",
+    description: "Race to guess prompts across 3 chaotic rounds.",
+    shortRules: "Each dd 2 words to the bowl. Across 3 rounds: describe it, act it, & one word only.",
+    heroImage: "/assets/fruit-bowl-logo.png",
+    theme: "default",
+    minPlayers: 4,
+    maxPlayers: 18,
+    joinPrefix: "C",
+    route: "/g/fruit-bowl/",
+    enabled: true
   }
 ];
 
 export function getGameBySlug(slug: string): GameConfig | undefined {
-  const normalized = slug === "celebrities" ? "popular-people" : slug;
+  const normalized = slug === "celebrities" ? "popular-people" : slug === "fruit-bowel" ? "fruit-bowl" : slug;
   return GAMES.find((game) => game.slug === normalized && game.enabled);
 }

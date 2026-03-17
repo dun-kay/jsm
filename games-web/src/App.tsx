@@ -115,6 +115,10 @@ export default function App() {
       navigate("/g/popular-people/");
       return null;
     }
+    if (route.slug === "fruit-bowel") {
+      navigate("/g/fruit-bowl/");
+      return null;
+    }
 
     const game = getGameBySlug(route.slug);
     if (!game) {
