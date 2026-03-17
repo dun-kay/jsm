@@ -30,6 +30,10 @@ function roundRuleCopy(roundNumber: number): { title: string; copy: string } {
   return { title: "Round 3: One word", copy: "You may say one word only for each prompt." };
 }
 
+function teamLabel(teamNo: number | null | undefined): string {
+  return teamNo === 1 ? "Team Eggplant 🍆" : "Team Peach 🍑";
+}
+
 export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRuntimeProps) {
   const [state, setState] = useState<FruitBowlState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
@@ -204,7 +208,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
     <section className="runtime-card runtime-flow">
       <h2>Fruit Bowl</h2>
       <p>
-        Score: Team A {state.teamAScore} - {state.teamBScore} Team B
+        Score: Team Eggplant 🍆 {state.teamAScore} - {state.teamBScore} Team Peach 🍑
       </p>
       <p>Prompts left in bowl: {state.promptsRemaining}</p>
 
@@ -268,7 +272,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
         <>
           <p>Teams are set. Only the active clue giver controls cards.</p>
           <div className="players-panel">
-            <p className="body-text left">Team A</p>
+            <p className="body-text left">Team Eggplant 🍆</p>
             <div className="player-grid teams">
               {state.teamA.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -278,7 +282,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
             </div>
           </div>
           <div className="players-panel">
-            <p className="body-text left">Team B</p>
+            <p className="body-text left">Team Peach 🍑</p>
             <div className="player-grid teams">
               {state.teamB.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -307,7 +311,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
         <>
           <p>Round {state.roundNumber}</p>
           <p>{turnSecondsLeft}s remaining</p>
-          <p>Active team: Team {state.activeTeam === 1 ? "A" : "B"}</p>
+          <p>Active team: {teamLabel(state.activeTeam)}</p>
           {isClueGiver ? (
             <>
               <p>Your prompt:</p>
@@ -333,7 +337,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
       {state.phase === "turn_summary" && (
         <>
           <h2>Turn over</h2>
-          <p>Team {state.lastTurnTeam === 1 ? "A" : "B"} scored {state.lastTurnPoints}</p>
+          <p>{teamLabel(state.lastTurnTeam)} scored {state.lastTurnPoints}</p>
           <p>{state.promptsRemaining} prompts left in the bowel</p>
         </>
       )}
@@ -359,8 +363,8 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
             {state.teamAScore === state.teamBScore
               ? "It's a tie."
               : state.teamAScore > state.teamBScore
-                ? "Team A wins Fruit Bowl"
-                : "Team B wins Fruit Bowl"}
+                ? "Team Eggplant 🍆 wins Fruit Bowl"
+                : "Team Peach 🍑 wins Fruit Bowl"}
           </h2>
           <p>Ready to play again?</p>
           {state.you.isHost && (
