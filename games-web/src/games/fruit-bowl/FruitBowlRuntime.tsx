@@ -102,9 +102,6 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
     return Math.max(0, diff);
   }, [state?.turnEndsAt, nowMs]);
 
-  const teamALabel = useMemo(() => state?.teamA.map((member) => member.name).join(", ") || "-", [state]);
-  const teamBLabel = useMemo(() => state?.teamB.map((member) => member.name).join(", ") || "-", [state]);
-
   const canSubmitPrompts = useMemo(
     () => capPromptLength(promptOne).trim().length > 0 && capPromptLength(promptTwo).trim().length > 0,
     [promptOne, promptTwo]
@@ -273,13 +270,21 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
           <div className="players-panel">
             <p className="body-text left">Team A</p>
             <div className="player-grid teams">
-              <div className="player-pill team">{teamALabel}</div>
+              {state.teamA.map((member) => (
+                <div key={member.id} className="player-pill team">
+                  {member.name}
+                </div>
+              ))}
             </div>
           </div>
           <div className="players-panel">
             <p className="body-text left">Team B</p>
             <div className="player-grid teams">
-              <div className="player-pill team">{teamBLabel}</div>
+              {state.teamB.map((member) => (
+                <div key={member.id} className="player-pill team">
+                  {member.name}
+                </div>
+              ))}
             </div>
           </div>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
