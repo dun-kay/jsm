@@ -264,10 +264,15 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
             (promptOne.length >= MAX_PROMPT_LENGTH || promptTwo.length >= MAX_PROMPT_LENGTH) && (
               <span className="hint-text">20 character max reached</span>
             )}
-          <button type="button" className="btn btn-key" onClick={() => void doSubmitPrompts()} disabled={busy || !canSubmitPrompts}>
-            {busy ? "Submitting..." : "Submit prompts"}
+          <button
+            type="button"
+            className="btn btn-key"
+            onClick={() => void doSubmitPrompts()}
+            disabled={busy || !canSubmitPrompts || state.yourSubmitted}
+          >
+            {busy ? "Submitting..." : state.yourSubmitted ? "Submitted" : "Submit prompts"}
           </button>
-          {state.yourSubmitted && <p>Submitted. Waiting for others...</p>}
+          {state.yourSubmitted && <p>Waiting for others...</p>}
         </>
       )}
 
