@@ -334,6 +334,27 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
         </>
       )}
 
+      {state.phase === "turn_ready" && (
+        <>
+          <p>Round {state.roundNumber}</p>
+          <p>Active team: {teamLabel(state.activeTeam)}</p>
+          {isClueGiver ? (
+            <>
+              <h2>Your turn to draw from the bowel</h2>
+              <p>When you are ready, start the 45 second timer.</p>
+              <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy}>
+                {busy ? "Loading..." : "Start timer"}
+              </button>
+            </>
+          ) : (
+            <>
+              <h2>{activeClueGiverName} is up next</h2>
+              <p>Waiting for them to start the timer.</p>
+            </>
+          )}
+        </>
+      )}
+
       {state.phase === "turn_summary" && (
         <>
           <h2>Turn over</h2>

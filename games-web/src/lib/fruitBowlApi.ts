@@ -14,7 +14,7 @@ export type FruitBowlTeamMember = {
 };
 
 export type FruitBowlState = {
-  phase: "rules" | "input" | "teams" | "round_intro" | "turn_live" | "turn_summary" | "round_results" | "result";
+  phase: "rules" | "input" | "teams" | "round_intro" | "turn_ready" | "turn_live" | "turn_summary" | "round_results" | "result";
   roundNumber: number;
   waitingOn: string[];
   yourSubmitted: boolean;
