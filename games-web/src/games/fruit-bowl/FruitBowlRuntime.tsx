@@ -14,7 +14,7 @@ type FruitBowlRuntimeProps = {
   playerToken: string;
 };
 
-const MAX_PROMPT_LENGTH = 50;
+const MAX_PROMPT_LENGTH = 20;
 
 function capPromptLength(value: string): string {
   return value.slice(0, MAX_PROMPT_LENGTH);
@@ -206,18 +206,20 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
 
   return (
     <section className="runtime-card runtime-flow">
-      <h2>Fruit Bowl</h2>
-      <p>
-        Score: Team Eggplant 🍆 {state.teamAScore} - {state.teamBScore} Team Peach 🍑
-      </p>
-      <p>Prompts left in bowl: {state.promptsRemaining}</p>
 
       {state.phase === "rules" && (
         <>
-          <p>Everyone adds 2 prompts to the bowl.</p>
-          <p>Then you play 3 rounds using the same prompts:</p>
-          <p>Describe it, Act it out, One word only.</p>
-          <p>Most points after Round 3 wins.</p>
+        <h2>You are now playing...<p></p>Fruit Bowl</h2>
+          <p>The game starts with <b>everyone adding 2 prompts</b> to the game.</p>
+          <p>These prompts can be anything. A word, two words, a phrase... <b>make it fun & memorable.</b></p>
+          <br></br>
+          <p>The players are then split into two teams. <b>Team Eggplant  🍆 & Team Peach 🍑.</b></p>
+          <br></br>
+          <p>Teams take turns describing, acting, or using a single word to try <b>help their team guess the prompts they pull from the bowl.</b></p>
+          <br></br>
+          <p>The game is split over three rounds.<p></p><b>Describe it, Act it out, & One word only.</b></p>
+          <br></br>
+          <p><b>Your team gets a point for a correct guess.</b><p></p>Each round is explained in detail as it happens.</p><p></p>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {busy ? "Loading..." : isWaitingOnYou ? "Begin" : "Waiting for others"}
           </button>
@@ -226,7 +228,8 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
 
       {state.phase === "input" && (
         <>
-          <p>Enter 2 prompts for the bowl.</p>
+          <h2>Enter 2 prompts for the bowl:</h2>
+          <p>These prompts can be anything. A word, two words, a phrase... make it fun & memorable.</p><p></p>
           <label className="field-wrap" htmlFor="fb-prompt-one">
             <input
               id="fb-prompt-one"
@@ -259,7 +262,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
           </label>
           {promptTouched &&
             (promptOne.length >= MAX_PROMPT_LENGTH || promptTwo.length >= MAX_PROMPT_LENGTH) && (
-              <span className="hint-text">50 character max reached</span>
+              <span className="hint-text">20 character max reached</span>
             )}
           <button type="button" className="btn btn-key" onClick={() => void doSubmitPrompts()} disabled={busy || !canSubmitPrompts}>
             {busy ? "Submitting..." : "Submit prompts"}
@@ -273,7 +276,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
           <p>Teams are set. Only the active clue giver controls cards.</p>
           <div className="players-panel">
             <p className="body-text left">Team Eggplant 🍆</p>
-            <div className="player-grid teams">
+            <div className="player-grid teams fb">
               {state.teamA.map((member) => (
                 <div key={member.id} className="player-pill team">
                   {member.name}
@@ -283,7 +286,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
           </div>
           <div className="players-panel">
             <p className="body-text left">Team Peach 🍑</p>
-            <div className="player-grid teams">
+            <div className="player-grid teams fb">
               {state.teamB.map((member) => (
                 <div key={member.id} className="player-pill team">
                   {member.name}
