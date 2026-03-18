@@ -54,6 +54,8 @@ Run these SQL files in Supabase SQL Editor, in order:
 25. `migrations/20260317_0025_fruit_bowl_turn_cycle_fix.sql`
 26. `migrations/20260317_0026_fruit_bowl_turn_ready_gate.sql`
 27. `migrations/20260317_0027_murder_club_runtime.sql`
+28. `migrations/20260317_0028_fruit_bowl_prompt_length_20.sql`
+29. `migrations/20260318_0029_fruit_bowl_timer_30_seconds.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
 
