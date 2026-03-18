@@ -411,7 +411,7 @@ body {
 }
 
 .rules-modal {
-  width: 85%;
+  width: 95%;
   border-radius: 18px;
   border: 2px solid var(--line);
   background: var(--surface);
