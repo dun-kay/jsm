@@ -7,89 +7,91 @@ export type MurderClubPlayer = {
   turnOrder: number;
 };
 
-export type TeamVoteEntry = {
+export type SuspectCount = {
   playerId: string;
-  name: string;
-  vote: "approve" | "reject" | null;
+  count: number;
 };
 
 export type MurderClubState = {
-  phase: "rules" | "team_pick" | "discussion_phase" | "team_vote" | "mission_vote" | "round_result" | "result";
+  phase:
+    | "rules"
+    | "role_reveal"
+    | "round_ready"
+    | "evidence_reveal"
+    | "suspect_vote"
+    | "suspect_result"
+    | "evidence_vote"
+    | "evidence_result"
+    | "result";
   roundNumber: number;
   targetScore: number;
-  innocentScore: number;
-  killerScore: number;
-  rejectStreak: number;
-  leaderId: string | null;
-  teamSizeRequired: number;
-  missionFailThreshold: number;
-  selectedTeam: string[];
+  investigatorScore: number;
+  conspiratorScore: number;
+  themeId: string;
+  evidenceIndex: number;
+  suspectPlayerId: string | null;
+  suspectVoteResult: "selected" | "hung" | null;
+  evidenceVoteResult: "admitted" | "rejected" | "hung" | null;
   players: MurderClubPlayer[];
-  teamVotes: TeamVoteEntry[];
-  discussionLeaderEndsAt: string | null;
-  discussionEndsAt: string | null;
-  teamVoteEndsAt: string | null;
-  missionVoteEndsAt: string | null;
-  resultEndsAt: string | null;
-  lastMurderCount: number;
-  lastTeamApproved: boolean | null;
-  lastLine: string | null;
+  suspectCounts: SuspectCount[];
+  evidenceCounts: {
+    admit: number;
+    reject: number;
+  };
   waitingOn: string[];
+  lastLine: string | null;
   lastError: string | null;
   you: {
     id: string;
     name: string;
     isHost: boolean;
-    isLeader: boolean;
-    isSelected: boolean;
-    role: "killer" | "innocent";
-    canUseMurder: boolean;
+    role: "conspirator" | "investigator";
+    evidenceCard: "admit" | "reject" | null;
+    isUnderSuspicion: boolean;
+    conspiratorIds: string[];
   };
 };
 
 function mapState(data: unknown): MurderClubState {
   const raw = data as Record<string, unknown>;
   const you = (raw.you as Record<string, unknown>) || {};
+  const evidenceCountsRaw = (raw.evidenceCounts as Record<string, unknown>) || {};
   return {
     phase: (raw.phase as MurderClubState["phase"]) ?? "rules",
     roundNumber: Number(raw.roundNumber ?? 1),
     targetScore: Number(raw.targetScore ?? 3),
-    innocentScore: Number(raw.innocentScore ?? 0),
-    killerScore: Number(raw.killerScore ?? 0),
-    rejectStreak: Number(raw.rejectStreak ?? 0),
-    leaderId: (raw.leaderId as string | null) ?? null,
-    teamSizeRequired: Number(raw.teamSizeRequired ?? 2),
-    missionFailThreshold: Number(raw.missionFailThreshold ?? 1),
-    selectedTeam: ((raw.selectedTeam as string[]) || []).map(String),
+    investigatorScore: Number(raw.investigatorScore ?? 0),
+    conspiratorScore: Number(raw.conspiratorScore ?? 0),
+    themeId: String(raw.themeId ?? "holiday-murder"),
+    evidenceIndex: Number(raw.evidenceIndex ?? 0),
+    suspectPlayerId: (raw.suspectPlayerId as string | null) ?? null,
+    suspectVoteResult: (raw.suspectVoteResult as MurderClubState["suspectVoteResult"]) ?? null,
+    evidenceVoteResult: (raw.evidenceVoteResult as MurderClubState["evidenceVoteResult"]) ?? null,
     players: ((raw.players as Array<Record<string, unknown>>) || []).map((player) => ({
       id: String(player.id ?? ""),
       name: String(player.name ?? ""),
       isHost: Boolean(player.isHost),
       turnOrder: Number(player.turnOrder ?? 0)
     })),
-    teamVotes: ((raw.teamVotes as Array<Record<string, unknown>>) || []).map((vote) => ({
-      playerId: String(vote.playerId ?? ""),
-      name: String(vote.name ?? ""),
-      vote: (vote.vote as TeamVoteEntry["vote"]) ?? null
+    suspectCounts: ((raw.suspectCounts as Array<Record<string, unknown>>) || []).map((entry) => ({
+      playerId: String(entry.playerId ?? ""),
+      count: Number(entry.count ?? 0)
     })),
-    discussionLeaderEndsAt: (raw.discussionLeaderEndsAt as string | null) ?? null,
-    discussionEndsAt: (raw.discussionEndsAt as string | null) ?? null,
-    teamVoteEndsAt: (raw.teamVoteEndsAt as string | null) ?? null,
-    missionVoteEndsAt: (raw.missionVoteEndsAt as string | null) ?? null,
-    resultEndsAt: (raw.resultEndsAt as string | null) ?? null,
-    lastMurderCount: Number(raw.lastMurderCount ?? 0),
-    lastTeamApproved: (raw.lastTeamApproved as boolean | null) ?? null,
-    lastLine: (raw.lastLine as string | null) ?? null,
+    evidenceCounts: {
+      admit: Number(evidenceCountsRaw.admit ?? 0),
+      reject: Number(evidenceCountsRaw.reject ?? 0)
+    },
     waitingOn: ((raw.waitingOn as string[]) || []).map(String),
+    lastLine: (raw.lastLine as string | null) ?? null,
     lastError: (raw.lastError as string | null) ?? null,
     you: {
       id: String(you.id ?? ""),
       name: String(you.name ?? ""),
       isHost: Boolean(you.isHost),
-      isLeader: Boolean(you.isLeader),
-      isSelected: Boolean(you.isSelected),
-      role: (you.role as "killer" | "innocent") ?? "innocent",
-      canUseMurder: Boolean(you.canUseMurder)
+      role: (you.role as "conspirator" | "investigator") ?? "investigator",
+      evidenceCard: (you.evidenceCard as "admit" | "reject" | null) ?? null,
+      isUnderSuspicion: Boolean(you.isUnderSuspicion),
+      conspiratorIds: ((you.conspiratorIds as string[]) || []).map(String)
     }
   };
 }
@@ -104,52 +106,52 @@ async function rpcState(fn: string, params: Record<string, unknown>): Promise<Mu
 }
 
 export function initMurderClub(gameCode: string, playerToken: string): Promise<MurderClubState> {
-  return rpcState("mc_init_game", {
+  return rpcState("mc2_init_game", {
     p_game_code: gameCode,
     p_player_token: playerToken
   });
 }
 
 export function getMurderClubState(gameCode: string, playerToken: string): Promise<MurderClubState> {
-  return rpcState("mc_get_state", {
+  return rpcState("mc2_get_state", {
     p_game_code: gameCode,
     p_player_token: playerToken
   });
 }
 
 export function continueMurderClub(gameCode: string, playerToken: string): Promise<MurderClubState> {
-  return rpcState("mc_continue", {
+  return rpcState("mc2_continue", {
     p_game_code: gameCode,
     p_player_token: playerToken
   });
 }
 
-export function setMurderClubTeam(gameCode: string, playerToken: string, selectedTeam: string[]): Promise<MurderClubState> {
-  return rpcState("mc_set_team", {
+export function setMurderClubTheme(gameCode: string, playerToken: string, themeId: string): Promise<MurderClubState> {
+  return rpcState("mc2_set_theme", {
     p_game_code: gameCode,
     p_player_token: playerToken,
-    p_selected_team: selectedTeam
+    p_theme_id: themeId
   });
 }
 
-export function castMurderClubTeamVote(
+export function castMurderClubSuspectVote(
   gameCode: string,
   playerToken: string,
-  vote: "approve" | "reject"
+  targetPlayerId: string
 ): Promise<MurderClubState> {
-  return rpcState("mc_cast_team_vote", {
+  return rpcState("mc2_cast_suspect_vote", {
     p_game_code: gameCode,
     p_player_token: playerToken,
-    p_vote: vote
+    p_target_player_id: targetPlayerId
   });
 }
 
-export function castMurderClubMissionVote(
+export function castMurderClubEvidenceVote(
   gameCode: string,
   playerToken: string,
-  vote: "safe" | "murder"
+  vote: "admit" | "reject"
 ): Promise<MurderClubState> {
-  return rpcState("mc_cast_mission_vote", {
+  return rpcState("mc2_cast_evidence_vote", {
     p_game_code: gameCode,
     p_player_token: playerToken,
     p_vote: vote
@@ -157,7 +159,7 @@ export function castMurderClubMissionVote(
 }
 
 export function playAgainMurderClub(gameCode: string, playerToken: string): Promise<MurderClubState> {
-  return rpcState("mc_play_again", {
+  return rpcState("mc2_play_again", {
     p_game_code: gameCode,
     p_player_token: playerToken
   });
