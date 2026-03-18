@@ -423,7 +423,7 @@ body {
 }
 
 .rules-modal-content p {
-  margin: 0;
+  margin: 4px 0;
   font-size: 16px;
   line-height: 1.25;
 }
