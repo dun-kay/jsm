@@ -10,6 +10,7 @@ import {
   submitCelebrities,
   type CelebritiesState
 } from "../../lib/popularPeopleApi";
+import { getGameIntroRules } from "../rules";
 
 type PopularPeopleRuntimeProps = {
   gameCode: string;
@@ -139,6 +140,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
       return { leaderId, leaderName, members: orderedMembers };
     });
   }, [state]);
+  const introRules = getGameIntroRules("popular-people");
 
   async function doContinue() {
     if (!state || busy) {
@@ -267,16 +269,8 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
       {state.phase === "rules" && (
         <>
-          <h2>You are now playing...<p></p>Popular People</h2>
-          <p></p>
-          <p><b>Each player enters a popular person.</b><p>Don't reveal this to the other players.</p></p>
-          <p>Pick someone most players would recognise, a <b>celebrity, character, athlete, or public person.</b></p><br></br>
-          <p><b>All players then get 30 seconds to study the list of popular people.</b> One player starts by guessing another players popular person.</p><br></br>
-          <p>If they guess correctly, that player joins the guessers team. <b>They are now collected by that player & they get to ask again.</b></p>
-          <p>If they guess incorrectly, <b>the player who was asked guesses next.</b></p>
-          <p>After the first guess, everyone gets 30 more seconds to review the list. <b>The list is then hidden for the remainder of the game.</b></p><br></br>
-          <p><b>The game ends when one team collects all the players by guessing their celebrities.</b></p>
-          <p>Collected players can help with advice, but only non-collected players ask questions.</p><p></p>
+          <h2>{introRules.title}</h2>
+          {introRules.content}
           <button
             type="button"
             className="btn btn-key"

@@ -10,6 +10,7 @@ import {
   touchPlayer,
   type LobbyPlayer
 } from "../lib/lobbyApi";
+import { getGameIntroRules } from "../games/rules";
 import type { GameConfig, GameSessionContext } from "../games/types";
 
 type ThemeMode = "light" | "dark";
@@ -117,6 +118,8 @@ export default function GameOnboardingFlow({
   const [playerToken, setPlayerToken] = useState<string>("");
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
+  const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
+  const introRules = useMemo(() => getGameIntroRules(game.slug), [game.slug]);
 
   useEffect(() => {
     const stored = readStoredSession();
@@ -536,7 +539,10 @@ export default function GameOnboardingFlow({
               <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
               <h1>{title}</h1>
               <p className="body-text">{game.description}</p>
-              <p className="body-text small">{game.shortRules}</p><br></br>
+              <p className="body-text small">{game.shortRules}</p>
+              <button type="button" className="btn btn-key rules" onClick={() => setShowRulesModal(true)}>
+              Full game rules
+              </button><br></br>
             </header>
 
             {errorText && <p className="hint-text error-text">{errorText}</p>}
@@ -740,6 +746,18 @@ export default function GameOnboardingFlow({
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {showRulesModal && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card rules-modal">
+            <h2>{introRules.title}</h2>
+            <div className="rules-modal-content">{introRules.content}</div>
+            <button className="btn btn-key" type="button" onClick={() => setShowRulesModal(false)}>
+              Close
+            </button>
           </div>
         </div>
       )}

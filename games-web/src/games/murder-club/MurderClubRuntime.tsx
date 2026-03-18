@@ -9,6 +9,7 @@ import {
   setMurderClubTeam,
   type MurderClubState
 } from "../../lib/murderClubApi";
+import { getGameIntroRules } from "../rules";
 
 type MurderClubRuntimeProps = {
   gameCode: string;
@@ -113,6 +114,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
   }, [state?.missionVoteEndsAt, nowMs]);
 
   const isWaitingOnYou = Boolean(state?.waitingOn.includes(state?.you.id || ""));
+  const introRules = getGameIntroRules("murder-club");
   const teamVoteByMe = useMemo(
     () => state?.teamVotes.find((entry) => entry.playerId === state.you.id)?.vote ?? null,
     [state]
@@ -238,8 +240,8 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
 
       {state.phase === "rules" && (
         <>
-          <p>You've all been invited to a Coastal Town Murder Club...</p>
-          <p>Hidden killers sabotage missions. Innocents try to stop them.</p>
+          <h2>{introRules.title}</h2>
+          {introRules.content}
           <p>First side to {state.targetScore} wins.</p>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {busy ? "Loading..." : isWaitingOnYou ? "Begin" : "Waiting for others"}

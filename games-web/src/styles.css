@@ -232,6 +232,20 @@ body {
   color: var(--inverse-bg);
 }
 
+.rules {
+  font-size: 14px;
+  min-height:24px;
+  background: var(--bg);
+  color: var(--text);
+  border: 2px solid var(--inverse-bg);
+  padding: 7px 14px;
+  width: 150px;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+}
+
 .vote {
   font-size: 15px;
   color: var(--inverse-text);
@@ -394,6 +408,30 @@ body {
   padding: var(--pad-lg);
   display: grid;
   gap: var(--gap-col);
+}
+
+.rules-modal {
+  width: 85%;
+  border-radius: 18px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  padding: var(--pad-lg);
+  display: grid;
+  gap: var(--gap-col);
+  font-size: 15px;
+  text-align: center;
+}
+
+.rules-modal-content p {
+  margin: 4px 0;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.rules-modal-content br {
+  display: block;
+  content: "";
+  margin: 6px 0;
 }
 
 .modal-card h2 {

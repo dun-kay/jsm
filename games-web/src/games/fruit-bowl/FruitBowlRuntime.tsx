@@ -8,6 +8,7 @@ import {
   submitFruitBowlPrompts,
   type FruitBowlState
 } from "../../lib/fruitBowlApi";
+import { getGameIntroRules } from "../rules";
 
 type FruitBowlRuntimeProps = {
   gameCode: string;
@@ -156,6 +157,8 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
     [promptOne, promptTwo]
   );
 
+  const introRules = getGameIntroRules("fruit-bowl");
+
   const rulesForRound = roundRuleCopy(state?.roundNumber || 1);
 
   async function doContinue() {
@@ -254,17 +257,8 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
 
       {state.phase === "rules" && (
         <>
-        <h2>You are now playing...<p></p>Fruit Bowl</h2>
-          <p>The game starts with <b>everyone adding 2 prompts</b> to the game.</p>
-          <p>These prompts can be anything. A word, two words, a phrase... <b>make it fun & memorable.</b></p>
-          <br></br>
-          <p>The players are then split into two teams. <b>Team Eggplant  🍆 & Team Peach 🍑.</b></p>
-          <br></br>
-          <p>Teams take turns describing, acting, or using a single word to try <b>help their team guess the prompts they pull from the bowl.</b></p>
-          <br></br>
-          <p>The game is split over three rounds.<p></p><b>Describe it, Act it out, & One word only.</b></p>
-          <br></br>
-          <p><b>Your team gets a point for a correct guess.</b><p></p>Each round is explained in detail as it happens.</p><p></p>
+          <h2>{introRules.title}</h2>
+          {introRules.content}
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {busy ? "Loading..." : isWaitingOnYou ? "Begin" : "Waiting for others"}
           </button>
