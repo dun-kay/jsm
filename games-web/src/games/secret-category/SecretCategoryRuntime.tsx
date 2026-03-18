@@ -9,6 +9,7 @@ import {
   submitSpyGuess,
   type SecretCategoryState
 } from "../../lib/secretCategoryApi";
+import { getGameIntroRules } from "../rules";
 
 type SecretCategoryRuntimeProps = {
   gameCode: string;
@@ -79,6 +80,7 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
     }
     return state.waitingOn.includes(state.you.id);
   }, [state]);
+  const introRules = getGameIntroRules("secret-category");
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) {
@@ -173,19 +175,8 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
     <section className="runtime-card runtime-flow">
       {state.phase === "rules" && (
         <>
-        <h2>You are now playing...<p></p>Secret Categories</h2>
-          <p></p><p>The game starts by revealing the <b>Main Category</b> to everyone.</p>
-          <p>The <b>Secret Category</b> is then revealed. One player does not see it. <b>They are the Spy</b>.</p>
-          <br></br>
-          <p>The Spy must figure out the Secret Category. <b>Other players must figure out who the Spy is</b>.</p>
-          <br></br>
-          <p><b>Each round one player gives a one-word clue.</b> The clue should relate to the main category & the secret category (if you know what it is).</p>
-          <br></br>
-          <p>When the Spy gives a clue, they <b>try & sound like they know the secret</b>. Other players <b>try & show they know the secret</b> without saying it.</p>
-          <br></br>
-          <p>"If the Category is Car Brands and the Secret is Ferrari, <b>Fast</b> is a better clue than <b>Horse</b>."</p>
-          <br></br>
-          <p>Once everyone gives a clue, you discuss & vote to try find the Spy.</p><p></p>
+          <h2>{introRules.title}</h2>
+          {introRules.content}
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
