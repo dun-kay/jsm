@@ -22,12 +22,65 @@ function capPromptLength(value: string): string {
 
 function roundRuleCopy(roundNumber: number): { title: string; copy: string } {
   if (roundNumber === 1) {
-    return { title: "Round 1: Describe", copy: "Describe the prompt without saying the exact words." };
+    return {
+      title: "Round 1: Describe",
+      copy:
+        "One player from each team takes turns describing the prompt they see.\n\n" +
+        "Their team members must guess the prompt they are describing. The other team is silent.\n\n" +
+        "You can use as many words as you want, just not the exact words used in the prompt.\n\n" +
+        "Each player gets 30 seconds to describe as many prompts correctly as they can.\n\n" +
+        "If the prompt is Dog, you migh say 'you take it for a walk', & your team would shout Dog!\n\n" +
+        "If your team gets a prompt right, tap Correct.\n\n" +
+        "If the promp is A big red hairy dog!, you might say 'like the main character from Clifford, but it's in a sentance & fluffy'. You can add more detail to your description until they get it.\n\n" +
+        "If you get stuck, you can click skip to go to the next prompt, even after you start describing.\n\n" +
+        "Skipped prompts go to the bottom of the bowl.\n\n" +
+        "The idea is to keep it fun & keep it moving, don't get too bogged down with complex rules!"
+    };
   }
   if (roundNumber === 2) {
-    return { title: "Round 2: Act it out", copy: "No speaking. Use only actions and gestures." };
+    return {
+      title: "Round 2: Act it out",
+      copy:
+        "Act the prompt out with no speaking.\n" +
+        "No sounds, no words, no spelling in the air.\n\n" +
+        "Easy example:\n" +
+        "Prompt: Dog\n" +
+        "Act: panting, wagging tail, pretend leash.\n\n" +
+        "Harder example:\n" +
+        "Prompt: A big red hairy dog\n" +
+        "Act: very tall dog, point at something red, stroke big fluffy fur.\n\n" +
+        "If your team gets it right, tap Correct.\n" +
+        "If they get stuck, tap Skip.\n" +
+        "Skipped prompts go to the bottom of the bowl.\n\n" +
+        "Go big with your actions. It makes this round way funnier."
+    };
   }
-  return { title: "Round 3: One word", copy: "You may say one word only for each prompt." };
+  return {
+    title: "Round 3: One word",
+    copy:
+      "You may say one word only for each prompt.\n" +
+      "No extra words, no gestures, no sound effects.\n\n" +
+      "Easy example:\n" +
+      "Prompt: Dog\n" +
+      "Word: \"Leash\"\n\n" +
+      "Harder example:\n" +
+      "Prompt: A big red hairy dog\n" +
+      "Word: \"Clifford\"\n\n" +
+      "If your team gets it right, tap Correct.\n" +
+      "If they get stuck, tap Skip.\n" +
+      "Skipped prompts go to the bottom of the bowl.\n\n" +
+      "This round is chaos. Stay sharp and trust your gut."
+  };
+}
+
+function roundName(roundNumber: number): string {
+  if (roundNumber === 1) {
+    return "Describe";
+  }
+  if (roundNumber === 2) {
+    return "Act it out";
+  }
+  return "One word";
 }
 
 function teamLabel(teamNo: number | null | undefined): string {
@@ -229,7 +282,9 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
       {state.phase === "input" && (
         <>
           <h2>Enter 2 prompts for the bowl:</h2>
-          <p>These prompts can be anything. A word, two words, a phrase... make it fun & memorable.</p><p></p>
+          <p>These prompts can be anything. A word, two words, a phrase... make it fun & memorable.</p>
+          <p>E.g. Your prompt could be Dog, or even A big red hairy dog! Both are acceptable. </p>
+          <p></p>
           <label className="field-wrap" htmlFor="fb-prompt-one">
             <input
               id="fb-prompt-one"
@@ -277,10 +332,9 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
       )}
 
       {state.phase === "teams" && (
-        <>
-          <p>Teams are set. Only the active clue giver controls cards.</p>
+        <><p><h2>Get to know your team.</h2><p>You might want to sit closer to them.</p></p>
           <div className="players-panel">
-            <p className="body-text left">Team Eggplant 🍆</p>
+            <p className="body-text left"><b>Team Eggplant 🍆:</b></p>
             <div className="player-grid teams fb">
               {state.teamA.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -290,7 +344,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
             </div>
           </div>
           <div className="players-panel">
-            <p className="body-text left">Team Peach 🍑</p>
+            <p className="body-text left"><b>Team Peach 🍑:</b></p>
             <div className="player-grid teams fb">
               {state.teamB.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -308,7 +362,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
       {state.phase === "round_intro" && (
         <>
           <h2>{rulesForRound.title}</h2>
-          <p>{rulesForRound.copy}</p>
+          <p style={{ whiteSpace: "pre-line" }}>{rulesForRound.copy}</p>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {busy ? "Loading..." : isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
@@ -317,7 +371,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
 
       {state.phase === "turn_live" && (
         <>
-          <p>Round {state.roundNumber}</p>
+          <p><b>Round {state.roundNumber}: {roundName(state.roundNumber)}</b></p>
           <p>{turnSecondsLeft}s remaining</p>
           <p>Active team: {teamLabel(state.activeTeam)}</p>
           {isClueGiver ? (
@@ -344,22 +398,45 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
 
       {state.phase === "turn_ready" && (
         <>
-          <p>Round {state.roundNumber}</p>
-          <p>Active team: {teamLabel(state.activeTeam)}</p>
+          <p><b>Round {state.roundNumber}: {roundName(state.roundNumber)}</b></p>
           {isClueGiver ? (
             <>
-              <h2>Your turn to draw from the bowel</h2>
-              <p>When you are ready, start the 45 second timer.</p>
+              <h2>Your turn to draw from the bowl.</h2>
+              <p>{teamLabel(state.activeTeam)}, get ready.</p><p></p>
+              <p>When you are ready, start the 30 second timer.</p>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy}>
                 {busy ? "Loading..." : "Start timer"}
               </button>
             </>
           ) : (
             <>
-              <h2>{activeClueGiverName} is up next</h2>
+              <h2>It's {activeClueGiverName}'s turn.</h2>
+              <p>{teamLabel(state.activeTeam)}, get ready.</p>
               <p>Waiting for them to start the timer.</p>
             </>
           )}
+
+          <div className="players-panel">
+            <p className="body-text left"><b>Team Eggplant 🍆:</b></p>
+            <div className="player-grid teams fb">
+              {state.teamA.map((member) => (
+                <div key={member.id} className="player-pill team">
+                  {member.name}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="players-panel">
+            <p className="body-text left"><b>Team Peach 🍑:</b></p>
+            <div className="player-grid teams fb">
+              {state.teamB.map((member) => (
+                <div key={member.id} className="player-pill team">
+                  {member.name}
+                </div>
+              ))}
+            </div>
+          </div>
         </>
       )}
 
