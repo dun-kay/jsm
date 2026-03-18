@@ -19,7 +19,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <br />
         <p>When the Spy gives a clue, they <b>try & sound like they know the secret</b>. Other players <b>try & show they know the secret</b> without saying it.</p>
         <br />
-        <p>"If the Category is Car Brands and the Secret is Ferrari, <b>Fast</b> is a better clue than <b>Horse</b>."</p>
+        <p>If the Category is Car Brands and the Secret is Ferrari, <b>Fast is a better clue than Horse</b>.</p>
         <br />
         <p>Once everyone gives a clue, you discuss & vote to try find the Spy.</p>
       </>
