@@ -1,4 +1,5 @@
 import { type KeyboardEvent, useEffect, useMemo, useState } from "react";
+import QRCode from "qrcode";
 import {
   cancelGame,
   createGame,
@@ -119,6 +120,7 @@ export default function GameOnboardingFlow({
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
   const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const introRules = useMemo(() => getGameIntroRules(game.slug), [game.slug]);
 
   useEffect(() => {
@@ -220,6 +222,39 @@ export default function GameOnboardingFlow({
   }, [gameId, game.route]);
 
   const canSubmitName = sanitizeName(playerName).length > 0;
+
+  useEffect(() => {
+    let active = true;
+
+    const buildQr = async () => {
+      if (!joinUrl || screen !== "lobby") {
+        setQrCodeDataUrl("");
+        return;
+      }
+
+      try {
+        const dataUrl = await QRCode.toDataURL(joinUrl, {
+          width: 180,
+          margin: 1
+        });
+        if (!active) {
+          return;
+        }
+        setQrCodeDataUrl(dataUrl);
+      } catch {
+        if (!active) {
+          return;
+        }
+        setQrCodeDataUrl("");
+      }
+    };
+
+    void buildQr();
+
+    return () => {
+      active = false;
+    };
+  }, [joinUrl, screen]);
 
   function resetAll() {
     clearStoredSession();
@@ -653,11 +688,18 @@ export default function GameOnboardingFlow({
             <header className="screen-header">
               <h1>{title}</h1>
               <p className="body-text">
-                {flow === "host" ? "Join game link" : "Waiting for host to start game..."}
+                {flow === "host" ? "Join game link:" : "Waiting for host to start game..."}
               </p>
             </header>
 
             <div className="link-card">
+              {qrCodeDataUrl && (
+                <img
+                  src={qrCodeDataUrl}
+                  alt="Join game QR code"
+                  style={{ width: 75, height: 75, margin: "0 auto", borderRadius: 5, border: "solid 3px" }}
+                />
+              )}
               <p className="link-text">{joinUrl || "Waiting for join link..."}</p>
               <button className="btn btn-soft" type="button" onClick={() => void copyJoinLink()}>
                 Copy link
