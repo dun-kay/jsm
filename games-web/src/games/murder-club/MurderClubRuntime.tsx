@@ -1,27 +1,45 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  castMurderClubMissionVote,
-  castMurderClubTeamVote,
+  castMurderClubEvidenceVote,
+  castMurderClubSuspectVote,
   continueMurderClub,
   getMurderClubState,
   initMurderClub,
   playAgainMurderClub,
-  setMurderClubTeam,
+  setMurderClubTheme,
   type MurderClubState
 } from "../../lib/murderClubApi";
-import { getGameIntroRules } from "../rules";
+import {
+  getMurderClubThemeById,
+  getRandomMurderClubThemeId
+} from "./themes";
 
 type MurderClubRuntimeProps = {
   gameCode: string;
   playerToken: string;
 };
 
+type EvidenceChoice = "admit" | "reject" | null;
+
+function findPlayerName(state: MurderClubState, playerId: string | null): string {
+  if (!playerId) {
+    return "";
+  }
+  return state.players.find((player) => player.id === playerId)?.name || "";
+}
+
+function isWaitingOnYou(state: MurderClubState): boolean {
+  return state.waitingOn.includes(state.you.id);
+}
+
 export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubRuntimeProps) {
   const [state, setState] = useState<MurderClubState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
-  const [nowMs, setNowMs] = useState<number>(Date.now());
-  const [selectedTeam, setSelectedTeam] = useState<string[]>([]);
+  const [selectedSuspectId, setSelectedSuspectId] = useState<string>("");
+  const [selectedEvidenceVote, setSelectedEvidenceVote] = useState<EvidenceChoice>(null);
+  const [didSubmitSuspectVote, setDidSubmitSuspectVote] = useState<boolean>(false);
+  const [didSubmitEvidenceVote, setDidSubmitEvidenceVote] = useState<boolean>(false);
 
   useEffect(() => {
     let active = true;
@@ -52,9 +70,9 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
         }
         setState(next);
       } catch {
-        // retain current state on transient errors
+        // retain current state on transient poll errors
       }
-    }, 1000);
+    }, 1200);
 
     return () => {
       active = false;
@@ -63,63 +81,39 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
   }, [gameCode, playerToken]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => setNowMs(Date.now()), 500);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!state || state.phase !== "team_pick") {
+    if (!state) {
       return;
     }
-    setSelectedTeam(state.selectedTeam);
-  }, [state?.phase, state?.selectedTeam?.join("|")]);
-
-  const leaderName = useMemo(() => {
-    if (!state?.leaderId) {
-      return "Leader";
+    if (state.phase !== "suspect_vote") {
+      setDidSubmitSuspectVote(false);
+      setSelectedSuspectId("");
     }
-    return state.players.find((player) => player.id === state.leaderId)?.name || "Leader";
+    if (state.phase !== "evidence_vote") {
+      setDidSubmitEvidenceVote(false);
+      setSelectedEvidenceVote(null);
+    }
+  }, [state?.phase]);
+
+  const theme = useMemo(() => (state ? getMurderClubThemeById(state.themeId) : null), [state]);
+  const currentEvidence = useMemo(() => {
+    if (!state || !theme) {
+      return "";
+    }
+    if (theme.evidences.length === 0) {
+      return "No evidence found.";
+    }
+    const index = state.evidenceIndex % theme.evidences.length;
+    return theme.evidences[index];
+  }, [state, theme]);
+
+  const conspiratorNames = useMemo(() => {
+    if (!state || state.you.role !== "conspirator") {
+      return [];
+    }
+    return state.players
+      .filter((player) => state.you.conspiratorIds.includes(player.id) && player.id !== state.you.id)
+      .map((player) => player.name);
   }, [state]);
-
-  const discussionSecondsLeft = useMemo(() => {
-    if (!state?.discussionEndsAt) {
-      return 0;
-    }
-    const diff = Math.ceil((new Date(state.discussionEndsAt).getTime() - nowMs) / 1000);
-    return Math.max(0, diff);
-  }, [state?.discussionEndsAt, nowMs]);
-
-  const leaderPitchSecondsLeft = useMemo(() => {
-    if (!state?.discussionLeaderEndsAt) {
-      return 0;
-    }
-    const diff = Math.ceil((new Date(state.discussionLeaderEndsAt).getTime() - nowMs) / 1000);
-    return Math.max(0, diff);
-  }, [state?.discussionLeaderEndsAt, nowMs]);
-
-  const teamVoteSecondsLeft = useMemo(() => {
-    if (!state?.teamVoteEndsAt) {
-      return 0;
-    }
-    const diff = Math.ceil((new Date(state.teamVoteEndsAt).getTime() - nowMs) / 1000);
-    return Math.max(0, diff);
-  }, [state?.teamVoteEndsAt, nowMs]);
-
-  const missionVoteSecondsLeft = useMemo(() => {
-    if (!state?.missionVoteEndsAt) {
-      return 0;
-    }
-    const diff = Math.ceil((new Date(state.missionVoteEndsAt).getTime() - nowMs) / 1000);
-    return Math.max(0, diff);
-  }, [state?.missionVoteEndsAt, nowMs]);
-
-  const isWaitingOnYou = Boolean(state?.waitingOn.includes(state?.you.id || ""));
-  const introRules = getGameIntroRules("murder-club");
-  const teamVoteByMe = useMemo(
-    () => state?.teamVotes.find((entry) => entry.playerId === state.you.id)?.vote ?? null,
-    [state]
-  );
-  const amLeader = Boolean(state?.you.isLeader);
 
   async function doContinue() {
     if (!state || busy) {
@@ -137,75 +131,59 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
     }
   }
 
-  function toggleTeamMember(playerId: string) {
-    if (!state || !amLeader || busy || state.phase !== "team_pick") {
+  async function doRespinTheme() {
+    if (!state || busy || !state.you.isHost) {
       return;
     }
-    const hasPlayer = selectedTeam.includes(playerId);
-    if (hasPlayer) {
-      setSelectedTeam((old) => old.filter((id) => id !== playerId));
-      return;
-    }
-    if (selectedTeam.length >= state.teamSizeRequired) {
-      return;
-    }
-    setSelectedTeam((old) => [...old, playerId]);
-  }
-
-  async function submitTeamPick() {
-    if (!state || !amLeader || busy || state.phase !== "team_pick") {
-      return;
-    }
-    if (selectedTeam.length !== state.teamSizeRequired) {
-      setErrorText(`Select exactly ${state.teamSizeRequired} players.`);
-      return;
-    }
+    const nextThemeId = getRandomMurderClubThemeId(state.themeId);
     setBusy(true);
     setErrorText("");
     try {
-      const next = await setMurderClubTeam(gameCode, playerToken, selectedTeam);
+      const next = await setMurderClubTheme(gameCode, playerToken, nextThemeId);
       setState(next);
     } catch (error) {
-      setErrorText((error as Error).message || "Unable to set team.");
+      setErrorText((error as Error).message || "Unable to re-spin theme.");
     } finally {
       setBusy(false);
     }
   }
 
-  async function castTeamVote(vote: "approve" | "reject") {
-    if (!state || busy || state.phase !== "team_vote" || teamVoteByMe) {
+  async function doVoteSuspect() {
+    if (!state || busy || state.phase !== "suspect_vote" || !selectedSuspectId) {
       return;
     }
     setBusy(true);
     setErrorText("");
     try {
-      const next = await castMurderClubTeamVote(gameCode, playerToken, vote);
+      const next = await castMurderClubSuspectVote(gameCode, playerToken, selectedSuspectId);
       setState(next);
+      setDidSubmitSuspectVote(true);
     } catch (error) {
-      setErrorText((error as Error).message || "Unable to cast vote.");
+      setErrorText((error as Error).message || "Unable to cast suspect vote.");
     } finally {
       setBusy(false);
     }
   }
 
-  async function castMissionVote(vote: "safe" | "murder") {
-    if (!state || busy || state.phase !== "mission_vote" || !state.you.isSelected) {
+  async function doVoteEvidence() {
+    if (!state || busy || state.phase !== "evidence_vote" || !selectedEvidenceVote) {
       return;
     }
     setBusy(true);
     setErrorText("");
     try {
-      const next = await castMurderClubMissionVote(gameCode, playerToken, vote);
+      const next = await castMurderClubEvidenceVote(gameCode, playerToken, selectedEvidenceVote);
       setState(next);
+      setDidSubmitEvidenceVote(true);
     } catch (error) {
-      setErrorText((error as Error).message || "Unable to cast mission vote.");
+      setErrorText((error as Error).message || "Unable to cast evidence vote.");
     } finally {
       setBusy(false);
     }
   }
 
   async function doPlayAgain() {
-    if (!state || !state.you.isHost || busy) {
+    if (!state || busy || !state.you.isHost) {
       return;
     }
     setBusy(true);
@@ -214,13 +192,13 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
       const next = await playAgainMurderClub(gameCode, playerToken);
       setState(next);
     } catch (error) {
-      setErrorText((error as Error).message || "Unable to play again.");
+      setErrorText((error as Error).message || "Unable to start another game.");
     } finally {
       setBusy(false);
     }
   }
 
-  if (!state) {
+  if (!state || !theme) {
     return (
       <section className="runtime-card">
         <h2>Murder Club</h2>
@@ -230,131 +208,262 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
     );
   }
 
+  const suspectName = findPlayerName(state, state.suspectPlayerId);
+
   return (
     <section className="runtime-card runtime-flow">
-      <h2>Murder Club</h2>
-      <p>
-        Round {state.roundNumber} | Innocents {state.innocentScore} - {state.killerScore} Killers
-      </p>
-      <p>Leader: {leaderName}</p>
-
       {state.phase === "rules" && (
         <>
-          <h2>{introRules.title}</h2>
-          {introRules.content}
-          <p>First side to {state.targetScore} wins.</p>
-          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-            {busy ? "Loading..." : isWaitingOnYou ? "Begin" : "Waiting for others"}
+          <h2>{theme.title}</h2>
+          <p>{theme.openingScene}</p>
+
+          {state.you.isHost ? (
+            <button type="button" className="btn btn-soft runtime-reroll-btn" onClick={() => void doRespinTheme()} disabled={busy}>
+              Re-spin theme
+            </button>
+          ) : (
+            <button type="button" className="btn btn-soft runtime-reroll-btn" disabled>
+              Host can re-spin
+            </button>
+          )}
+
+          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+            {busy ? "Loading..." : isWaitingOnYou(state) ? "Continue" : "Waiting for others..."}
           </button>
         </>
       )}
 
-      {state.phase === "team_pick" && (
+      {state.phase === "role_reveal" && (
         <>
-          <p>Leader picks a team of {state.teamSizeRequired}.</p>
+          {state.you.role === "conspirator" ? (
+            <>
+              <h2>Your role, Murderer</h2>
+              <p>Your team, Conspirators</p>
+              <p>Do not reveal your role or team.</p>
+              <p>Prevent evidence from being admitted. 3 blocks wins for conspirators.</p>
+              {conspiratorNames.length > 0 && (
+                <p>Other conspirators: {conspiratorNames.join(", ")}</p>
+              )}
+            </>
+          ) : (
+            <>
+              <h2>Your role, Investigator</h2>
+              <p>Your team, Investigators</p>
+              <p>Find the conspirators and submit real evidence to the case file.</p>
+              <p>3 evidence submits wins for investigators.</p>
+            </>
+          )}
+          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+            {busy ? "Loading..." : isWaitingOnYou(state) ? "Ready" : "Waiting for others..."}
+          </button>
+        </>
+      )}
+
+      {state.phase === "round_ready" && (
+        <>
+          <h2>Ready to begin?</h2>
+          <p>Round {state.roundNumber}</p>
+          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+            {busy ? "Loading..." : isWaitingOnYou(state) ? "Begin" : "Waiting for all players to click begin..."}
+          </button>
+        </>
+      )}
+
+      {state.phase === "evidence_reveal" && (
+        <>
+          <h2>Until...</h2>
+          <div className="link-card">
+            <p><b>New evidence:</b></p>
+            <p>{currentEvidence}</p>
+          </div>
+          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+            {busy ? "Loading..." : isWaitingOnYou(state) ? "Understood" : "Waiting for all players to click continue..."}
+          </button>
+        </>
+      )}
+
+      {state.phase === "suspect_vote" && (
+        <>
+          {didSubmitSuspectVote ? (
+            <>
+              <h2>Loading votes...</h2>
+              <p>Waiting for all players to vote.</p>
+            </>
+          ) : (
+            <>
+              <h2>Discuss, suspect selection...</h2>
+              <p>Place suspicion. Choose one player.</p>
+              <div className="player-grid">
+                {state.players.map((player) => (
+                  <button
+                    key={player.id}
+                    type="button"
+                    className="btn btn-soft"
+                    onClick={() => setSelectedSuspectId(player.id)}
+                    style={selectedSuspectId === player.id ? { borderColor: "#f4dd44" } : undefined}
+                  >
+                    {player.name}
+                  </button>
+                ))}
+              </div>
+              <button type="button" className="btn btn-key" onClick={() => void doVoteSuspect()} disabled={busy || !selectedSuspectId}>
+                Vote
+              </button>
+              <p>Waiting for all players to vote...</p>
+            </>
+          )}
+        </>
+      )}
+
+      {state.phase === "suspect_result" && (
+        <>
+          {state.suspectVoteResult === "hung" ? (
+            <>
+              <h2>Hung vote!</h2>
+              <p>There was a tie in the suspect vote. Discuss and re-vote to reach a majority.</p>
+            </>
+          ) : (
+            <>
+              <h2>{suspectName} is under suspicion...</h2>
+              <p>They cannot speak or vote during the evidence decision.</p>
+            </>
+          )}
+
           <div className="player-grid">
             {state.players.map((player) => {
-              const selected = selectedTeam.includes(player.id);
+              const count = state.suspectCounts.find((entry) => entry.playerId === player.id)?.count ?? 0;
               return (
-                <button
+                <div
                   key={player.id}
-                  type="button"
-                  className="btn btn-soft"
-                  onClick={() => toggleTeamMember(player.id)}
-                  disabled={!amLeader || busy}
+                  className="player-pill"
+                  style={
+                    state.suspectPlayerId === player.id
+                      ? { borderColor: "#f4dd44", color: "#f4dd44" }
+                      : undefined
+                  }
                 >
-                  {selected ? "Selected: " : ""}{player.name}
-                </button>
+                  {player.name} {count > 0 ? `(${count})` : ""}
+                </div>
               );
             })}
           </div>
-          {amLeader ? (
-            <button type="button" className="btn btn-key" onClick={() => void submitTeamPick()} disabled={busy}>
-              {busy ? "Loading..." : "Confirm team"}
-            </button>
-          ) : (
-            <p>Waiting for {leaderName} to pick the team.</p>
-          )}
+
+          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+            {busy ? "Loading..." : isWaitingOnYou(state) ? (state.suspectVoteResult === "hung" ? "Vote again" : "Continue") : "Waiting for all players to click continue..."}
+          </button>
         </>
       )}
 
-      {state.phase === "discussion_phase" && (
+      {state.phase === "evidence_vote" && (
         <>
-          {leaderPitchSecondsLeft > 0 ? (
-            <p>Leader pitch: explain your team ({leaderPitchSecondsLeft}s)</p>
-          ) : (
-            <p>Discuss. Who do you trust?</p>
-          )}
-          <p>{discussionSecondsLeft}s remaining</p>
-          {discussionSecondsLeft <= 3 && <p className="hint-text error-text">Vote now</p>}
-        </>
-      )}
-
-      {state.phase === "team_vote" && (
-        <>
-          <p>Team vote (public): approve or reject.</p>
-          <p>{teamVoteSecondsLeft}s remaining</p>
-          {!teamVoteByMe ? (
-            <div className="bottom-row">
-              <button type="button" className="btn btn-key" onClick={() => void castTeamVote("approve")} disabled={busy}>
-                Approve
-              </button>
-              <button type="button" className="btn btn-soft" onClick={() => void castTeamVote("reject")} disabled={busy}>
-                Reject
-              </button>
-            </div>
-          ) : (
-            <p>You voted: {teamVoteByMe}</p>
-          )}
-          <div className="players-panel">
-            <p className="body-text left">Votes</p>
-            <div className="player-grid teams">
-              {state.teamVotes.map((entry) => (
-                <div key={entry.playerId} className="player-pill team">
-                  {entry.name}: {entry.vote || "..."}
-                </div>
-              ))}
-            </div>
+          <h2>Evidence vote...</h2>
+          <p>Should this evidence be added to the case files?</p>
+          <div className="link-card">
+            <p><b>{currentEvidence}</b></p>
           </div>
-        </>
-      )}
 
-      {state.phase === "mission_vote" && (
-        <>
-          <p>Mission vote (secret).</p>
-          <p>{missionVoteSecondsLeft}s remaining</p>
-          {state.you.isSelected ? (
-            <div className="bottom-row">
-              <button type="button" className="btn btn-key" onClick={() => void castMissionVote("safe")} disabled={busy}>
-                Safe
-              </button>
-              <button
-                type="button"
-                className="btn btn-soft"
-                onClick={() => void castMissionVote("murder")}
-                disabled={busy || !state.you.canUseMurder}
-              >
-                Murder
-              </button>
-            </div>
+          <div className="bottom-row">
+            <p>Conspirators, evidence blocks: {state.conspiratorScore}/{state.targetScore}</p>
+            <p>Investigators, evidence submits: {state.investigatorScore}/{state.targetScore}</p>
+          </div>
+
+          {state.you.isUnderSuspicion ? (
+            <>
+              <p className="hint-text error-text">You are under suspicion. You can not talk or vote.</p>
+              <p>Waiting for all players to vote...</p>
+            </>
+          ) : didSubmitEvidenceVote ? (
+            <>
+              <h2>Loading votes...</h2>
+              <p>Waiting for all players to vote...</p>
+            </>
           ) : (
-            <p>Watching... who do you think is lying?</p>
+            <>
+              <p>Two voting cards are dealt at random to all players.</p>
+              <div className="bottom-row">
+                <button
+                  type="button"
+                  className="btn btn-soft"
+                  onClick={() => setSelectedEvidenceVote("reject")}
+                  disabled={state.you.evidenceCard !== "reject"}
+                  style={selectedEvidenceVote === "reject" ? { borderColor: "#ff7070" } : undefined}
+                >
+                  Reject evidence
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-soft"
+                  onClick={() => setSelectedEvidenceVote("admit")}
+                  disabled={state.you.evidenceCard !== "admit"}
+                  style={selectedEvidenceVote === "admit" ? { borderColor: "#86e484" } : undefined}
+                >
+                  Admit evidence
+                </button>
+              </div>
+              <button type="button" className="btn btn-key" onClick={() => void doVoteEvidence()} disabled={busy || !selectedEvidenceVote}>
+                Vote
+              </button>
+            </>
           )}
         </>
       )}
 
-      {state.phase === "round_result" && (
+      {state.phase === "evidence_result" && (
         <>
-          <h2>Round result</h2>
-          <p>Murders played: {state.lastMurderCount}</p>
-          <p>{state.lastLine}</p>
+          {state.evidenceVoteResult === "admitted" && (
+            <>
+              <h2>Evidence admitted...</h2>
+              <p>The evidence will be added to the case file.</p>
+            </>
+          )}
+          {state.evidenceVoteResult === "rejected" && (
+            <>
+              <h2>Evidence rejected...</h2>
+              <p>The evidence will not be added to the case file.</p>
+            </>
+          )}
+          {state.evidenceVoteResult === "hung" && (
+            <>
+              <h2>Hung vote!</h2>
+              <p>There was a tie in the evidence vote. Discuss and re-vote.</p>
+            </>
+          )}
+
+          <div className="bottom-row">
+            <p>Conspirators, evidence blocks: {state.conspiratorScore}/{state.targetScore}</p>
+            <p>Investigators, evidence submits: {state.investigatorScore}/{state.targetScore}</p>
+          </div>
+
+          <div className="player-grid">
+            {state.players.map((player) => (
+              <div key={player.id} className="player-pill">
+                {player.name}
+              </div>
+            ))}
+          </div>
+
+          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+            {busy
+              ? "Loading..."
+              : isWaitingOnYou(state)
+                ? state.investigatorScore >= state.targetScore || state.conspiratorScore >= state.targetScore
+                  ? "Finish"
+                  : `Continue to Round ${state.roundNumber + 1}`
+                : "Waiting for all players to click continue..."}
+          </button>
         </>
       )}
 
       {state.phase === "result" && (
         <>
-          <h2>{state.innocentScore >= state.targetScore ? "Innocents win" : "Killers win"}</h2>
-          <p>Ready to play again?</p>
+          <h2>
+            {state.investigatorScore >= state.targetScore
+              ? "Investigators win!"
+              : "Conspirators win!"}
+          </h2>
+          <p>Investigators, evidence submits: {state.investigatorScore}/{state.targetScore}</p>
+          <p>Conspirators, evidence blocks: {state.conspiratorScore}/{state.targetScore}</p>
+
           {state.you.isHost ? (
             <button type="button" className="btn btn-key" onClick={() => void doPlayAgain()} disabled={busy}>
               Play again
@@ -367,7 +476,9 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
         </>
       )}
 
-      {(state.lastError || errorText) && <p className="hint-text error-text">{state.lastError || errorText}</p>}
+      {(state.lastLine || state.lastError || errorText) && (
+        <p className="hint-text error-text">{state.lastError || errorText || state.lastLine}</p>
+      )}
     </section>
   );
 }
