@@ -4,6 +4,7 @@ import GameRuntimeHost from "./components/GameRuntimeHost";
 import HomeGamesGrid from "./components/HomeGamesGrid";
 import LegalPage from "./components/LegalPage";
 import FixedFooterLinks from "./components/FixedFooterLinks";
+import CookieNotice from "./components/CookieNotice";
 import { GAMES, getGameBySlug } from "./games/registry";
 import type { GameSessionContext } from "./games/types";
 
@@ -200,6 +201,7 @@ export default function App() {
     <>
       {page}
       <FixedFooterLinks />
+      <CookieNotice />
     </>
   );
 }
