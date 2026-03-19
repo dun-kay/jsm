@@ -76,7 +76,7 @@ body {
 
 .theme-toggle {
   position: auto;
-  width: 90px;
+  width: 95px;
   top: var(--pad-sm);
   right: var(--pad-sm);
   z-index: 4;
@@ -569,6 +569,80 @@ body {
   margin-top: 0px;
   background: var(--bg);
   color: var(--text);
+}
+
+.fixed-footer-links {
+  position: relative;
+  left: 50%;
+  bottom: 0px;
+  transform: translateX(-50%);
+  width: min(90%);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 8px;
+  padding: 10px 25px;
+  z-index: 30;
+  font-size: 12px;
+}
+
+.fixed-footer-links a {
+  text-decoration: underline;
+  color: var(--text);
+  font-weight: 700;
+}
+
+
+.fixed-footer-links span {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.fixed-footer-links a:hover {
+  text-decoration: underline;
+}
+
+.cookie-notice {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  transform: translate(-50%, 120%);
+  transition: transform 240ms ease;
+  width: min(85%);
+  min-height: 50px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 8px 2px 15px;
+  z-index: 40;
+}
+
+.cookie-notice.is-visible {
+  transform: translate(-50%, 0%);
+}
+
+.cookie-notice-text {
+  font-size: 12px;
+}
+
+.cookie-notice-btn {
+  border: 2px solid var(--inverse-bg);
+  background: transparent;
+  color: var(--inverse-bg);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  min-height: 38px;
+  min-width: 45px;
+  padding: 2px 10px;
+  cursor: pointer;
 }
 
 .runtime-exit {

@@ -9,7 +9,12 @@ type HomeGamesGridProps = {
   onToggleTheme: () => void;
 };
 
-export default function HomeGamesGrid({ games, onOpenGame, theme, onToggleTheme }: HomeGamesGridProps) {
+export default function HomeGamesGrid({
+  games,
+  onOpenGame,
+  theme,
+  onToggleTheme
+}: HomeGamesGridProps) {
   return (
     <div className="site-shell">
       <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
