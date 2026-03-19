@@ -12,6 +12,14 @@ export type SuspectCount = {
   count: number;
 };
 
+export type EvidencePublicVote = {
+  playerId: string;
+  name: string;
+  cards: Array<"admit" | "reject">;
+  vote: "admit" | "reject" | null;
+  isUnderSuspicion: boolean;
+};
+
 export type MurderClubState = {
   phase:
     | "rules"
@@ -38,6 +46,7 @@ export type MurderClubState = {
     admit: number;
     reject: number;
   };
+  evidencePublicVotes: EvidencePublicVote[];
   waitingOn: string[];
   lastLine: string | null;
   lastError: string | null;
@@ -46,7 +55,7 @@ export type MurderClubState = {
     name: string;
     isHost: boolean;
     role: "conspirator" | "investigator";
-    evidenceCard: "admit" | "reject" | null;
+    evidenceCards: Array<"admit" | "reject">;
     isUnderSuspicion: boolean;
     conspiratorIds: string[];
   };
@@ -81,6 +90,13 @@ function mapState(data: unknown): MurderClubState {
       admit: Number(evidenceCountsRaw.admit ?? 0),
       reject: Number(evidenceCountsRaw.reject ?? 0)
     },
+    evidencePublicVotes: ((raw.evidencePublicVotes as Array<Record<string, unknown>>) || []).map((entry) => ({
+      playerId: String(entry.playerId ?? ""),
+      name: String(entry.name ?? ""),
+      cards: (((entry.cards as string[]) || []) as Array<"admit" | "reject">),
+      vote: (entry.vote as "admit" | "reject" | null) ?? null,
+      isUnderSuspicion: Boolean(entry.isUnderSuspicion)
+    })),
     waitingOn: ((raw.waitingOn as string[]) || []).map(String),
     lastLine: (raw.lastLine as string | null) ?? null,
     lastError: (raw.lastError as string | null) ?? null,
@@ -89,7 +105,7 @@ function mapState(data: unknown): MurderClubState {
       name: String(you.name ?? ""),
       isHost: Boolean(you.isHost),
       role: (you.role as "conspirator" | "investigator") ?? "investigator",
-      evidenceCard: (you.evidenceCard as "admit" | "reject" | null) ?? null,
+      evidenceCards: (((you.evidenceCards as string[]) || []) as Array<"admit" | "reject">),
       isUnderSuspicion: Boolean(you.isUnderSuspicion),
       conspiratorIds: ((you.conspiratorIds as string[]) || []).map(String)
     }

@@ -114,6 +114,8 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
       .filter((player) => state.you.conspiratorIds.includes(player.id) && player.id !== state.you.id)
       .map((player) => player.name);
   }, [state]);
+  const canPlayReject = state?.you.evidenceCards.includes("reject") ?? false;
+  const canPlayAdmit = state?.you.evidenceCards.includes("admit") ?? false;
 
   async function doContinue() {
     if (!state || busy) {
@@ -379,13 +381,14 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
             </>
           ) : (
             <>
-              <p>Two voting cards are dealt at random to all players.</p>
+              <p>Two voting cards are dealt to each player.</p>
+              <p>Your cards: {state.you.evidenceCards.join(", ") || "..."}</p>
               <div className="bottom-row">
                 <button
                   type="button"
                   className="btn btn-soft"
                   onClick={() => setSelectedEvidenceVote("reject")}
-                  disabled={state.you.evidenceCard !== "reject"}
+                  disabled={!canPlayReject}
                   style={selectedEvidenceVote === "reject" ? { borderColor: "#ff7070" } : undefined}
                 >
                   Reject evidence
@@ -394,7 +397,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
                   type="button"
                   className="btn btn-soft"
                   onClick={() => setSelectedEvidenceVote("admit")}
-                  disabled={state.you.evidenceCard !== "admit"}
+                  disabled={!canPlayAdmit}
                   style={selectedEvidenceVote === "admit" ? { borderColor: "#86e484" } : undefined}
                 >
                   Admit evidence
@@ -435,9 +438,21 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
           </div>
 
           <div className="player-grid">
-            {state.players.map((player) => (
-              <div key={player.id} className="player-pill">
-                {player.name}
+            {state.evidencePublicVotes.map((entry) => (
+              <div
+                key={entry.playerId}
+                className="player-pill"
+                style={
+                  entry.isUnderSuspicion
+                    ? { borderColor: "#f4dd44", color: "#f4dd44" }
+                    : entry.vote === "reject"
+                      ? { borderColor: "#ff7070" }
+                      : entry.vote === "admit"
+                        ? { borderColor: "#86e484" }
+                        : undefined
+                }
+              >
+                {entry.name}: {entry.vote || "No vote"}
               </div>
             ))}
           </div>
