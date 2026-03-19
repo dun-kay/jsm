@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import GameOnboardingFlow from "./components/GameOnboardingFlow";
 import GameRuntimeHost from "./components/GameRuntimeHost";
 import HomeGamesGrid from "./components/HomeGamesGrid";
+import LegalPage from "./components/LegalPage";
 import { GAMES, getGameBySlug } from "./games/registry";
 import type { GameSessionContext } from "./games/types";
 
 type RouteState =
   | { kind: "home" }
+  | { kind: "legal"; page: "terms" | "privacy" }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
 type ThemeMode = "light" | "dark";
@@ -25,6 +27,12 @@ function parseRoute(pathname: string): RouteState {
 
   if (path === "/") {
     return { kind: "home" };
+  }
+  if (path === "/terms/") {
+    return { kind: "legal", page: "terms" };
+  }
+  if (path === "/privacy-policy/") {
+    return { kind: "legal", page: "privacy" };
   }
 
   const onboardingMatch = path.match(/^\/g\/([^/]+)\/$/);
@@ -104,8 +112,21 @@ export default function App() {
       <HomeGamesGrid
         games={enabledGames}
         onOpenGame={(game) => navigate(game.route)}
+        onOpenTerms={() => navigate("/terms/")}
+        onOpenPrivacy={() => navigate("/privacy-policy/")}
         theme={theme}
         onToggleTheme={toggleTheme}
+      />
+    );
+  }
+
+  if (route.kind === "legal") {
+    return (
+      <LegalPage
+        type={route.page}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onBack={() => navigate("/")}
       />
     );
   }
@@ -130,6 +151,8 @@ export default function App() {
         <HomeGamesGrid
           games={enabledGames}
           onOpenGame={(entry) => navigate(entry.route)}
+          onOpenTerms={() => navigate("/terms/")}
+          onOpenPrivacy={() => navigate("/privacy-policy/")}
           theme={theme}
           onToggleTheme={toggleTheme}
         />
