@@ -5,8 +5,6 @@ type ThemeMode = "light" | "dark";
 type HomeGamesGridProps = {
   games: GameConfig[];
   onOpenGame: (game: GameConfig) => void;
-  onOpenTerms: () => void;
-  onOpenPrivacy: () => void;
   theme: ThemeMode;
   onToggleTheme: () => void;
 };
@@ -14,8 +12,6 @@ type HomeGamesGridProps = {
 export default function HomeGamesGrid({
   games,
   onOpenGame,
-  onOpenTerms,
-  onOpenPrivacy,
   theme,
   onToggleTheme
 }: HomeGamesGridProps) {
@@ -41,14 +37,6 @@ export default function HomeGamesGrid({
           </button>
         ))}
       </section>
-      <div className="bottom-stack">
-        <button className="btn btn-soft" type="button" onClick={onOpenPrivacy}>
-          Privacy policy
-        </button>
-        <button className="btn btn-soft" type="button" onClick={onOpenTerms}>
-          Terms
-        </button>
-      </div>
     </div>
   );
 }

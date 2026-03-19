@@ -3,6 +3,7 @@ import GameOnboardingFlow from "./components/GameOnboardingFlow";
 import GameRuntimeHost from "./components/GameRuntimeHost";
 import HomeGamesGrid from "./components/HomeGamesGrid";
 import LegalPage from "./components/LegalPage";
+import FixedFooterLinks from "./components/FixedFooterLinks";
 import { GAMES, getGameBySlug } from "./games/registry";
 import type { GameSessionContext } from "./games/types";
 
@@ -107,13 +108,13 @@ export default function App() {
     window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
+  let page = null;
+
   if (route.kind === "home") {
-    return (
+    page = (
       <HomeGamesGrid
         games={enabledGames}
         onOpenGame={(game) => navigate(game.route)}
-        onOpenTerms={() => navigate("/terms/")}
-        onOpenPrivacy={() => navigate("/privacy-policy/")}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
@@ -121,7 +122,7 @@ export default function App() {
   }
 
   if (route.kind === "legal") {
-    return (
+    page = (
       <LegalPage
         type={route.page}
         theme={theme}
@@ -147,19 +148,16 @@ export default function App() {
 
     const game = getGameBySlug(route.slug);
     if (!game) {
-      return (
+      page = (
         <HomeGamesGrid
           games={enabledGames}
           onOpenGame={(entry) => navigate(entry.route)}
-          onOpenTerms={() => navigate("/terms/")}
-          onOpenPrivacy={() => navigate("/privacy-policy/")}
           theme={theme}
           onToggleTheme={toggleTheme}
         />
       );
-    }
-
-    return (
+    } else {
+      page = (
       <GameOnboardingFlow
         game={game}
         onExit={() => navigate("/")}
@@ -172,15 +170,36 @@ export default function App() {
         }}
       />
     );
+    }
+  }
+
+  if (!page && route.kind === "runtime") {
+    page = (
+      <GameRuntimeHost
+        gameCode={route.gameCode}
+        initialSession={runtimeSession}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onBackToHome={exitRuntimeToHome}
+      />
+    );
+  }
+
+  if (!page) {
+    page = (
+      <HomeGamesGrid
+        games={enabledGames}
+        onOpenGame={(game) => navigate(game.route)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+    );
   }
 
   return (
-    <GameRuntimeHost
-      gameCode={route.gameCode}
-      initialSession={runtimeSession}
-      theme={theme}
-      onToggleTheme={toggleTheme}
-      onBackToHome={exitRuntimeToHome}
-    />
+    <>
+      {page}
+      <FixedFooterLinks />
+    </>
   );
 }
