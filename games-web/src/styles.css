@@ -576,7 +576,7 @@ body {
   left: 50%;
   bottom: 0px;
   transform: translateX(-50%);
-  width: min(90%);
+  width: min(90%, 300px) max(90%, 500px);
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -609,7 +609,7 @@ body {
   bottom: 10px;
   transform: translate(-50%, 120%);
   transition: transform 240ms ease;
-  width: min(85%);
+  width: min(85%, 300px) max(85%, 500px);
   min-height: 50px;
   border: 2px solid var(--line);
   border-radius: 999px;
