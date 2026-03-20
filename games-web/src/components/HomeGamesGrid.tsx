@@ -21,6 +21,7 @@ export default function HomeGamesGrid({
         {theme === "light" ? "Dark mode" : "Light mode"}
       </button>
       <header className="site-header">
+        <img className="site-logo" src="/assets/site-logo.png" alt="Games With Friends logo" />
         <h1>Games With Friends</h1>
       </header>
       <section className="games-grid">

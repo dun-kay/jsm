@@ -457,6 +457,14 @@ body {
   padding-bottom: 20px;
 }
 
+.site-logo {
+  display: block;
+  width: min(100%, 170px);
+  height: auto;
+  margin: 20px auto 10px;
+  border-radius: 14px;
+}
+
 .games-grid {
   display: grid;
   grid-template-columns: 1fr;
