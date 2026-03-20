@@ -11,6 +11,8 @@ import {
   type CelebritiesState
 } from "../../lib/popularPeopleApi";
 import { getGameIntroRules } from "../rules";
+import AccessPaywallModal from "../../components/AccessPaywallModal";
+import { usePlayAccess } from "../../lib/usePlayAccess";
 
 type PopularPeopleRuntimeProps = {
   gameCode: string;
@@ -30,6 +32,15 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
   const [celebOne, setCelebOne] = useState<string>("");
   const [celebTouched, setCelebTouched] = useState<boolean>(false);
   const [nowMs, setNowMs] = useState<number>(Date.now());
+  const {
+    accessState,
+    showPaywall,
+    setShowPaywall,
+    accessError,
+    setAccessError,
+    refreshAccessState,
+    ensureSessionAccess
+  } = usePlayAccess();
 
   useEffect(() => {
     let active = true;
@@ -145,6 +156,17 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
   async function doContinue() {
     if (!state || busy) {
       return;
+    }
+    if (state.phase === "rules" && isWaitingOnYou) {
+      try {
+        const ok = await ensureSessionAccess(gameCode);
+        if (!ok) {
+          return;
+        }
+      } catch (error) {
+        setAccessError((error as Error).message || "Unable to validate play access.");
+        return;
+      }
     }
     setBusy(true);
     setErrorText("");
@@ -472,7 +494,16 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
 
 
-      {(state.lastError || errorText) && <p className="hint-text error-text">{state.lastError || errorText}</p>}
+      {(state.lastError || errorText || accessError) && (
+        <p className="hint-text error-text">{state.lastError || errorText || accessError}</p>
+      )}
+      <AccessPaywallModal
+        open={showPaywall}
+        state={accessState}
+        onClose={() => setShowPaywall(false)}
+        onRefreshState={refreshAccessState}
+        onUnlocked={() => setShowPaywall(false)}
+      />
 
       {state.phase === "guess_confirm" && hasSubmittedMyConfirm && (
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Waiting for confirmation">

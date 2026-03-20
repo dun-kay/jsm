@@ -1,0 +1,99 @@
+import { createClient } from "jsr:@supabase/supabase-js@2";
+import Stripe from "npm:stripe@16.12.0";
+import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  if (req.method !== "POST") {
+    return jsonResponse({ error: "Method not allowed." }, 405);
+  }
+
+  try {
+    const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
+    const siteUrl = Deno.env.get("SITE_URL") || "https://jumpship.media";
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+
+    if (!stripeSecretKey || !supabaseUrl || !supabaseServiceRoleKey) {
+      return jsonResponse({ error: "Missing server environment variables." }, 500);
+    }
+
+    const body = (await req.json()) as { browserToken?: string; returnTo?: string };
+    const browserToken = String(body.browserToken || "");
+    const returnToRaw = String(body.returnTo || "");
+    if (!UUID_REGEX.test(browserToken)) {
+      return jsonResponse({ error: "Invalid browser token." }, 400);
+    }
+
+    let successUrl = `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`;
+    let cancelUrl = `${siteUrl}/?payment=cancelled`;
+    if (returnToRaw) {
+      try {
+        const parsed = new URL(returnToRaw);
+        const allowedHost = new URL(siteUrl).host;
+        if (parsed.host === allowedHost) {
+          parsed.searchParams.set("payment", "success");
+          parsed.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
+          successUrl = parsed.toString();
+
+          const cancelParsed = new URL(returnToRaw);
+          cancelParsed.searchParams.set("payment", "cancelled");
+          cancelUrl = cancelParsed.toString();
+        }
+      } catch {
+        // keep default fallback URLs
+      }
+    }
+
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: "2024-06-20"
+    });
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+    await supabase.rpc("ensure_access_record", { p_browser_token: browserToken });
+
+    const checkout = await stripe.checkout.sessions.create({
+      mode: "payment",
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: "aud",
+            unit_amount: 100,
+            product_data: {
+              name: "Games With Friends - 4 hour unlock",
+              description: "Unlimited sessions for 4 hours on this browser/device"
+            }
+          }
+        }
+      ],
+      metadata: {
+        browser_token: browserToken
+      },
+      success_url: successUrl,
+      cancel_url: cancelUrl
+    });
+
+    await supabase.from("access_payments").insert({
+      browser_token: browserToken,
+      stripe_checkout_session_id: checkout.id,
+      status: "pending",
+      amount_cents: 100,
+      currency: "aud"
+    });
+
+    return jsonResponse({
+      checkoutUrl: checkout.url
+    });
+  } catch (error) {
+    return jsonResponse(
+      { error: error instanceof Error ? error.message : "Failed to create checkout session." },
+      500
+    );
+  }
+});

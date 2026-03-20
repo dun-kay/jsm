@@ -56,6 +56,9 @@ Run these SQL files in Supabase SQL Editor, in order:
 27. `migrations/20260317_0027_murder_club_runtime.sql`
 28. `migrations/20260317_0028_fruit_bowl_prompt_length_20.sql`
 29. `migrations/20260318_0029_fruit_bowl_timer_30_seconds.sql`
+30. `migrations/20260319_0031_lobby_retention_cleanup.sql`
+31. `migrations/20260320_0033_daily_stats_rpc.sql`
+32. `migrations/20260320_0034_access_and_payments.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
 
@@ -64,3 +67,34 @@ Then test from the web app by creating a game on one device and joining from ano
 - Runtime now pulls category data from `public.secret_category_pool` (database table).
 - Reference JSON lives at `games-web/src/games/secret-category/categoryPool.json`.
 - Edit the DB table in Supabase if you want instant updates without redeploying.
+
+## Stripe + access functions
+
+This project now expects Supabase Edge Functions:
+
+- `start-checkout`
+- `stripe-webhook`
+- `payment-help`
+
+Required function secrets (set in Supabase project secrets):
+
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `SITE_URL` (example: `https://jumpship.media`)
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+Deploy functions:
+
+1. `supabase functions deploy start-checkout --no-verify-jwt`
+2. `supabase functions deploy payment-help --no-verify-jwt`
+3. `supabase functions deploy stripe-webhook --no-verify-jwt`
+
+Stripe webhook endpoint:
+
+- `https://<your-project-ref>.functions.supabase.co/stripe-webhook`
+
+Recommended Stripe events:
+
+- `checkout.session.completed`
+- `checkout.session.async_payment_succeeded`
+- `checkout.session.expired`
