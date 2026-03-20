@@ -41,6 +41,26 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
     await supabase.rpc("ensure_access_record", { p_browser_token: browserToken });
+    const { data: guardData, error: guardError } = await supabase
+      .rpc("check_access_rate_limit", {
+        p_browser_token: browserToken,
+        p_action_key: "payment_help",
+        p_limit: 6,
+        p_window_seconds: 600,
+        p_block_seconds: 600
+      })
+      .single<{ allowed: boolean; retry_after_seconds: number }>();
+
+    if (guardError) {
+      return jsonResponse({ error: guardError.message || "Unable to validate request rate." }, 500);
+    }
+    if (!guardData?.allowed) {
+      return jsonResponse(
+        { error: `Too many help requests. Try again in ${guardData?.retry_after_seconds || 600} seconds.` },
+        429
+      );
+    }
+
     const { data, error } = await supabase
       .rpc("maybe_grant_courtesy_unlock", {
         p_browser_token: browserToken,

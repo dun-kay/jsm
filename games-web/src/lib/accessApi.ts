@@ -89,7 +89,7 @@ export async function getAccessState(): Promise<AccessState> {
   const supabase = getSupabaseClient();
   const browserToken = ensureBrowserToken();
   const { data, error } = await supabase
-    .rpc("get_access_state", { p_browser_token: browserToken })
+    .rpc("get_access_state_guarded", { p_browser_token: browserToken })
     .single<Record<string, unknown>>();
 
   if (error || !data) {
@@ -103,7 +103,7 @@ export async function consumeSession(gameCode: string): Promise<ConsumeSessionRe
   const supabase = getSupabaseClient();
   const browserToken = ensureBrowserToken();
   const { data, error } = await supabase
-    .rpc("consume_session", {
+    .rpc("consume_session_guarded", {
       p_browser_token: browserToken,
       p_game_code: gameCode
     })
@@ -128,7 +128,7 @@ export async function claimShareBonus(): Promise<ShareBonusResult> {
   const supabase = getSupabaseClient();
   const browserToken = ensureBrowserToken();
   const { data, error } = await supabase
-    .rpc("claim_share_bonus", {
+    .rpc("claim_share_bonus_guarded", {
       p_browser_token: browserToken
     })
     .single<Record<string, unknown>>();
