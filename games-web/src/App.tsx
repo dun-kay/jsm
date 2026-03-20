@@ -6,6 +6,7 @@ import LegalPage from "./components/LegalPage";
 import StatsPage from "./components/StatsPage";
 import FixedFooterLinks from "./components/FixedFooterLinks";
 import CookieNotice from "./components/CookieNotice";
+import AccessStatusPill from "./components/AccessStatusPill";
 import { GAMES, getGameBySlug } from "./games/registry";
 import type { GameSessionContext } from "./games/types";
 
@@ -214,6 +215,7 @@ export default function App() {
 
   return (
     <>
+      <AccessStatusPill hidden={route.kind === "runtime"} />
       {page}
       <FixedFooterLinks />
       <CookieNotice />

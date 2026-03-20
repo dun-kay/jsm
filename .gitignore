@@ -2,4 +2,4 @@ games-web/node_modules/
 games-web/dist/
 games-web/.env
 games-web/.env.local
-
+supabase/.temp/
