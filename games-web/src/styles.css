@@ -561,6 +561,16 @@ body {
   margin: auto;
 }
 
+.legal-copy {
+  text-align: left;
+}
+
+.legal-copy p {
+  margin: 0;
+  text-align: left;
+  line-height: 1.35;
+}
+
 .runtime-reroll-btn {
   min-height: 26px;
   max-width: 130px;

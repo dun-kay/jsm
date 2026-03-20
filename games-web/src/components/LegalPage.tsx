@@ -30,13 +30,14 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
         </header>
 
         {isTerms ? (
-          <div className="runtime-flow">
+          <div className="runtime-flow legal-copy">
             <p><b>Who we are:</b> {COMPANY}</p>
             <p><b>Copyright:</b> {"\u00A9"} {CURRENT_YEAR} {COMPANY}</p>
             <p><b>Use at your own risk:</b> You are responsible for your own actions and conduct while using this app.</p>
             <p><b>No guarantees:</b> The app is provided "as is" without warranties of uptime, uninterrupted access, or fitness for a specific purpose.</p>
             <p><b>Play access model:</b> Access is browser/device based. No account is required.</p>
-            <p><b>Free access:</b> You receive 1 free session every 4 hours, plus up to 1 extra free session in that same 4-hour window through the share flow.</p>
+            <p><b>Free access:</b> You receive 1 free session to use every 4 hours. Free sessions do not roll over.</p>
+            <p><b>Share bonus:</b> You may claim up to +1 extra free session in that same 4-hour window via the share flow.</p>
             <p><b>Paid access:</b> $1 AUD unlocks unlimited sessions for 4 hours on that browser/device only.</p>
             <p><b>Billing:</b> Payments are processed by Stripe. By purchasing, you authorize the applicable charge shown at checkout.</p>
             <p><b>Session counting:</b> A session is counted when gameplay starts (not just browsing, lobby, or reading rules).</p>
@@ -47,7 +48,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Contact:</b> {CONTACT}</p>
           </div>
         ) : isPrivacy ? (
-          <div className="runtime-flow">
+          <div className="runtime-flow legal-copy">
             <p><b>Who we are:</b> {COMPANY}</p>
             <p><b>What we collect:</b> Limited game/session data needed to run gameplay and access logic, including display names, session/game IDs, room events, and browser access token state.</p>
             <p><b>Why we collect it:</b> To operate games, enforce free/paid session rules, detect basic abuse, and provide support.</p>
@@ -59,9 +60,9 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Contact:</b> {CONTACT}</p>
           </div>
         ) : (
-          <div className="runtime-flow">
+          <div className="runtime-flow legal-copy">
             <p><b>How access works:</b> No account needed. Access is tied to this browser/device.</p>
-            <p><b>Free access:</b> 1 free session every 4 hours.</p>
+            <p><b>Free access:</b> 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> Up to +1 extra free session in that same 4-hour window via the share flow.</p>
             <p><b>Unlimited access:</b> $1 AUD unlocks unlimited sessions for 4 hours on that browser/device.</p>
             <p><b>When sessions count:</b> A session counts when gameplay starts, not while browsing or waiting in lobby.</p>
