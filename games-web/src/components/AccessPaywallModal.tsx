@@ -133,11 +133,11 @@ export default function AccessPaywallModal({
           </p>
         ) : (state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable ? (
           <p className="body-text small">
-            You have {freeLabel} Unlock unlimited sessions for 4h, $1 AUD.
+            You have {freeLabel} Unlock unlimited sessions (play) for 4h, $1 AUD.
           </p>
         ) : (
           <p className="body-text small">
-            You have {freeLabel} Unlock unlimited sessions for 4h, $1 AUD.
+            You have {freeLabel} Unlock unlimited sessions (play) for 4h, $1 AUD.
           </p>
         )}
 
@@ -153,7 +153,7 @@ export default function AccessPaywallModal({
                 🎁 Share for +1 session (free)
                 </button>
                 {shareStep === "waiting" && <p className="body-text small">Checking share authenticity...</p>}
-                {shareStep === "confirm" && <p className="body-text small">Did you share the site with a friend?</p>}
+                {shareStep === "confirm" && <p className="body-text small">Are you sure you share the site with a friend?</p>}
                 {showShareConfirmButtons && (
                   <div className="bottom-row">
                     <button className="btn btn-key" type="button" onClick={() => void confirmShare(true)} disabled={busy}>
