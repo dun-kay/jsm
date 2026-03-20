@@ -13,7 +13,7 @@ import type { GameSessionContext } from "./games/types";
 type RouteState =
   | { kind: "home" }
   | { kind: "stats" }
-  | { kind: "legal"; page: "terms" | "privacy" }
+  | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
 type ThemeMode = "light" | "dark";
@@ -41,6 +41,9 @@ function parseRoute(pathname: string): RouteState {
   }
   if (path === "/privacy-policy/") {
     return { kind: "legal", page: "privacy" };
+  }
+  if (path === "/how-unlimited-works/") {
+    return { kind: "legal", page: "unlimited" };
   }
 
   const onboardingMatch = path.match(/^\/g\/([^/]+)\/$/);

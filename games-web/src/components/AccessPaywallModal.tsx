@@ -61,10 +61,12 @@ export default function AccessPaywallModal({
       return "Unlimited play active 🔓";
     }
     if ((state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable) {
-      return "Play access 🎮";
+      return "Unlock unlimited play for 4h 🔓, $1 AUD";
     }
     return "Keep playing";
   }, [state?.paidUnlockActive]);
+  const freeLeft = state?.freeSessionsLeft ?? 0;
+  const freeLabel = `${freeLeft} free session${freeLeft === 1 ? "" : "s"} remaining.`;
 
   async function handleCheckout() {
     setBusy(true);
@@ -127,30 +129,30 @@ export default function AccessPaywallModal({
         <h2>{title}</h2>
         {state?.paidUnlockActive ? (
           <p className="body-text small">
-            You can play unlimited sessions for the next {formatRemaining(state.windowSecondsLeft)} on this browser.
+            You can play unlimited sessions for the next {formatRemaining(state.windowSecondsLeft)}, on this browser/device only.
           </p>
         ) : (state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable ? (
           <p className="body-text small">
-            You still have free play available. Free sessions reset every 4 hours, and sharing can unlock +1 extra.
+            You have {freeLabel} Unlock unlimited sessions for 4h, $1 AUD.
           </p>
         ) : (
           <p className="body-text small">
-            You have used your free sessions for now. Unlock unlimited play for 4 hours for $1 AUD.
+            You have {freeLabel} Unlock unlimited sessions for 4h, $1 AUD.
           </p>
         )}
 
         {!state?.paidUnlockActive && (
           <>
             <button className="btn btn-key" type="button" onClick={() => void handleCheckout()} disabled={busy}>
-              {busy ? "Loading..." : "Unlock unlimited for $1"}
+              {busy ? "Loading..." : "Unlimited play for 4h 🔓"}
             </button>
 
             {state?.shareBonusAvailable && (
               <>
                 <button className="btn btn-soft" type="button" onClick={() => void handleShare()} disabled={busy}>
-                  Share for +1 free session 🎁
+                🎁 Share for +1 session (free)
                 </button>
-                {shareStep === "waiting" && <p className="body-text small">Checking share flow...</p>}
+                {shareStep === "waiting" && <p className="body-text small">Checking share authenticity...</p>}
                 {shareStep === "confirm" && <p className="body-text small">Did you share the site with a friend?</p>}
                 {showShareConfirmButtons && (
                   <div className="bottom-row">
@@ -170,6 +172,14 @@ export default function AccessPaywallModal({
         <button className="btn btn-soft" type="button" onClick={onClose} disabled={busy}>
           Maybe later
         </button>
+
+        <div className="footer-links-inline">
+          <a href="https://tally.so/r/XxqNzP" target="_blank" rel="noreferrer">
+            Support
+          </a>
+          <a href="/terms/">Terms</a>
+          <a href="/how-unlimited-works/">How unlimited works</a>
+        </div>
 
         {errorText && <p className="hint-text error-text">{errorText}</p>}
       </div>
