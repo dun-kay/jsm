@@ -9,6 +9,8 @@ import {
   type FruitBowlState
 } from "../../lib/fruitBowlApi";
 import { getGameIntroRules } from "../rules";
+import AccessPaywallModal from "../../components/AccessPaywallModal";
+import { usePlayAccess } from "../../lib/usePlayAccess";
 
 type FruitBowlRuntimeProps = {
   gameCode: string;
@@ -89,6 +91,15 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
   const [promptTwo, setPromptTwo] = useState<string>("");
   const [promptTouched, setPromptTouched] = useState<boolean>(false);
   const [showDisputeModal, setShowDisputeModal] = useState<boolean>(false);
+  const {
+    accessState,
+    showPaywall,
+    setShowPaywall,
+    accessError,
+    setAccessError,
+    refreshAccessState,
+    ensureSessionAccess
+  } = usePlayAccess();
 
   useEffect(() => {
     let active = true;
@@ -164,6 +175,17 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
   async function doContinue() {
     if (!state || busy) {
       return;
+    }
+    if (state.phase === "rules" && isWaitingOnYou) {
+      try {
+        const ok = await ensureSessionAccess(gameCode);
+        if (!ok) {
+          return;
+        }
+      } catch (error) {
+        setAccessError((error as Error).message || "Unable to validate play access.");
+        return;
+      }
     }
     setBusy(true);
     setErrorText("");
@@ -522,7 +544,16 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
         </>
       )}
 
-      {(state.lastError || errorText) && <p className="hint-text error-text">{state.lastError || errorText}</p>}
+      {(state.lastError || errorText || accessError) && (
+        <p className="hint-text error-text">{state.lastError || errorText || accessError}</p>
+      )}
+      <AccessPaywallModal
+        open={showPaywall}
+        state={accessState}
+        onClose={() => setShowPaywall(false)}
+        onRefreshState={refreshAccessState}
+        onUnlocked={() => setShowPaywall(false)}
+      />
 
       {showDisputeModal && (
         <div className="modal-backdrop" role="dialog" aria-modal="true">

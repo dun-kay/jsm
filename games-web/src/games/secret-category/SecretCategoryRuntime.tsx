@@ -10,6 +10,8 @@ import {
   type SecretCategoryState
 } from "../../lib/secretCategoryApi";
 import { getGameIntroRules } from "../rules";
+import AccessPaywallModal from "../../components/AccessPaywallModal";
+import { usePlayAccess } from "../../lib/usePlayAccess";
 
 type SecretCategoryRuntimeProps = {
   gameCode: string;
@@ -20,6 +22,15 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
   const [state, setState] = useState<SecretCategoryState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
+  const {
+    accessState,
+    showPaywall,
+    setShowPaywall,
+    accessError,
+    setAccessError,
+    refreshAccessState,
+    ensureSessionAccess
+  } = usePlayAccess();
 
   useEffect(() => {
     let active = true;
@@ -85,6 +96,17 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) {
       return;
+    }
+    if (state.phase === "rules") {
+      try {
+        const ok = await ensureSessionAccess(gameCode);
+        if (!ok) {
+          return;
+        }
+      } catch (error) {
+        setAccessError((error as Error).message || "Unable to validate play access.");
+        return;
+      }
     }
     setBusy(true);
     setErrorText("");
@@ -326,7 +348,14 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
         </>
       )}
 
-      {errorText && <p className="hint-text error-text">{errorText}</p>}
+      {(errorText || accessError) && <p className="hint-text error-text">{errorText || accessError}</p>}
+      <AccessPaywallModal
+        open={showPaywall}
+        state={accessState}
+        onClose={() => setShowPaywall(false)}
+        onRefreshState={refreshAccessState}
+        onUnlocked={() => setShowPaywall(false)}
+      />
     </section>
   );
 }

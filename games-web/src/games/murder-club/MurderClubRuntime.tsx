@@ -13,6 +13,8 @@ import {
   getMurderClubThemeById,
   getRandomMurderClubThemeId
 } from "./themes";
+import AccessPaywallModal from "../../components/AccessPaywallModal";
+import { usePlayAccess } from "../../lib/usePlayAccess";
 
 type MurderClubRuntimeProps = {
   gameCode: string;
@@ -40,6 +42,15 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
   const [selectedEvidenceVote, setSelectedEvidenceVote] = useState<EvidenceChoice>(null);
   const [didSubmitSuspectVote, setDidSubmitSuspectVote] = useState<boolean>(false);
   const [didSubmitEvidenceVote, setDidSubmitEvidenceVote] = useState<boolean>(false);
+  const {
+    accessState,
+    showPaywall,
+    setShowPaywall,
+    accessError,
+    setAccessError,
+    refreshAccessState,
+    ensureSessionAccess
+  } = usePlayAccess();
 
   useEffect(() => {
     let active = true;
@@ -120,6 +131,17 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
   async function doContinue() {
     if (!state || busy) {
       return;
+    }
+    if (state.phase === "rules" && isWaitingOnYou(state)) {
+      try {
+        const ok = await ensureSessionAccess(gameCode);
+        if (!ok) {
+          return;
+        }
+      } catch (error) {
+        setAccessError((error as Error).message || "Unable to validate play access.");
+        return;
+      }
     }
     setBusy(true);
     setErrorText("");
@@ -491,9 +513,16 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
         </>
       )}
 
-      {(state.lastLine || state.lastError || errorText) && (
-        <p className="hint-text error-text">{state.lastError || errorText || state.lastLine}</p>
+      {(state.lastLine || state.lastError || errorText || accessError) && (
+        <p className="hint-text error-text">{state.lastError || errorText || accessError || state.lastLine}</p>
       )}
+      <AccessPaywallModal
+        open={showPaywall}
+        state={accessState}
+        onClose={() => setShowPaywall(false)}
+        onRefreshState={refreshAccessState}
+        onUnlocked={() => setShowPaywall(false)}
+      />
     </section>
   );
 }
