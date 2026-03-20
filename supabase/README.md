@@ -59,6 +59,7 @@ Run these SQL files in Supabase SQL Editor, in order:
 30. `migrations/20260319_0031_lobby_retention_cleanup.sql`
 31. `migrations/20260320_0033_daily_stats_rpc.sql`
 32. `migrations/20260320_0034_access_and_payments.sql`
+33. `migrations/20260320_0035_access_rate_limit_hardening.sql`
 
 Then test from the web app by creating a game on one device and joining from another device/link.
 
@@ -98,3 +99,10 @@ Recommended Stripe events:
 - `checkout.session.completed`
 - `checkout.session.async_payment_succeeded`
 - `checkout.session.expired`
+
+## Security hardening notes
+
+- Access RPCs are now wrapped with DB-level rate limiting keyed by browser token.
+- Checkout and payment-help functions also enforce DB-level throttling.
+- Temporary limiter rows can be cleaned with:
+  - `select public.cleanup_access_security_data();`

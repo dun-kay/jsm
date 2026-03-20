@@ -6,13 +6,14 @@ import LegalPage from "./components/LegalPage";
 import StatsPage from "./components/StatsPage";
 import FixedFooterLinks from "./components/FixedFooterLinks";
 import CookieNotice from "./components/CookieNotice";
+import AccessStatusPill from "./components/AccessStatusPill";
 import { GAMES, getGameBySlug } from "./games/registry";
 import type { GameSessionContext } from "./games/types";
 
 type RouteState =
   | { kind: "home" }
   | { kind: "stats" }
-  | { kind: "legal"; page: "terms" | "privacy" }
+  | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
 type ThemeMode = "light" | "dark";
@@ -40,6 +41,9 @@ function parseRoute(pathname: string): RouteState {
   }
   if (path === "/privacy-policy/") {
     return { kind: "legal", page: "privacy" };
+  }
+  if (path === "/how-unlimited-works/") {
+    return { kind: "legal", page: "unlimited" };
   }
 
   const onboardingMatch = path.match(/^\/g\/([^/]+)\/$/);
@@ -214,6 +218,7 @@ export default function App() {
 
   return (
     <>
+      <AccessStatusPill hidden={route.kind === "runtime"} />
       {page}
       <FixedFooterLinks />
       <CookieNotice />

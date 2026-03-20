@@ -56,6 +56,25 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
     await supabase.rpc("ensure_access_record", { p_browser_token: browserToken });
+    const { data: guardData, error: guardError } = await supabase
+      .rpc("check_access_rate_limit", {
+        p_browser_token: browserToken,
+        p_action_key: "start_checkout",
+        p_limit: 5,
+        p_window_seconds: 300,
+        p_block_seconds: 300
+      })
+      .single<{ allowed: boolean; retry_after_seconds: number }>();
+
+    if (guardError) {
+      return jsonResponse({ error: guardError.message || "Unable to validate request rate." }, 500);
+    }
+    if (!guardData?.allowed) {
+      return jsonResponse(
+        { error: `Too many attempts. Try again in ${guardData?.retry_after_seconds || 300} seconds.` },
+        429
+      );
+    }
 
     const checkout = await stripe.checkout.sessions.create({
       mode: "payment",

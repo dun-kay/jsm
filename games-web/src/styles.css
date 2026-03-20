@@ -561,6 +561,16 @@ body {
   margin: auto;
 }
 
+.legal-copy {
+  text-align: left;
+}
+
+.legal-copy p {
+  margin: 0;
+  text-align: left;
+  line-height: 1.35;
+}
+
 .runtime-reroll-btn {
   min-height: 26px;
   max-width: 130px;
@@ -604,6 +614,22 @@ body {
   text-decoration: underline;
 }
 
+.footer-links-inline {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 8px;
+  font-size: 12px;
+  padding-top: 4px;
+}
+
+.footer-links-inline a {
+  text-decoration: underline;
+  color: var(--text);
+  font-weight: 700;
+}
+
 .cookie-notice {
   position: fixed;
   left: 50%;
@@ -644,6 +670,47 @@ body {
   min-width: 45px;
   padding: 2px 10px;
   cursor: pointer;
+}
+
+.access-pill-wrap {
+  width: min(100%, 380px) max(100%, 500px);
+  min-width: 0;
+  max-width: 400px;
+  margin: 8px auto 0;
+  padding: 0 0px;
+}
+
+.access-pill {
+  width: 100%;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--surface);
+}
+
+.access-pill-text {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.access-pill-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.access-pill-btn {
+  min-height: 28px;
+  width: auto;
+  min-width: 74px;
+  margin: 0;
+  font-size: 12px;
+  padding: 4px 10px;
 }
 
 .runtime-exit {

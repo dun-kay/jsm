@@ -66,14 +66,14 @@ export default function StatsPage({ theme, onToggleTheme, onBack }: StatsPagePro
       <section className="screen screen-basic">
         <header className="screen-header">
           <h1>Session Stats</h1>
-          <p className="body-text small">Daily totals from Mar 10, 2026 (Los Angeles time).</p>
+          <p className="body-text small">Daily totals (LA time).</p>
         </header>
 
         <div className="stats-list" aria-live="polite">
           <div className="stats-row stats-head">
             <span>Date (LA)</span>
             <span>Sessions</span>
-            <span>Avg users/session</span>
+            <span>Av us./se.</span>
           </div>
 
           {loading ? <p className="body-text small">Loading stats...</p> : null}

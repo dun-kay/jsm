@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   claimShareBonus,
-  requestPaymentHelp,
   startCheckout,
-  type AccessState,
-  type PaymentHelpReason
+  type AccessState
 } from "../lib/accessApi";
 
 type AccessPaywallModalProps = {
@@ -16,14 +14,6 @@ type AccessPaywallModalProps = {
 };
 
 type ShareStep = "idle" | "waiting" | "confirm";
-
-const HELP_REASONS: Array<{ value: PaymentHelpReason; label: string }> = [
-  { value: "i_paid_but_didnt_unlock", label: "I paid but didn't unlock" },
-  { value: "payment_failed", label: "Payment failed" },
-  { value: "i_was_charged_twice", label: "I was charged twice" },
-  { value: "checkout_closed", label: "Checkout closed" },
-  { value: "something_else", label: "Something else" }
-];
 
 function formatRemaining(seconds: number): string {
   const total = Math.max(0, seconds);
@@ -43,10 +33,6 @@ export default function AccessPaywallModal({
   const [errorText, setErrorText] = useState("");
   const [shareStep, setShareStep] = useState<ShareStep>("idle");
   const [showShareConfirmButtons, setShowShareConfirmButtons] = useState(false);
-  const [helpOpen, setHelpOpen] = useState(false);
-  const [helpReason, setHelpReason] = useState<PaymentHelpReason>("i_paid_but_didnt_unlock");
-  const [helpNote, setHelpNote] = useState("");
-  const [helpMessage, setHelpMessage] = useState("");
 
   useEffect(() => {
     if (!open) {
@@ -54,8 +40,6 @@ export default function AccessPaywallModal({
       setBusy(false);
       setShareStep("idle");
       setShowShareConfirmButtons(false);
-      setHelpOpen(false);
-      setHelpMessage("");
     }
   }, [open]);
 
@@ -63,20 +47,26 @@ export default function AccessPaywallModal({
     if (!open || shareStep !== "waiting") {
       return;
     }
-    const first = window.setTimeout(() => setShareStep("confirm"), 10_000);
-    const second = window.setTimeout(() => setShowShareConfirmButtons(true), 20_000);
+    const first = window.setTimeout(() => {
+      setShareStep("confirm");
+      setShowShareConfirmButtons(true);
+    }, 7_000);
     return () => {
       window.clearTimeout(first);
-      window.clearTimeout(second);
     };
   }, [open, shareStep]);
 
   const title = useMemo(() => {
     if (state?.paidUnlockActive) {
-      return "Unlimited play active";
+      return "Unlimited play active 🔓";
+    }
+    if ((state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable) {
+      return "Unlock unlimited play for 4h 🔓, $1 AUD";
     }
     return "Keep playing";
   }, [state?.paidUnlockActive]);
+  const freeLeft = state?.freeSessionsLeft ?? 0;
+  const freeLabel = `${freeLeft} free session${freeLeft === 1 ? "" : "s"} remaining.`;
 
   async function handleCheckout() {
     setBusy(true);
@@ -129,24 +119,6 @@ export default function AccessPaywallModal({
     }
   }
 
-  async function submitPaymentHelp() {
-    setBusy(true);
-    setErrorText("");
-    setHelpMessage("");
-    try {
-      const result = await requestPaymentHelp(helpReason, helpNote);
-      setHelpMessage(result.message);
-      await onRefreshState();
-      if (result.granted) {
-        onUnlocked();
-      }
-    } catch (error) {
-      setErrorText((error as Error).message || "Unable to submit payment help request.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
   if (!open) {
     return null;
   }
@@ -157,27 +129,31 @@ export default function AccessPaywallModal({
         <h2>{title}</h2>
         {state?.paidUnlockActive ? (
           <p className="body-text small">
-            You can play unlimited sessions for the next {formatRemaining(state.windowSecondsLeft)} in this browser.
+            You can play unlimited sessions for the next {formatRemaining(state.windowSecondsLeft)}, on this browser/device only.
+          </p>
+        ) : (state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable ? (
+          <p className="body-text small">
+            You have {freeLabel} Unlock unlimited sessions for 4h, $1 AUD.
           </p>
         ) : (
           <p className="body-text small">
-            You have used your free sessions for now. Unlock unlimited sessions for 4 hours for $1 AUD.
+            You have {freeLabel} Unlock unlimited sessions for 4h, $1 AUD.
           </p>
         )}
 
         {!state?.paidUnlockActive && (
           <>
             <button className="btn btn-key" type="button" onClick={() => void handleCheckout()} disabled={busy}>
-              {busy ? "Loading..." : "Unlock now"}
+              {busy ? "Loading..." : "Unlimited play for 4h 🔓"}
             </button>
 
             {state?.shareBonusAvailable && (
               <>
                 <button className="btn btn-soft" type="button" onClick={() => void handleShare()} disabled={busy}>
-                  Share for 1 extra free session
+                🎁 Share for +1 session (free)
                 </button>
-                {shareStep === "waiting" && <p className="body-text small">Checking share flow...</p>}
-                {shareStep === "confirm" && <p className="body-text small">Did you share the site?</p>}
+                {shareStep === "waiting" && <p className="body-text small">Checking share authenticity...</p>}
+                {shareStep === "confirm" && <p className="body-text small">Did you share the site with a friend?</p>}
                 {showShareConfirmButtons && (
                   <div className="bottom-row">
                     <button className="btn btn-key" type="button" onClick={() => void confirmShare(true)} disabled={busy}>
@@ -194,39 +170,16 @@ export default function AccessPaywallModal({
         )}
 
         <button className="btn btn-soft" type="button" onClick={onClose} disabled={busy}>
-          Not now
+          Maybe later
         </button>
 
-        <button className="btn btn-soft" type="button" onClick={() => setHelpOpen((old) => !old)} disabled={busy}>
-          Payment didn't work?
-        </button>
-
-        {helpOpen && (
-          <div className="runtime-list">
-            <select
-              className="input-pill"
-              value={helpReason}
-              onChange={(event) => setHelpReason(event.target.value as PaymentHelpReason)}
-            >
-              {HELP_REASONS.map((reason) => (
-                <option key={reason.value} value={reason.value}>
-                  {reason.label}
-                </option>
-              ))}
-            </select>
-            <input
-              className="input-pill"
-              type="text"
-              value={helpNote}
-              onChange={(event) => setHelpNote(event.target.value.slice(0, 200))}
-              placeholder="Tell us what happened (optional)"
-            />
-            <button className="btn btn-key" type="button" onClick={() => void submitPaymentHelp()} disabled={busy}>
-              Submit help request
-            </button>
-            {helpMessage && <p className="body-text small">{helpMessage}</p>}
-          </div>
-        )}
+        <div className="footer-links-inline">
+          <a href="https://tally.so/r/XxqNzP" target="_blank" rel="noreferrer">
+            Support
+          </a>
+          <a href="/terms/">Terms</a>
+          <a href="/how-unlimited-works/">How unlimited works</a>
+        </div>
 
         {errorText && <p className="hint-text error-text">{errorText}</p>}
       </div>
