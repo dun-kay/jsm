@@ -1,16 +1,25 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@16.12.0";
-import { corsHeaders, jsonResponse } from "../_shared/cors.ts";
+import { getCorsHeaders, getRequestOrigin, isOriginAllowed, jsonResponse } from "../_shared/cors.ts";
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 Deno.serve(async (req) => {
+  const origin = getRequestOrigin(req);
+
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    if (!origin || !isOriginAllowed(origin)) {
+      return new Response("Forbidden", { status: 403 });
+    }
+    return new Response("ok", { headers: getCorsHeaders(origin) });
   }
 
   if (req.method !== "POST") {
-    return jsonResponse({ error: "Method not allowed." }, 405);
+    return jsonResponse({ error: "Method not allowed." }, 405, origin);
+  }
+
+  if (!origin || !isOriginAllowed(origin)) {
+    return jsonResponse({ error: "Forbidden origin." }, 403, origin);
   }
 
   try {
@@ -20,14 +29,14 @@ Deno.serve(async (req) => {
     const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
     if (!stripeSecretKey || !supabaseUrl || !supabaseServiceRoleKey) {
-      return jsonResponse({ error: "Missing server environment variables." }, 500);
+      return jsonResponse({ error: "Missing server environment variables." }, 500, origin);
     }
 
     const body = (await req.json()) as { browserToken?: string; returnTo?: string };
     const browserToken = String(body.browserToken || "");
     const returnToRaw = String(body.returnTo || "");
     if (!UUID_REGEX.test(browserToken)) {
-      return jsonResponse({ error: "Invalid browser token." }, 400);
+      return jsonResponse({ error: "Invalid browser token." }, 400, origin);
     }
 
     let successUrl = `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`;
@@ -67,12 +76,13 @@ Deno.serve(async (req) => {
       .single<{ allowed: boolean; retry_after_seconds: number }>();
 
     if (guardError) {
-      return jsonResponse({ error: guardError.message || "Unable to validate request rate." }, 500);
+      return jsonResponse({ error: guardError.message || "Unable to validate request rate." }, 500, origin);
     }
     if (!guardData?.allowed) {
       return jsonResponse(
         { error: `Too many attempts. Try again in ${guardData?.retry_after_seconds || 300} seconds.` },
-        429
+        429,
+        origin
       );
     }
 
@@ -108,11 +118,12 @@ Deno.serve(async (req) => {
 
     return jsonResponse({
       checkoutUrl: checkout.url
-    });
+    }, 200, origin);
   } catch (error) {
     return jsonResponse(
       { error: error instanceof Error ? error.message : "Failed to create checkout session." },
-      500
+      500,
+      origin
     );
   }
 });

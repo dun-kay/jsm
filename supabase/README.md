@@ -82,6 +82,7 @@ Required function secrets (set in Supabase project secrets):
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 - `SITE_URL` (example: `https://jumpship.media`)
+- `ALLOWED_ORIGINS` (comma-separated, example: `https://jumpship.media,http://localhost:5173`)
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 Deploy functions:
