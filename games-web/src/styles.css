@@ -457,19 +457,6 @@ body {
   padding-bottom: 20px;
 }
 
-.home-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.site-logo-mini {
-  display: block;
-  width: 64px;
-  height: auto;
-  border-radius: 10px;
-}
 
 .games-grid {
   display: grid;

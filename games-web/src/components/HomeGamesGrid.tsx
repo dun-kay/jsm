@@ -17,12 +17,9 @@ export default function HomeGamesGrid({
 }: HomeGamesGridProps) {
   return (
     <div className="site-shell">
-      <div className="home-topbar">
-        <img className="site-logo-mini" src="/assets/site-logo.png" alt="Games With Friends logo" />
-        <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
-          {theme === "light" ? "Dark mode" : "Light mode"}
-        </button>
-      </div>
+      <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
+        {theme === "light" ? "Dark mode" : "Light mode"}
+      </button>
       <header className="site-header">
         <h1>Games With Friends</h1>
       </header>
