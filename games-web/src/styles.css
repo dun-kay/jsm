@@ -457,12 +457,18 @@ body {
   padding-bottom: 20px;
 }
 
-.site-logo {
+.home-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.site-logo-mini {
   display: block;
-  width: min(100%, 170px);
+  width: 64px;
   height: auto;
-  margin: 20px auto 10px;
-  border-radius: 14px;
+  border-radius: 10px;
 }
 
 .games-grid {
