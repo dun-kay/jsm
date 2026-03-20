@@ -47,11 +47,12 @@ export default function AccessPaywallModal({
     if (!open || shareStep !== "waiting") {
       return;
     }
-    const first = window.setTimeout(() => setShareStep("confirm"), 10_000);
-    const second = window.setTimeout(() => setShowShareConfirmButtons(true), 20_000);
+    const first = window.setTimeout(() => {
+      setShareStep("confirm");
+      setShowShareConfirmButtons(true);
+    }, 7_000);
     return () => {
       window.clearTimeout(first);
-      window.clearTimeout(second);
     };
   }, [open, shareStep]);
 
