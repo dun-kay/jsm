@@ -3,6 +3,7 @@ import GameOnboardingFlow from "./components/GameOnboardingFlow";
 import GameRuntimeHost from "./components/GameRuntimeHost";
 import HomeGamesGrid from "./components/HomeGamesGrid";
 import LegalPage from "./components/LegalPage";
+import StatsPage from "./components/StatsPage";
 import FixedFooterLinks from "./components/FixedFooterLinks";
 import CookieNotice from "./components/CookieNotice";
 import { GAMES, getGameBySlug } from "./games/registry";
@@ -10,6 +11,7 @@ import type { GameSessionContext } from "./games/types";
 
 type RouteState =
   | { kind: "home" }
+  | { kind: "stats" }
   | { kind: "legal"; page: "terms" | "privacy" }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
@@ -29,6 +31,9 @@ function parseRoute(pathname: string): RouteState {
 
   if (path === "/") {
     return { kind: "home" };
+  }
+  if (path === "/stats/") {
+    return { kind: "stats" };
   }
   if (path === "/terms/") {
     return { kind: "legal", page: "terms" };
@@ -126,6 +131,16 @@ export default function App() {
     page = (
       <LegalPage
         type={route.page}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onBack={() => navigate("/")}
+      />
+    );
+  }
+
+  if (route.kind === "stats") {
+    page = (
+      <StatsPage
         theme={theme}
         onToggleTheme={toggleTheme}
         onBack={() => navigate("/")}

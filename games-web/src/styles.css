@@ -693,3 +693,31 @@ body {
   font-weight: 700;
   margin: auto;
 }
+
+.stats-list {
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  padding: var(--pad-sm);
+  display: grid;
+  gap: 6px;
+  min-height: 260px;
+  align-content: start;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 1fr;
+  gap: 8px;
+  align-items: center;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.stats-head {
+  background: var(--bgp);
+  color: var(--textp);
+}
