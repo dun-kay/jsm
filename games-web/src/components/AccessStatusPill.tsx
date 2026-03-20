@@ -54,18 +54,18 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
 
   const statusText = useMemo(() => {
     if (!state) {
-      return "Checking play access...";
+      return "Checking access...";
     }
     if (state.paidUnlockActive) {
-      return `Unlimited play unlocked 🔓 · ${formatTimeLeft(state.paidUnlockExpiresAt, nowMs)} left`;
+      return `Unlimited play 🔓: ${formatTimeLeft(state.paidUnlockExpiresAt, nowMs)} left`;
     }
     if (state.freeSessionsLeft > 0) {
-      return `${state.freeSessionsLeft} free session${state.freeSessionsLeft === 1 ? "" : "s"} left 🎉`;
+      return `Play free +${state.freeSessionsLeft} 🎉`;
     }
     if (state.shareBonusAvailable) {
-      return "Out of free sessions for now · Share for +1 🚀";
+      return "Out of free sessions";
     }
-    return "Free sessions used for now · $1 unlock for 4h";
+    return "Out of free sessions";
   }, [state, nowMs]);
 
   if (hidden) {
@@ -80,17 +80,17 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
           <div className="access-pill-actions">
             {state?.shareBonusAvailable && !state.paidUnlockActive && (
               <button className="btn btn-soft access-pill-btn" type="button" onClick={() => setShowModal(true)}>
-                +1 free 🎁
+               🎁 Share for +1 session
               </button>
             )}
             {!state?.paidUnlockActive && (
               <button className="btn btn-key access-pill-btn" type="button" onClick={() => setShowModal(true)}>
-                $1 · 4h 🔓
+                Unlimited 🔓
               </button>
             )}
             {state?.paidUnlockActive && (
               <button className="btn btn-soft access-pill-btn" type="button" onClick={() => setShowModal(true)}>
-                Manage
+                Unlocked 🔓
               </button>
             )}
           </div>
