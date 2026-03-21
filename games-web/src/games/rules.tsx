@@ -26,7 +26,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     )
   },
   "popular-people": {
-    title: "You are about to play... Popular People",
+    title: "You are abot to play... Popular People",
     content: (
       <>
         <p><b>Each player enters a popular person.</b> Don't reveal this to the other players.</p>
@@ -64,26 +64,19 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are about to play... Murder Club",
     content: (
       <>
-        <p><b>Some players are Murderers.</b> Everyone else is an Investigator.</p>
-        <p>Murderers try to block evidence. Investigators try to submit evidence.</p>
+        <p><b>A murder has taken place.</b><p></p>Half the players are involved, the other half are trying to find the murderers.</p>
         <br />
-        <p><b>Each round has 5 steps:</b></p>
-        <p>1. A fresh piece of evidence is revealed.</p>
-        <p>2. Everyone votes on one suspect.</p>
-        <p>3. The suspect is under suspicion and can't speak or vote on evidence.</p>
-        <p>4. Remaining players vote to <b>Admit</b> or <b>Reject</b> evidence using dealt cards.</p>
-        <p>5. The result is revealed and scores update.</p>
+        <p><b>Each round, a piece of evidence is found.</b></p>
+        <p>Everyone votes on <b>one suspect</b>, someone they think is a murderer.</p>
+        <p>The suspect <b>can't speak or vote</b> on evidence that round.</p>
+        <p>Players are dealt two cards, and vote to <b>Admit</b> or <b>Reject</b> the evidence.<p></p>
+        Players may get randomly dealt two of the same cards, <b>or be lying about it.</b></p>
         <br />
-        <p><b>Why place suspicion?</b> You might block a strong speaker, remove a likely liar, or sideline someone you don't trust.</p>
-        <p>Suspect votes are public. Evidence votes are shown after the round.</p>
-        <p>If there is a tie, you discuss quickly and vote again.</p>
+        <p><b>In general, Murderers want to reject & Investigators want to admit evidence.</b>
+          <p></p>But play carefully, or you'll be put under suspicion and be blocked from voting...</p>
         <br />
-        <p><b>Evidence cards are randomly dealt each round.</b> You might get Reject + Reject, Admit + Reject, or Admit + Admit.</p>
-        <p>So when players explain their vote, they might be truthful... or bluffing.</p>
-        <br />
-        <p><b>Win condition:</b></p>
-        <p>Investigators win at 3 evidence submits.</p>
-        <p>Murderers win at 3 evidence blocks.</p>
+        <p>Investigators win at <b>3 evidence submits.</b></p>
+        <p>Murderers win at <b>3 evidence blocks.</b></p>
       </>
     )
   }
