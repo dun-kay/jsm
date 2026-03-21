@@ -92,11 +92,11 @@ Deno.serve(async (req) => {
         {
           quantity: 1,
           price_data: {
-            currency: "aud",
+            currency: "usd",
             unit_amount: 100,
             product_data: {
-              name: "Games With Friends - 4 hour unlock",
-              description: "Unlimited sessions for 4 hours on this browser/device"
+              name: "Games With Friends - 4h Unlimited Game Sessions/Play",
+              description: "4 hours of unlimited game sessions/play, on the Games With Friends (jumpship.media) site."
             }
           }
         }
@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
       stripe_checkout_session_id: checkout.id,
       status: "pending",
       amount_cents: 100,
-      currency: "aud"
+      currency: "usd"
     });
 
     return jsonResponse({

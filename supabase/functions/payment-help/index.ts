@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
       browser_token: browserToken,
       status: data.granted ? "paid" : "failed",
       amount_cents: 100,
-      currency: "aud",
+      currency: "usd",
       stripe_checkout_session_id: null,
       stripe_payment_intent_id: note || null
     });

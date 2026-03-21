@@ -61,9 +61,9 @@ export default function AccessPaywallModal({
       return "Unlimited play active 🔓";
     }
     if ((state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable) {
-      return "Unlock unlimited play for 4h 🔓, $1 AUD";
+      return "Unlock unlimited play for 4h, $1.00 USD 🔓";
     }
-    return "Keep playing";
+    return "Unlock unlimited play for 4h, $1.00 USD  🔓";
   }, [state?.paidUnlockActive]);
   const freeLeft = state?.freeSessionsLeft ?? 0;
   const freeLabel = `${freeLeft} free session${freeLeft === 1 ? "" : "s"} remaining.`;
@@ -133,11 +133,11 @@ export default function AccessPaywallModal({
           </p>
         ) : (state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable ? (
           <p className="body-text small">
-            You have {freeLabel} Unlock unlimited sessions (play) for 4h, $1 AUD.
+            You have {freeLabel} Unlock unlimited sessions/play for 4h, $1.00 USD.
           </p>
         ) : (
           <p className="body-text small">
-            You have {freeLabel} Unlock unlimited sessions (play) for 4h, $1 AUD.
+            You have {freeLabel} Unlock unlimited sessions/play for 4h, $1.00 USD.
           </p>
         )}
 
