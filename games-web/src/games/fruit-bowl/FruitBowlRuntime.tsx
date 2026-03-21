@@ -5,6 +5,7 @@ import {
   initFruitBowl,
   markFruitBowlPrompt,
   playAgainFruitBowl,
+  shuffleFruitBowlTeams,
   submitFruitBowlPrompts,
   type FruitBowlState
 } from "../../lib/fruitBowlApi";
@@ -264,6 +265,22 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
     }
   }
 
+  async function doShuffleTeams() {
+    if (!state || busy || !state.you.isHost || state.phase !== "teams") {
+      return;
+    }
+    setBusy(true);
+    setErrorText("");
+    try {
+      const next = await shuffleFruitBowlTeams(gameCode, playerToken);
+      setState(next);
+    } catch (error) {
+      setErrorText((error as Error).message || "Unable to re-shuffle teams.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!state) {
     return (
       <section className="runtime-card">
@@ -341,6 +358,11 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
 
       {state.phase === "teams" && (
         <><p><h2>Get to know your team.</h2><p>You might want to sit closer to them.</p></p>
+          {state.you.isHost && (
+            <button type="button" className="btn btn-soft" onClick={() => void doShuffleTeams()} disabled={busy}>
+              {busy ? "Re-shuffling..." : "Re-shuffle teams"}
+            </button>
+          )}
           <div className="players-panel">
             <p className="body-text left"><b>Team Mango 🥭:</b></p>
             <div className="player-grid teams eg">
