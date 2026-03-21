@@ -19,6 +19,7 @@ type RouteState =
 type ThemeMode = "light" | "dark";
 
 const SESSION_CONTEXT_KEY = "notes_runtime_session";
+const THEME_STORAGE_KEY = "notes_theme_mode";
 
 function normalizePath(pathname: string): string {
   if (!pathname.endsWith("/") && pathname !== "/") {
@@ -93,13 +94,27 @@ function readRuntimeSession(): GameSessionContext | null {
   }
 }
 
+function readStoredTheme(): ThemeMode {
+  try {
+    const raw = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return raw === "dark" ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
+
 export default function App() {
   const [route, setRoute] = useState<RouteState>(() => parseRoute(window.location.pathname));
   const [runtimeSession, setRuntimeSession] = useState<GameSessionContext | null>(() => readRuntimeSession());
-  const [theme, setTheme] = useState<ThemeMode>("light");
+  const [theme, setTheme] = useState<ThemeMode>(() => readStoredTheme());
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {
+      // Ignore storage-write failures and keep runtime theme behavior.
+    }
   }, [theme]);
 
   useEffect(() => {

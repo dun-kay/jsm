@@ -50,7 +50,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>The game starts with <b>everyone adding 2 prompts</b> to the game.</p>
         <p>These prompts can be anything. A word, two words, a phrase... <b>make it fun & memorable.</b></p>
         <br />
-        <p>The players are then split into two teams. <b>Team Eggplant 🍆 & Team Peach 🍑.</b></p>
+        <p>The players are then split into two teams. <b>Team Mango 🥭 & Team Peach 🍑.</b></p>
         <br />
         <p>Teams take turns describing, acting, or using a single word to try <b>help their team guess the prompts they pull from the bowl.</b></p>
         <br />
@@ -64,11 +64,26 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are about to play... Murder Club",
     content: (
       <>
-        <p>You've all been invited to a Coastal Town Murder Club...</p>
-        <p>Hidden killers sabotage missions. Innocents try to stop them.</p>
-        <p>Each round: leader picks a team, discussion, public team vote, secret mission vote.</p>
-        <p>Mission succeeds with no murders. Mission fails with murders.</p>
-        <p>First side to 3 wins.</p>
+        <p><b>Some players are Murderers.</b> Everyone else is an Investigator.</p>
+        <p>Murderers try to block evidence. Investigators try to submit evidence.</p>
+        <br />
+        <p><b>Each round has 5 steps:</b></p>
+        <p>1. A fresh piece of evidence is revealed.</p>
+        <p>2. Everyone votes on one suspect.</p>
+        <p>3. The suspect is under suspicion and can't speak or vote on evidence.</p>
+        <p>4. Remaining players vote to <b>Admit</b> or <b>Reject</b> evidence using dealt cards.</p>
+        <p>5. The result is revealed and scores update.</p>
+        <br />
+        <p><b>Why place suspicion?</b> You might block a strong speaker, remove a likely liar, or sideline someone you don't trust.</p>
+        <p>Suspect votes are public. Evidence votes are shown after the round.</p>
+        <p>If there is a tie, you discuss quickly and vote again.</p>
+        <br />
+        <p><b>Evidence cards are randomly dealt each round.</b> You might get Reject + Reject, Admit + Reject, or Admit + Admit.</p>
+        <p>So when players explain their vote, they might be truthful... or bluffing.</p>
+        <br />
+        <p><b>Win condition:</b></p>
+        <p>Investigators win at 3 evidence submits.</p>
+        <p>Murderers win at 3 evidence blocks.</p>
       </>
     )
   }

@@ -38,7 +38,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Play access model:</b> Access is browser/device based. No account is required.</p>
             <p><b>Free access:</b> You receive 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> You may claim up to +1 extra free session in that same 4-hour window via the share flow.</p>
-            <p><b>Paid access:</b> $1 AUD unlocks unlimited sessions for 4 hours on that browser/device only.</p>
+            <p><b>Paid access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device only.</p>
             <p><b>Billing:</b> Payments are processed by Stripe. By purchasing, you authorize the applicable charge shown at checkout.</p>
             <p><b>Session counting:</b> A session is counted when gameplay starts (not just browsing, lobby, or reading rules).</p>
             <p><b>Storage and continuity:</b> Clearing cookies/local storage, using incognito/private mode, or switching browsers/devices may reset or break access continuity.</p>
@@ -64,7 +64,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>How access works:</b> No account needed. Access is tied to this browser/device.</p>
             <p><b>Free access:</b> 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> Up to +1 extra free session in that same 4-hour window via the share flow.</p>
-            <p><b>Unlimited access:</b> $1 AUD unlocks unlimited sessions for 4 hours on that browser/device.</p>
+            <p><b>Unlimited access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device.</p>
             <p><b>When sessions count:</b> A session counts when gameplay starts, not while browsing or waiting in lobby.</p>
             <p><b>Payment confirmation:</b> Unlimited access starts after successful Stripe confirmation.</p>
             <p><b>What can break continuity:</b> Clearing cookies/local storage, private/incognito mode, browser/device changes, strict privacy tools, or blocked storage may reset access state.</p>

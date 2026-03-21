@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useEffect, useMemo, useState } from "react";
+﻿import { type KeyboardEvent, useEffect, useMemo, useState } from "react";
 import {
   continueFruitBowl,
   getFruitBowlState,
@@ -79,7 +79,7 @@ function roundName(roundNumber: number): string {
 }
 
 function teamLabel(teamNo: number | null | undefined): string {
-  return teamNo === 1 ? "Team Eggplant 🍆" : "Team Peach 🍑";
+  return teamNo === 1 ? "Team Mango 🥭" : "Team Peach 🍑";
 }
 
 export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRuntimeProps) {
@@ -342,7 +342,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
       {state.phase === "teams" && (
         <><p><h2>Get to know your team.</h2><p>You might want to sit closer to them.</p></p>
           <div className="players-panel">
-            <p className="body-text left"><b>Team Eggplant 🍆:</b></p>
+            <p className="body-text left"><b>Team Mango 🥭:</b></p>
             <div className="player-grid teams eg">
               {state.teamA.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -393,7 +393,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
                 </button>
               </div><br></br>
           <h2>{turnSecondsLeft}s remaining</h2>
-                       <p>Team Eggplant 🍆, Points: {state.teamAScore}</p>
+                       <p>Team Mango 🥭, Points: {state.teamAScore}</p>
               <p>Team Peach 🍑, Points: {state.teamBScore}</p>
             </>
           ) : (
@@ -403,7 +403,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
           <p>{teamLabel(state.activeTeam)} is guessing. {activeClueGiverName} is drawing from the bowl.</p><p>{state.promptsRemaining} prompts left in the bowl.</p>
           
               <br></br>
-              <p><b>Team Eggplant 🍆, Points: {state.teamAScore}</b></p>
+              <p><b>Team Mango 🥭, Points: {state.teamAScore}</b></p>
               <p><b>Team Peach 🍑, Points: {state.teamBScore}</b></p>
             </>
           )}
@@ -431,7 +431,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
           )}
 
           <div className="players-panel">
-            <p className="body-text left"><b>Team Eggplant 🍆, Points: {state.teamAScore}</b></p>
+            <p className="body-text left"><b>Team Mango 🥭, Points: {state.teamAScore}</b></p>
             <div className="player-grid teams eg">
               {state.teamA.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -475,7 +475,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
             </button>
           </div>
                     <div className="players-panel">
-            <p className="body-text left"><b>Team Eggplant 🍆, Points: {state.teamAScore}</b></p>
+            <p className="body-text left"><b>Team Mango 🥭, Points: {state.teamAScore}</b></p>
             <div className="player-grid teams eg">
               {state.teamA.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -504,7 +504,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
             {state.teamAScore === state.teamBScore
               ? "It's a tie."
               : state.teamAScore > state.teamBScore
-                ? "Team Eggplant 🍆 wins Fruit Bowl!"
+                ? "Team Mango 🥭 wins Fruit Bowl!"
                 : "Team Peach 🍑 wins Fruit Bowl!"}
           </h2>
           <p>Want to play again?</p>
@@ -521,7 +521,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
           )}
           <p></p>
                               <div className="players-panel">
-            <p className="body-text left"><b>Team Eggplant 🍆, Points: {state.teamAScore}</b></p>
+            <p className="body-text left"><b>Team Mango 🥭, Points: {state.teamAScore}</b></p>
             <div className="player-grid teams eg">
               {state.teamA.map((member) => (
                 <div key={member.id} className="player-pill team">
@@ -570,3 +570,5 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
     </section>
   );
 }
+
+

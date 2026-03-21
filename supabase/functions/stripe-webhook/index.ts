@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
             stripe_payment_intent_id: session.payment_intent ? String(session.payment_intent) : null,
             status: "paid",
             amount_cents: 100,
-            currency: "aud"
+            currency: "usd"
           },
           { onConflict: "stripe_checkout_session_id" }
         );
