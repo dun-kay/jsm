@@ -50,7 +50,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>The game starts with <b>everyone adding 2 prompts</b> to the game.</p>
         <p>These prompts can be anything. A word, two words, a phrase... <b>make it fun & memorable.</b></p>
         <br />
-        <p>The players are then split into two teams. <b>Team Eggplant 🍆 & Team Peach 🍑.</b></p>
+        <p>The players are then split into two teams. <b>Team Mango 🥭 & Team Peach 🍑.</b></p>
         <br />
         <p>Teams take turns describing, acting, or using a single word to try <b>help their team guess the prompts they pull from the bowl.</b></p>
         <br />
