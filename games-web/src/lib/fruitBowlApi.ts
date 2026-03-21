@@ -151,3 +151,10 @@ export function playAgainFruitBowl(gameCode: string, playerToken: string): Promi
     p_player_token: playerToken
   });
 }
+
+export function shuffleFruitBowlTeams(gameCode: string, playerToken: string): Promise<FruitBowlState> {
+  return rpcState("fb_shuffle_teams", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
+  });
+}
