@@ -125,8 +125,6 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
       .filter((player) => state.you.conspiratorIds.includes(player.id) && player.id !== state.you.id)
       .map((player) => player.name);
   }, [state]);
-  const canPlayReject = state?.you.evidenceCards.includes("reject") ?? false;
-  const canPlayAdmit = state?.you.evidenceCards.includes("admit") ?? false;
 
   async function doContinue() {
     if (!state || busy) {
@@ -288,20 +286,20 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
           <h2>Ready to begin?</h2>
           <p>Round {state.roundNumber}</p>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-            {busy ? "Loading..." : isWaitingOnYou(state) ? "Begin" : "Waiting for all players to click begin..."}
+            {busy ? "Loading..." : isWaitingOnYou(state) ? "Begin" : "Waiting for all players..."}
           </button>
         </>
       )}
 
       {state.phase === "evidence_reveal" && (
         <>
-          <h2>Until...</h2>
+          <h2>New evidence is found<h2></h2>at the scene of the crime...</h2>
           <div className="link-card">
             <p><b>New evidence:</b></p>
             <p>{currentEvidence}</p>
           </div>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-            {busy ? "Loading..." : isWaitingOnYou(state) ? "Understood" : "Waiting for all players to click continue..."}
+            {busy ? "Loading..." : isWaitingOnYou(state) ? "Accept evidence" : "Waiting for all players..."}
           </button>
         </>
       )}
@@ -315,8 +313,8 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
             </>
           ) : (
             <>
-              <h2>Discuss, suspect selection...</h2>
-              <p>Place suspicion. Choose one player.</p>
+              <h2>Discuss & select a suspect...</h2>
+              <p>Select a suspect, who is a murderer?<p></p>They will be blocked from speaking or voting during the evidence decision this round. Majority required.</p>
               <div className="player-grid">
                 {state.players.map((player) => (
                   <button
@@ -324,7 +322,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
                     type="button"
                     className="btn btn-soft"
                     onClick={() => setSelectedSuspectId(player.id)}
-                    style={selectedSuspectId === player.id ? { borderColor: "#f4dd44" } : undefined}
+                    style={selectedSuspectId === player.id ? { background: "#FFA845" } : undefined}
                   >
                     {player.name}
                   </button>
@@ -333,7 +331,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
               <button type="button" className="btn btn-key" onClick={() => void doVoteSuspect()} disabled={busy || !selectedSuspectId}>
                 Vote
               </button>
-              <p>Waiting for all players to vote...</p>
+              
             </>
           )}
         </>
@@ -348,52 +346,36 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
             </>
           ) : (
             <>
-              <h2>{suspectName} is under suspicion...</h2>
-              <p>They cannot speak or vote during the evidence decision.</p>
+              <h2>The group has voted {suspectName} under suspicion...</h2>
+              <p>They have been taken into police custody for the night. They cannot speak or vote during the evidence decision this round.</p>
+            <br></br>
             </>
           )}
 
-          <div className="player-grid">
-            {state.players.map((player) => {
-              const count = state.suspectCounts.find((entry) => entry.playerId === player.id)?.count ?? 0;
-              return (
-                <div
-                  key={player.id}
-                  className="player-pill"
-                  style={
-                    state.suspectPlayerId === player.id
-                      ? { borderColor: "#f4dd44", color: "#f4dd44" }
-                      : undefined
-                  }
-                >
-                  {player.name} {count > 0 ? `(${count})` : ""}
-                </div>
-              );
-            })}
-          </div>
+        
 
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-            {busy ? "Loading..." : isWaitingOnYou(state) ? (state.suspectVoteResult === "hung" ? "Vote again" : "Continue") : "Waiting for all players to click continue..."}
+            {busy ? "Loading..." : isWaitingOnYou(state) ? (state.suspectVoteResult === "hung" ? "Vote again" : "Continue") : "Waiting for all players..."}
           </button>
         </>
       )}
 
       {state.phase === "evidence_vote" && (
         <>
-          <h2>Evidence vote...</h2>
-          <p>Should this evidence be added to the case files?</p>
+          <h2>Evidence vote, discuss...</h2>
+          <p>Add evidence to the case files?</p><p></p>
           <div className="link-card">
             <p><b>{currentEvidence}</b></p>
-          </div>
+          </div><p></p>
 
           <div className="bottom-row">
-            <p>Conspirators, evidence blocks: {state.conspiratorScore}/{state.targetScore}</p>
-            <p>Investigators, evidence submits: {state.investigatorScore}/{state.targetScore}</p>
+            <p>Conspirators, evidence blocks to win: {state.conspiratorScore}/{state.targetScore}</p>
+            <p>Investigators, evidence submits to win: {state.investigatorScore}/{state.targetScore}</p>
           </div>
-
+          <p></p>
           {state.you.isUnderSuspicion ? (
             <>
-              <p className="hint-text error-text">You are under suspicion. You can not talk or vote.</p>
+              <p className="hint-text error-text">You are under suspicion, no talking or voting.</p>
               <p>Waiting for all players to vote...</p>
             </>
           ) : didSubmitEvidenceVote ? (
@@ -403,29 +385,33 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
             </>
           ) : (
             <>
-              <p>Two voting cards are dealt to each player.</p>
-              <p>Your cards: {state.you.evidenceCards.join(", ") || "..."}</p>
+              <p><b>Two voting cards are randomly dealt to each player. You may get two of the same card.</b></p><p></p>
+              <p>Your cards:</p>
               <div className="bottom-row">
-                <button
-                  type="button"
-                  className="btn btn-soft"
-                  onClick={() => setSelectedEvidenceVote("reject")}
-                  disabled={!canPlayReject}
-                  style={selectedEvidenceVote === "reject" ? { borderColor: "#ff7070" } : undefined}
-                >
-                  Reject evidence
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-soft"
-                  onClick={() => setSelectedEvidenceVote("admit")}
-                  disabled={!canPlayAdmit}
-                  style={selectedEvidenceVote === "admit" ? { borderColor: "#86e484" } : undefined}
-                >
-                  Admit evidence
-                </button>
-              </div>
-              <button type="button" className="btn btn-key" onClick={() => void doVoteEvidence()} disabled={busy || !selectedEvidenceVote}>
+                {state.you.evidenceCards.map((card, index) => (
+                  <button
+                    key={`${card}-${index}`}
+                    type="button"
+                    className="btn btn-soft"
+                    onClick={() => setSelectedEvidenceVote(card)}
+                    style={
+                      selectedEvidenceVote === card
+                        ? card === "reject"
+                          ? { borderColor: "#ff7070" }
+                          : { borderColor: "#86e484" }
+                        : undefined
+                    }
+                  >
+                    {card === "reject" ? "Reject" : "Admit"}
+                  </button>
+                ))}
+              </div><p></p>In general, Murderers want to reject & Investigators want to admit evidence. Play carefully, or you'll be put under suspicion...
+              <button
+                type="button"
+                className="btn btn-key"
+                onClick={() => void doVoteEvidence()}
+                disabled={busy || !selectedEvidenceVote || state.you.evidenceCards.length === 0}
+              >
                 Vote
               </button>
             </>
@@ -486,7 +472,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
                 ? state.investigatorScore >= state.targetScore || state.conspiratorScore >= state.targetScore
                   ? "Finish"
                   : `Continue to Round ${state.roundNumber + 1}`
-                : "Waiting for all players to click continue..."}
+                : "Waiting for all players..."}
           </button>
         </>
       )}
