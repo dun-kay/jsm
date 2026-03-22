@@ -11,6 +11,8 @@ import {
   touchPlayer,
   type LobbyPlayer
 } from "../lib/lobbyApi";
+import AccessPaywallModal from "./AccessPaywallModal";
+import { getAccessState, type AccessState } from "../lib/accessApi";
 import { getGameIntroRules } from "../games/rules";
 import type { GameConfig, GameSessionContext } from "../games/types";
 
@@ -121,6 +123,9 @@ export default function GameOnboardingFlow({
   const [errorText, setErrorText] = useState<string>("");
   const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+  const [accessState, setAccessState] = useState<AccessState | null>(null);
+  const [showPaywall, setShowPaywall] = useState<boolean>(false);
+  const [primedLobbyCode, setPrimedLobbyCode] = useState<string>("");
   const introRules = useMemo(() => getGameIntroRules(game.slug), [game.slug]);
 
   useEffect(() => {
@@ -214,6 +219,42 @@ export default function GameOnboardingFlow({
     };
   }, [screen, gameId, playerToken, flow, hostSecret, game.slug, onLaunchGame]);
 
+  useEffect(() => {
+    if (screen !== "lobby" || !gameId || !playerToken || gameStarted) {
+      return;
+    }
+    if (primedLobbyCode === gameId) {
+      return;
+    }
+
+    let active = true;
+
+    const primePaymentWarning = async () => {
+      try {
+        const next = await getAccessState();
+        if (!active) {
+          return;
+        }
+        setAccessState(next);
+        if (!next.paidUnlockActive && next.freeSessionsLeft <= 0) {
+          setShowPaywall(true);
+        }
+        setPrimedLobbyCode(gameId);
+      } catch {
+        if (!active) {
+          return;
+        }
+        setPrimedLobbyCode(gameId);
+      }
+    };
+
+    void primePaymentWarning();
+
+    return () => {
+      active = false;
+    };
+  }, [screen, gameId, playerToken, gameStarted, primedLobbyCode]);
+
   const joinUrl = useMemo(() => {
     if (!gameId) {
       return "";
@@ -273,6 +314,9 @@ export default function GameOnboardingFlow({
     setPlayerToken("");
     setBusy(false);
     setErrorText("");
+    setShowPaywall(false);
+    setAccessState(null);
+    setPrimedLobbyCode("");
     window.history.replaceState({}, "", game.route);
   }
 
@@ -293,6 +337,9 @@ export default function GameOnboardingFlow({
     setPlayerToken("");
     setBusy(false);
     setErrorText(message);
+    setShowPaywall(false);
+    setAccessState(null);
+    setPrimedLobbyCode("");
     window.history.replaceState({}, "", game.route);
   }
 
@@ -503,6 +550,9 @@ export default function GameOnboardingFlow({
       setNameTouched(false);
       setFlow("join");
       setScreen("nameEntry");
+      setShowPaywall(false);
+      setAccessState(null);
+      setPrimedLobbyCode("");
     } catch (error) {
       setErrorText((error as Error).message || "Failed to leave game.");
     } finally {
@@ -794,7 +844,7 @@ export default function GameOnboardingFlow({
 
       {showRulesModal && (
         <div className="modal-backdrop" role="dialog" aria-modal="true">
-          <div className="modal-card rules-modal">
+          <div className="modal-card rules-modal rules-modal-scroll">
             <h2>{introRules.title}</h2>
             <div className="rules-modal-content">{introRules.content}</div>
             <button className="btn btn-key" type="button" onClick={() => setShowRulesModal(false)}>
@@ -803,6 +853,21 @@ export default function GameOnboardingFlow({
           </div>
         </div>
       )}
+
+      <AccessPaywallModal
+        open={showPaywall}
+        state={accessState}
+        onClose={() => setShowPaywall(false)}
+        onRefreshState={async () => {
+          const next = await getAccessState();
+          setAccessState(next);
+        }}
+        onUnlocked={async () => {
+          const next = await getAccessState();
+          setAccessState(next);
+          setShowPaywall(false);
+        }}
+      />
     </div>
   );
 }
