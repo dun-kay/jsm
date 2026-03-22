@@ -61,9 +61,9 @@ export default function AccessPaywallModal({
       return "Unlimited play active 🔓";
     }
     if ((state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable) {
-      return "Unlock unlimited play for 4h, $1.00 USD 🔓";
+      return "Unlock unlimited play for 4h, just $1.00 USD 🔓";
     }
-    return "Unlock unlimited play for 4h, $1.00 USD  🔓";
+    return "Unlock unlimited play to continue, just $1.00 USD 🔓";
   }, [state?.paidUnlockActive]);
   const freeLeft = state?.freeSessionsLeft ?? 0;
   const freeLabel = `${freeLeft} free session${freeLeft === 1 ? "" : "s"} remaining.`;
@@ -153,7 +153,7 @@ export default function AccessPaywallModal({
                 🎁 Share for +1 session (free)
                 </button>
                 {shareStep === "waiting" && <p className="body-text small">Checking share authenticity...</p>}
-                {shareStep === "confirm" && <p className="body-text small">Are you sure you share the site with a friend?</p>}
+                {shareStep === "confirm" && <p className="body-text small">Did you share it with a friend?</p>}
                 {showShareConfirmButtons && (
                   <div className="bottom-row">
                     <button className="btn btn-key" type="button" onClick={() => void confirmShare(true)} disabled={busy}>
