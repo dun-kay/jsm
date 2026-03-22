@@ -160,7 +160,6 @@ export default function GameRuntimeHost({
           <div className="modal-backdrop" role="dialog" aria-modal="true">
             <div className="modal-card">
               <h2>Session expired</h2>
-              <p className="body-text small">Return home to reset this game state.</p>
               <button className="btn btn-key" type="button" onClick={() => void returnHomeAfterSessionExpiry()} disabled={quitting}>
                 {quitting ? "Leaving..." : "Return home"}
               </button>
