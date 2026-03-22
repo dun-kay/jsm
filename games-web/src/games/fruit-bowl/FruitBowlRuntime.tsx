@@ -92,6 +92,7 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
   const [promptTwo, setPromptTwo] = useState<string>("");
   const [promptTouched, setPromptTouched] = useState<boolean>(false);
   const [showDisputeModal, setShowDisputeModal] = useState<boolean>(false);
+  const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
   const {
     accessState,
     showPaywall,
@@ -99,7 +100,8 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
     accessError,
     setAccessError,
     refreshAccessState,
-    ensureSessionAccess
+    ensureSessionAccess,
+    primePaywallIfExhausted
   } = usePlayAccess();
 
   useEffect(() => {
@@ -140,6 +142,23 @@ export default function FruitBowlRuntime({ gameCode, playerToken }: FruitBowlRun
       window.clearInterval(interval);
     };
   }, [gameCode, playerToken]);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (state.phase !== "rules") {
+      setRulesPaywallPrimed(false);
+      return;
+    }
+    if (rulesPaywallPrimed) {
+      return;
+    }
+    setRulesPaywallPrimed(true);
+    void primePaywallIfExhausted().catch((error) => {
+      setAccessError((error as Error).message || "Unable to load play access.");
+    });
+  }, [state?.phase, state, rulesPaywallPrimed, primePaywallIfExhausted, setAccessError]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNowMs(Date.now()), 500);

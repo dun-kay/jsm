@@ -32,6 +32,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
   const [celebOne, setCelebOne] = useState<string>("");
   const [celebTouched, setCelebTouched] = useState<boolean>(false);
   const [nowMs, setNowMs] = useState<number>(Date.now());
+  const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
   const {
     accessState,
     showPaywall,
@@ -39,7 +40,8 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
     accessError,
     setAccessError,
     refreshAccessState,
-    ensureSessionAccess
+    ensureSessionAccess,
+    primePaywallIfExhausted
   } = usePlayAccess();
 
   useEffect(() => {
@@ -80,6 +82,23 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
       window.clearInterval(interval);
     };
   }, [gameCode, playerToken]);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (state.phase !== "rules") {
+      setRulesPaywallPrimed(false);
+      return;
+    }
+    if (rulesPaywallPrimed) {
+      return;
+    }
+    setRulesPaywallPrimed(true);
+    void primePaywallIfExhausted().catch((error) => {
+      setAccessError((error as Error).message || "Unable to load play access.");
+    });
+  }, [state?.phase, state, rulesPaywallPrimed, primePaywallIfExhausted, setAccessError]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNowMs(Date.now()), 500);

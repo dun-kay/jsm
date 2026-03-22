@@ -42,6 +42,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
   const [selectedEvidenceVote, setSelectedEvidenceVote] = useState<EvidenceChoice>(null);
   const [didSubmitSuspectVote, setDidSubmitSuspectVote] = useState<boolean>(false);
   const [didSubmitEvidenceVote, setDidSubmitEvidenceVote] = useState<boolean>(false);
+  const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
   const {
     accessState,
     showPaywall,
@@ -49,7 +50,8 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
     accessError,
     setAccessError,
     refreshAccessState,
-    ensureSessionAccess
+    ensureSessionAccess,
+    primePaywallIfExhausted
   } = usePlayAccess();
 
   useEffect(() => {
@@ -90,6 +92,23 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
       window.clearInterval(interval);
     };
   }, [gameCode, playerToken]);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (state.phase !== "rules") {
+      setRulesPaywallPrimed(false);
+      return;
+    }
+    if (rulesPaywallPrimed) {
+      return;
+    }
+    setRulesPaywallPrimed(true);
+    void primePaywallIfExhausted().catch((error) => {
+      setAccessError((error as Error).message || "Unable to load play access.");
+    });
+  }, [state?.phase, state, rulesPaywallPrimed, primePaywallIfExhausted, setAccessError]);
 
   useEffect(() => {
     if (!state) {
