@@ -170,7 +170,8 @@ export default function GameRuntimeHost({
         {sessionExpired && (
           <div className="modal-backdrop" role="dialog" aria-modal="true">
             <div className="modal-card">
-              <h2>Session expired</h2>
+              <h2>Session finished...</h2>
+              <p>Your session has ended. A player quit the game or your game expired.</p>
               <button className="btn btn-key" type="button" onClick={() => void returnHomeAfterSessionExpiry()} disabled={quitting}>
                 {quitting ? "Leaving..." : "Return home"}
               </button>
