@@ -31,6 +31,14 @@ export function usePlayAccess() {
     [refreshAccessState]
   );
 
+  const primePaywallIfExhausted = useCallback(async (): Promise<void> => {
+    const next = await getAccessState();
+    setAccessState(next);
+    if (!next.paidUnlockActive && next.freeSessionsLeft <= 0) {
+      setShowPaywall(true);
+    }
+  }, []);
+
   return {
     accessState,
     showPaywall,
@@ -38,6 +46,7 @@ export function usePlayAccess() {
     accessError,
     setAccessError,
     refreshAccessState,
-    ensureSessionAccess
+    ensureSessionAccess,
+    primePaywallIfExhausted
   };
 }

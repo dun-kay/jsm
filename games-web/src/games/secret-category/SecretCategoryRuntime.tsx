@@ -22,6 +22,7 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
   const [state, setState] = useState<SecretCategoryState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
+  const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
   const {
     accessState,
     showPaywall,
@@ -29,7 +30,8 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
     accessError,
     setAccessError,
     refreshAccessState,
-    ensureSessionAccess
+    ensureSessionAccess,
+    primePaywallIfExhausted
   } = usePlayAccess();
 
   useEffect(() => {
@@ -70,6 +72,23 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
       window.clearInterval(interval);
     };
   }, [gameCode, playerToken]);
+
+  useEffect(() => {
+    if (!state) {
+      return;
+    }
+    if (state.phase !== "rules") {
+      setRulesPaywallPrimed(false);
+      return;
+    }
+    if (rulesPaywallPrimed) {
+      return;
+    }
+    setRulesPaywallPrimed(true);
+    void primePaywallIfExhausted().catch((error) => {
+      setAccessError((error as Error).message || "Unable to load play access.");
+    });
+  }, [state?.phase, state, rulesPaywallPrimed, primePaywallIfExhausted, setAccessError]);
 
   const currentTurnName = useMemo(() => {
     if (!state?.currentTurnPlayerId) {
