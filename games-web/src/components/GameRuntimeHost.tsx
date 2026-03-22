@@ -5,7 +5,7 @@ import PopularPeopleRuntime from "../games/popular-people/PopularPeopleRuntime";
 import FruitBowlRuntime from "../games/fruit-bowl/FruitBowlRuntime";
 import MurderClubRuntime from "../games/murder-club/MurderClubRuntime";
 import type { GameSessionContext } from "../games/types";
-import { getLobbyState } from "../lib/lobbyApi";
+import { getLobbyState, quitGame, touchPlayer } from "../lib/lobbyApi";
 
 type GameRuntimeHostProps = {
   gameCode: string;
@@ -25,6 +25,8 @@ export default function GameRuntimeHost({
   const [gameSlug, setGameSlug] = useState<string>(initialSession?.gameSlug || "");
   const [errorText, setErrorText] = useState<string>("");
   const [showQuitConfirm, setShowQuitConfirm] = useState<boolean>(false);
+  const [sessionExpired, setSessionExpired] = useState<boolean>(false);
+  const [quitting, setQuitting] = useState<boolean>(false);
 
   useEffect(() => {
     let active = true;
@@ -47,6 +49,76 @@ export default function GameRuntimeHost({
       active = false;
     };
   }, [gameCode]);
+
+  useEffect(() => {
+    if (!initialSession?.playerToken || sessionExpired) {
+      return;
+    }
+
+    let active = true;
+
+    const checkAlive = async () => {
+      try {
+        const alive = await touchPlayer(gameCode, initialSession.playerToken);
+        if (!active) {
+          return;
+        }
+        if (!alive) {
+          setSessionExpired(true);
+          setErrorText("Session expired.");
+        }
+      } catch (error) {
+        if (!active) {
+          return;
+        }
+        const message = ((error as Error).message || "").toLowerCase();
+        if (message.includes("session expired")) {
+          setSessionExpired(true);
+          setErrorText("Session expired.");
+        }
+      }
+    };
+
+    void checkAlive();
+    const interval = window.setInterval(() => {
+      void checkAlive();
+    }, 5000);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, [gameCode, initialSession?.playerToken, sessionExpired]);
+
+  async function returnHomeAfterSessionExpiry() {
+    if (!initialSession || quitting) {
+      return;
+    }
+
+    setQuitting(true);
+    try {
+      await quitGame(gameCode, initialSession.playerToken);
+    } catch {
+      // Best-effort cleanup; always return home even if server call fails.
+    } finally {
+      onBackToHome();
+    }
+  }
+
+  async function confirmQuitGame() {
+    if (!initialSession || quitting) {
+      return;
+    }
+
+    setQuitting(true);
+    try {
+      await quitGame(gameCode, initialSession.playerToken);
+    } catch {
+      // Best-effort cleanup; always return home even if server call fails.
+    } finally {
+      onBackToHome();
+    }
+  }
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined;
 
@@ -83,15 +155,26 @@ export default function GameRuntimeHost({
           <div className="modal-backdrop" role="dialog" aria-modal="true">
             <div className="modal-card">
               <h2>Quit game?</h2>
-              <p className="body-text small">Are you sure you want to quit?</p>
+              <p className="body-text small">Are you sure? This will end the game for all players.</p>
               <div className="bottom-row">
-                <button className="btn btn-key" type="button" onClick={onBackToHome}>
-                  Yes
+                <button className="btn btn-key" type="button" onClick={() => void confirmQuitGame()} disabled={quitting}>
+                  {quitting ? "Leaving..." : "Yes"}
                 </button>
-                <button className="btn btn-soft" type="button" onClick={() => setShowQuitConfirm(false)}>
+                <button className="btn btn-soft" type="button" onClick={() => setShowQuitConfirm(false)} disabled={quitting}>
                   No
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+        {sessionExpired && (
+          <div className="modal-backdrop" role="dialog" aria-modal="true">
+            <div className="modal-card">
+              <h2>Session finished...</h2>
+              <p>Your session has ended. A player quit the game or your game expired.</p>
+              <button className="btn btn-key" type="button" onClick={() => void returnHomeAfterSessionExpiry()} disabled={quitting}>
+                {quitting ? "Leaving..." : "Return home"}
+              </button>
             </div>
           </div>
         )}
