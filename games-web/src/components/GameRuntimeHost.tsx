@@ -5,7 +5,7 @@ import PopularPeopleRuntime from "../games/popular-people/PopularPeopleRuntime";
 import FruitBowlRuntime from "../games/fruit-bowl/FruitBowlRuntime";
 import MurderClubRuntime from "../games/murder-club/MurderClubRuntime";
 import type { GameSessionContext } from "../games/types";
-import { cancelGame, getLobbyState, leaveGame, touchPlayer } from "../lib/lobbyApi";
+import { getLobbyState, quitGame, touchPlayer } from "../lib/lobbyApi";
 
 type GameRuntimeHostProps = {
   gameCode: string;
@@ -88,7 +88,7 @@ export default function GameRuntimeHost({
       active = false;
       window.clearInterval(interval);
     };
-  }, [gameCode, initialSession?.playerToken, initialSession?.hostSecret, sessionExpired]);
+  }, [gameCode, initialSession?.playerToken, sessionExpired]);
 
   async function returnHomeAfterSessionExpiry() {
     if (!initialSession || quitting) {
@@ -97,11 +97,22 @@ export default function GameRuntimeHost({
 
     setQuitting(true);
     try {
-      if (initialSession.hostSecret) {
-        await cancelGame(gameCode, initialSession.hostSecret);
-      } else {
-        await leaveGame(gameCode, initialSession.playerToken);
-      }
+      await quitGame(gameCode, initialSession.playerToken);
+    } catch {
+      // Best-effort cleanup; always return home even if server call fails.
+    } finally {
+      onBackToHome();
+    }
+  }
+
+  async function confirmQuitGame() {
+    if (!initialSession || quitting) {
+      return;
+    }
+
+    setQuitting(true);
+    try {
+      await quitGame(gameCode, initialSession.playerToken);
     } catch {
       // Best-effort cleanup; always return home even if server call fails.
     } finally {
@@ -144,12 +155,12 @@ export default function GameRuntimeHost({
           <div className="modal-backdrop" role="dialog" aria-modal="true">
             <div className="modal-card">
               <h2>Quit game?</h2>
-              <p className="body-text small">Are you sure you want to quit?</p>
+              <p className="body-text small">Are you sure? This will end the game for all players.</p>
               <div className="bottom-row">
-                <button className="btn btn-key" type="button" onClick={onBackToHome}>
-                  Yes
+                <button className="btn btn-key" type="button" onClick={() => void confirmQuitGame()} disabled={quitting}>
+                  {quitting ? "Leaving..." : "Yes"}
                 </button>
-                <button className="btn btn-soft" type="button" onClick={() => setShowQuitConfirm(false)}>
+                <button className="btn btn-soft" type="button" onClick={() => setShowQuitConfirm(false)} disabled={quitting}>
                   No
                 </button>
               </div>

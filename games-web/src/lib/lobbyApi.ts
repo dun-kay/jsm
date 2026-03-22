@@ -152,3 +152,15 @@ export async function leaveGame(gameCode: string, playerToken: string): Promise<
     throw new Error(error?.message || "Failed to leave game.");
   }
 }
+
+export async function quitGame(gameCode: string, playerToken: string): Promise<void> {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase.rpc("quit_game", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
+  });
+
+  if (error || data !== true) {
+    throw new Error(error?.message || "Failed to quit game.");
+  }
+}
