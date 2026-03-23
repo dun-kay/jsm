@@ -88,10 +88,7 @@ Deno.serve(async (req) => {
               price_data: {
                 currency: "usd",
                 unit_amount: 100,
-                product_data: {
-                  name: "Games With Friends - 4h Unlimited Game Sessions/Play",
-                  description: "4 hours of unlimited game sessions/play, on the Games With Friends (jumpship.media) site."
-                }
+                product: "prod_UBHgz7NjuqyqXQ"
               }
             }
           };
