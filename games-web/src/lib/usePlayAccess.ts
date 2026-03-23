@@ -17,6 +17,49 @@ export function usePlayAccess() {
     });
   }, [refreshAccessState]);
 
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("payment") !== "success") {
+      return;
+    }
+
+    let cancelled = false;
+    const clearPaymentQuery = () => {
+      const cleaned = new URL(window.location.href);
+      cleaned.searchParams.delete("payment");
+      cleaned.searchParams.delete("session_id");
+      window.history.replaceState({}, "", cleaned.toString());
+    };
+
+    const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+    const settle = async () => {
+      for (let i = 0; i < 10; i += 1) {
+        if (cancelled) {
+          return;
+        }
+        try {
+          const next = await getAccessState();
+          setAccessState(next);
+          if (next.paidUnlockActive) {
+            setShowPaywall(false);
+            clearPaymentQuery();
+            return;
+          }
+        } catch {
+          // keep retrying for eventual webhook consistency
+        }
+        await wait(1200);
+      }
+      clearPaymentQuery();
+    };
+
+    void settle();
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshAccessState]);
+
   const ensureSessionAccess = useCallback(
     async (gameCode: string): Promise<boolean> => {
       setAccessError("");
