@@ -621,7 +621,10 @@ export default function GameOnboardingFlow({
                   alt={`${game.title} image`}
                 />
               </div>
-              <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
+              <div className="play-meta-row">
+                <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
+                <div className="play">{game.playTime}</div>
+              </div>
               <h1>{title}</h1>
               <p className="body-text">{game.description}</p>
               <p className="body-text small">{game.shortRules}</p>

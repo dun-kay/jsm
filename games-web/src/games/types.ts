@@ -8,6 +8,7 @@ export type GameConfig = {
   theme: string;
   minPlayers: number;
   maxPlayers: number;
+  playTime: string;
   joinPrefix?: string;
   route: string;
   enabled: boolean;
@@ -19,4 +20,3 @@ export type GameSessionContext = {
   hostSecret: string;
   playerToken: string;
 };
-

@@ -77,6 +77,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <br />
         <p>Investigators win at <b>3 evidence submits.</b></p>
         <p>Murderers win at <b>3 evidence blocks.</b></p>
+        <p><p></p>It’s similar to social deduction style games like Mafia or Werewolf.</p>
       </>
     )
   }
