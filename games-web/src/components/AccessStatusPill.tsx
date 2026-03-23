@@ -65,7 +65,7 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
     if (state.shareBonusAvailable) {
       return "Free plays used";
     }
-    return "Free plays used, get unlimited from just $1.00 USD";
+    return "Free plays used, get unlimited from $1.00";
   }, [state, nowMs]);
 
   if (hidden) {
