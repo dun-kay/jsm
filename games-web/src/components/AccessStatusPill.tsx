@@ -52,6 +52,50 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
     };
   }, [hidden]);
 
+  useEffect(() => {
+    if (hidden) {
+      return;
+    }
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("payment") !== "success") {
+      return;
+    }
+
+    let cancelled = false;
+    const clearPaymentQuery = () => {
+      const cleaned = new URL(window.location.href);
+      cleaned.searchParams.delete("payment");
+      cleaned.searchParams.delete("session_id");
+      window.history.replaceState({}, "", cleaned.toString());
+    };
+    const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
+    const settle = async () => {
+      for (let i = 0; i < 10; i += 1) {
+        if (cancelled) {
+          return;
+        }
+        try {
+          const next = await getAccessState();
+          setState(next);
+          if (next.paidUnlockActive) {
+            clearPaymentQuery();
+            return;
+          }
+        } catch {
+          // retry until webhook state is visible
+        }
+        await wait(1200);
+      }
+      clearPaymentQuery();
+    };
+
+    void settle();
+    return () => {
+      cancelled = true;
+    };
+  }, [hidden]);
+
   const statusText = useMemo(() => {
     if (!state) {
       return "Checking access...";
