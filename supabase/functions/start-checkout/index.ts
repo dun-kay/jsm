@@ -120,6 +120,7 @@ Deno.serve(async (req) => {
       line_items: [
         plan.lineItem
       ],
+      allow_promotion_codes: true,
       metadata: {
         browser_token: browserToken,
         unlock_hours: String(plan.unlockHours),
