@@ -767,6 +767,14 @@ body {
   margin: auto;
 }
 
+.play-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .stats-list {
   border: 2px solid var(--line);
   border-radius: 18px;
