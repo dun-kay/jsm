@@ -30,9 +30,10 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Missing server environment variables." }, 500, origin);
     }
 
-    const body = (await req.json()) as { browserToken?: string; sessionId?: string };
+    const body = (await req.json()) as { browserToken?: string; sessionId?: string; requestNonce?: string };
     const browserToken = String(body.browserToken || "");
     const sessionId = String(body.sessionId || "");
+    const requestNonce = String(body.requestNonce || "");
 
     if (!UUID_REGEX.test(browserToken)) {
       return jsonResponse({ error: "Invalid browser token." }, 400, origin);
@@ -40,11 +41,22 @@ Deno.serve(async (req) => {
     if (!sessionId.startsWith("cs_")) {
       return jsonResponse({ error: "Invalid checkout session id." }, 400, origin);
     }
+    if (requestNonce.length < 16) {
+      return jsonResponse({ error: "Invalid request signature." }, 403, origin);
+    }
 
     const stripe = new Stripe(stripeSecretKey, { apiVersion: "2024-06-20" });
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
     await supabase.rpc("ensure_access_record", { p_browser_token: browserToken });
+    const { data: nonceAllowed, error: nonceError } = await supabase.rpc("consume_access_request_nonce", {
+      p_browser_token: browserToken,
+      p_purpose: "confirm_checkout",
+      p_nonce: requestNonce
+    });
+    if (nonceError || nonceAllowed !== true) {
+      return jsonResponse({ error: "Request signature rejected." }, 403, origin);
+    }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const metadataToken = String(session.metadata?.browser_token || "");

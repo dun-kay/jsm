@@ -33,6 +33,7 @@ export type ShareBonusResult = {
 };
 
 export type CheckoutPlan = "4h" | "30d";
+type NoncePurpose = "start_checkout" | "confirm_checkout";
 
 export type PaymentHelpReason =
   | "i_paid_but_didnt_unlock"
@@ -153,11 +154,13 @@ export async function claimShareBonus(): Promise<ShareBonusResult> {
 export async function startCheckout(returnTo?: string, plan: CheckoutPlan = "4h"): Promise<{ checkoutUrl: string }> {
   const supabase = getSupabaseClient();
   const browserToken = ensureBrowserToken();
+  const requestNonce = await issueRequestNonce("start_checkout");
   const { data, error } = await supabase.functions.invoke("start-checkout", {
     body: {
       browserToken,
       returnTo: returnTo || window.location.href,
-      plan
+      plan,
+      requestNonce
     }
   });
 
@@ -196,10 +199,12 @@ export async function requestPaymentHelp(reason: PaymentHelpReason, note: string
 export async function confirmCheckoutSession(sessionId: string): Promise<{ confirmed: boolean; applied: boolean; reason?: string }> {
   const supabase = getSupabaseClient();
   const browserToken = ensureBrowserToken();
+  const requestNonce = await issueRequestNonce("confirm_checkout");
   const { data, error } = await supabase.functions.invoke("confirm-checkout", {
     body: {
       browserToken,
-      sessionId
+      sessionId,
+      requestNonce
     }
   });
 
@@ -213,4 +218,25 @@ export async function confirmCheckoutSession(sessionId: string): Promise<{ confi
     applied: Boolean(result?.applied),
     reason: result?.reason
   };
+}
+
+async function issueRequestNonce(purpose: NoncePurpose): Promise<string> {
+  const supabase = getSupabaseClient();
+  const browserToken = ensureBrowserToken();
+  const { data, error } = await supabase
+    .rpc("create_access_request_nonce_guarded", {
+      p_browser_token: browserToken,
+      p_purpose: purpose
+    })
+    .single<Record<string, unknown>>();
+
+  if (error || !data) {
+    throw new Error(error?.message || "Unable to authorize request.");
+  }
+
+  const nonce = String(data.nonce ?? "");
+  if (!nonce) {
+    throw new Error("Missing request nonce.");
+  }
+  return nonce;
 }

@@ -32,12 +32,16 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Missing server environment variables." }, 500, origin);
     }
 
-    const body = (await req.json()) as { browserToken?: string; returnTo?: string; plan?: string };
+    const body = (await req.json()) as { browserToken?: string; returnTo?: string; plan?: string; requestNonce?: string };
     const browserToken = String(body.browserToken || "");
     const planKey = body.plan === "30d" ? "30d" : "4h";
+    const requestNonce = String(body.requestNonce || "");
     const returnToRaw = String(body.returnTo || "");
     if (!UUID_REGEX.test(browserToken)) {
       return jsonResponse({ error: "Invalid browser token." }, 400, origin);
+    }
+    if (requestNonce.length < 16) {
+      return jsonResponse({ error: "Invalid request signature." }, 403, origin);
     }
 
     const canonicalOrigin = new URL(siteUrl).origin;
@@ -95,6 +99,15 @@ Deno.serve(async (req) => {
           };
 
     await supabase.rpc("ensure_access_record", { p_browser_token: browserToken });
+    const { data: nonceAllowed, error: nonceError } = await supabase.rpc("consume_access_request_nonce", {
+      p_browser_token: browserToken,
+      p_purpose: "start_checkout",
+      p_nonce: requestNonce
+    });
+    if (nonceError || nonceAllowed !== true) {
+      return jsonResponse({ error: "Request signature rejected." }, 403, origin);
+    }
+
     const { data: guardData, error: guardError } = await supabase
       .rpc("check_access_rate_limit", {
         p_browser_token: browserToken,
