@@ -32,6 +32,8 @@ export type ShareBonusResult = {
   windowResetsAt: string | null;
 };
 
+export type CheckoutPlan = "4h" | "30d";
+
 export type PaymentHelpReason =
   | "i_paid_but_didnt_unlock"
   | "payment_failed"
@@ -146,13 +148,14 @@ export async function claimShareBonus(): Promise<ShareBonusResult> {
   };
 }
 
-export async function startCheckout(returnTo?: string): Promise<{ checkoutUrl: string }> {
+export async function startCheckout(returnTo?: string, plan: CheckoutPlan = "4h"): Promise<{ checkoutUrl: string }> {
   const supabase = getSupabaseClient();
   const browserToken = ensureBrowserToken();
   const { data, error } = await supabase.functions.invoke("start-checkout", {
     body: {
       browserToken,
-      returnTo: returnTo || window.location.href
+      returnTo: returnTo || window.location.href,
+      plan
     }
   });
 

@@ -264,21 +264,29 @@ export default function SecretCategoryRuntime({ gameCode, playerToken }: SecretC
 
       {state.phase === "turn_clues" && (
         <>
+
           {state.currentTurnPlayerId === state.you.id ? (
             <p>
-              <h2>It's your turn.</h2><p>Say a one word clue related to the main category. Don't expose the secret category<p>(or that you don't know what it is).</p>
+              <h2>It's your turn.</h2><br></br><p>Say a one word clue related to the main category. Don't expose the secret category<p>(or that you don't know what it is).</p>
             </p></p>
           ) : (
-            <p><h2>It's {currentTurnName}'s turn.</h2><p>Listen for their clue.</p></p>
+            <p><h2>It's {currentTurnName}'s turn.</h2><br></br><p>Listen for their clue.</p></p>
           )}
                         <br></br><p className="maincat"><p><b>Main Category: </b>{state.mainCategory}</p></p>
       {!state.isSpy && state.secretCategory && <p className="secretcat">Secret Category: {state.secretCategory}</p>}
           {state.isSpy && (<p className="secretcat">Secret Category: You are the Spy</p>)}<br></br>
           
+                    {state.currentTurnPlayerId === state.you.id ? (
+            <p><b>Click continue after you have given your clue.</b></p>
+          ) : (
+            <p><b>Waiting for {currentTurnName} to give their clue.</b></p>
+          )}
           
-          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-            {isWaitingOnYou ? "Continue" : "Waiting for others"}
-          </button>
+          {state.currentTurnPlayerId === state.you.id && (
+            <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
+              {isWaitingOnYou ? "Continue" : "Waiting for others"}
+            </button>
+          )}
         </>
       )}
 

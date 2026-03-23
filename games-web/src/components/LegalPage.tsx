@@ -38,10 +38,11 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Play access model:</b> Access is browser/device based. No account is required.</p>
             <p><b>Free access:</b> You receive 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> You may claim up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
-            <p><b>Paid access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device only.</p>
+            <p><b>Paid access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device only. $9.99 USD unlocks unlimited sessions for 30 days on that browser/device only.</p>
             <p><b>Billing:</b> Payments are processed by Stripe. By purchasing, you authorize the applicable charge shown at checkout.</p>
             <p><b>Session counting:</b> A session is counted when gameplay starts (not just browsing, lobby, or reading rules).</p>
             <p><b>Storage and continuity:</b> Clearing cookies/local storage, using incognito/private mode, or switching browsers/devices may reset or break access continuity.</p>
+            <p><b>Disclaimer:</b> Paid access and free sessions are tied to this browser/device via local storage and cookies. If you clear cookies/local storage, use private mode, or switch browsers/devices, access may be lost. By continuing or purchasing, you accept this setup and understand this is not grounds for a refund. Issues, contact support.</p>
             <p><b>Refunds and disputes:</b> Refunds are handled case-by-case at our discretion. If payment issues occur, contact support.</p>
             <p><b>Availability and abuse:</b> We may limit, suspend, or block access to protect platform stability, prevent abuse, or comply with legal obligations.</p>
             <p><b>Liability:</b> To the extent allowed by law, {COMPANY} is not liable for losses, damages, or disputes arising from use of the app.</p>
@@ -64,7 +65,9 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>How access works:</b> No account needed. Access is tied to this browser/device.</p>
             <p><b>Free access:</b> 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> Up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
-            <p><b>Unlimited access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device.</p>
+            <p><b>Unlimited access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device. $9.99 USD unlocks unlimited sessions for 30 days on that browser/device.</p>
+            <p><b>Disclaimer:</b> Paid access and free sessions are tied to this browser/device via local storage and cookies. If you clear cookies/local storage, use private mode, or switch browsers/devices, access may be lost. By continuing or purchasing, you accept this setup and understand this is not grounds for a refund. Issues, contact support.</p>
+            <p><b>Per-player access:</b> Sessions are per user/browser. In a group of 8, all 8 players must each have at least 1 free session (or active unlimited). Sessions cannot be shared.</p>
             <p><b>When sessions count:</b> A session counts when gameplay starts, not while browsing or waiting in lobby.</p>
             <p><b>Payment confirmation:</b> Unlimited access starts after successful Stripe confirmation.</p>
             <p><b>What can break continuity:</b> Clearing cookies/local storage, private/incognito mode, browser/device changes, strict privacy tools, or blocked storage may reset access state.</p>

@@ -32,8 +32,9 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Missing server environment variables." }, 500, origin);
     }
 
-    const body = (await req.json()) as { browserToken?: string; returnTo?: string };
+    const body = (await req.json()) as { browserToken?: string; returnTo?: string; plan?: string };
     const browserToken = String(body.browserToken || "");
+    const planKey = body.plan === "30d" ? "30d" : "4h";
     const returnToRaw = String(body.returnTo || "");
     if (!UUID_REGEX.test(browserToken)) {
       return jsonResponse({ error: "Invalid browser token." }, 400, origin);
@@ -63,6 +64,34 @@ Deno.serve(async (req) => {
       apiVersion: "2024-06-20"
     });
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const plan =
+      planKey === "30d"
+        ? {
+            key: "30d",
+            unlockHours: 24 * 30,
+            amountCents: 999,
+            lineItem: {
+              quantity: 1,
+              price_data: {
+                currency: "usd",
+                unit_amount: 999,
+                product: "prod_UCN80vk13eYXL8"
+              }
+            }
+          }
+        : {
+            key: "4h",
+            unlockHours: 4,
+            amountCents: 100,
+            lineItem: {
+              quantity: 1,
+              price_data: {
+                currency: "usd",
+                unit_amount: 100,
+                product: "prod_UBHgz7NjuqyqXQ"
+              }
+            }
+          };
 
     await supabase.rpc("ensure_access_record", { p_browser_token: browserToken });
     const { data: guardData, error: guardError } = await supabase
@@ -89,20 +118,13 @@ Deno.serve(async (req) => {
     const checkout = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: "usd",
-            unit_amount: 100,
-            product_data: {
-              name: "Games With Friends - 4h Unlimited Game Sessions/Play",
-              description: "4 hours of unlimited game sessions/play, on the Games With Friends (jumpship.media) site."
-            }
-          }
-        }
+        plan.lineItem
       ],
+      allow_promotion_codes: true,
       metadata: {
-        browser_token: browserToken
+        browser_token: browserToken,
+        unlock_hours: String(plan.unlockHours),
+        plan_key: plan.key
       },
       success_url: successUrl,
       cancel_url: cancelUrl
@@ -112,7 +134,7 @@ Deno.serve(async (req) => {
       browser_token: browserToken,
       stripe_checkout_session_id: checkout.id,
       status: "pending",
-      amount_cents: 100,
+      amount_cents: plan.amountCents,
       currency: "usd"
     });
 
