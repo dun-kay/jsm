@@ -64,16 +64,16 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are about to play... Murder Club",
     content: (
       <>
-        <p><b>A murder has taken place.</b><p></p>Half the players are involved, the other half are trying to find the murderers.</p>
+        <p><b>A murder has taken place.</b><br />Half the players are involved, and the other half are trying to find the murderers.</p>
         <br />
         <p><b>Each round, a piece of evidence is found.</b></p>
         <p>Everyone votes on <b>one suspect</b>, someone they think is a murderer.</p>
         <p>The suspect <b>can't speak or vote</b> on evidence that round.</p>
-        <p>Players are dealt two cards, and vote to <b>Admit</b> or <b>Reject</b> the evidence.<p></p>
-        Players may get randomly dealt two of the same cards, <b>or be lying about it.</b></p>
+        <p>Players are dealt two cards and vote to <b>Admit</b> or <b>Reject</b> the evidence.<br />
+        Players may be dealt two of the same card, <b>or may be lying about it.</b></p>
         <br />
-        <p><b>In general, Murderers want to reject & Investigators want to admit evidence.</b>
-          <p></p>But play carefully, or you'll be put under suspicion and be blocked from voting...</p>
+        <p><b>In general, Murderers want to reject & Investigators want to admit evidence.</b><br />
+          But play carefully, or you'll be put under suspicion and blocked from voting...</p>
         <br />
         <p>Investigators win at <b>3 evidence submits.</b></p>
         <p>Murderers win at <b>3 evidence blocks.</b></p>
