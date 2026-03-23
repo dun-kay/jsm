@@ -22,6 +22,14 @@ function formatRemaining(seconds: number): string {
   return `${hours}h ${minutes}m`;
 }
 
+function formatRemainingFromIso(endIso: string | null, nowMs: number): string {
+  if (!endIso) {
+    return "0h 0m";
+  }
+  const diff = Math.max(0, Math.floor((new Date(endIso).getTime() - nowMs) / 1000));
+  return formatRemaining(diff);
+}
+
 export default function AccessPaywallModal({
   open,
   state,
@@ -33,6 +41,7 @@ export default function AccessPaywallModal({
   const [errorText, setErrorText] = useState("");
   const [shareStep, setShareStep] = useState<ShareStep>("idle");
   const [showShareConfirmButtons, setShowShareConfirmButtons] = useState(false);
+  const [nowMs, setNowMs] = useState(Date.now());
 
   useEffect(() => {
     if (!open) {
@@ -55,6 +64,14 @@ export default function AccessPaywallModal({
       window.clearTimeout(first);
     };
   }, [open, shareStep]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const tick = window.setInterval(() => setNowMs(Date.now()), 30_000);
+    return () => window.clearInterval(tick);
+  }, [open]);
 
   const title = useMemo(() => {
     if (state?.paidUnlockActive) {
@@ -129,7 +146,7 @@ export default function AccessPaywallModal({
         <h2>{title}</h2>
         {state?.paidUnlockActive ? (
           <p className="body-text small">
-            You can play unlimited sessions for the next {formatRemaining(state.windowSecondsLeft)}, on this browser/device.
+            You can play unlimited sessions for the next {formatRemainingFromIso(state.paidUnlockExpiresAt, nowMs)}, on this browser/device.
           </p>
         ) : (state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable ? (
           <p className="body-text small">
@@ -141,7 +158,7 @@ export default function AccessPaywallModal({
           </p>
         )}
 
-        {!state?.paidUnlockActive && (
+        {state && !state.paidUnlockActive && (
           <>
             <button className="btn btn-key" type="button" onClick={() => void handleCheckout("4h")} disabled={busy}>
               {busy ? "Loading..." : "Unlimited play for 4h 🔓"}
