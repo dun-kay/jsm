@@ -38,8 +38,8 @@ export function usePlayAccess() {
       if (sessionId) {
         try {
           await confirmCheckoutSession(sessionId);
-        } catch (error) {
-          setAccessError((error as Error).message || "Payment confirmation check failed.");
+        } catch {
+          // keep going; webhook + polling may still settle
         }
       }
       for (let i = 0; i < 10; i += 1) {
