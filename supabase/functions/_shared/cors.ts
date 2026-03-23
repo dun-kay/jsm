@@ -1,4 +1,9 @@
-const DEFAULT_ALLOWED_ORIGINS = ["https://jumpship.media", "http://localhost:5173", "http://127.0.0.1:5173"];
+const DEFAULT_ALLOWED_ORIGINS = [
+  "https://jumpship.media",
+  "https://www.jumpship.media",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173"
+];
 
 function normalizeOrigin(value: string): string {
   return value.trim().replace(/\/+$/, "");
