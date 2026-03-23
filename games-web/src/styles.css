@@ -345,7 +345,7 @@ body {
 .eg {
   grid-template-columns: 1fr 1fr 1fr;
   min-height: 150px;
-  background: #AB9DFF;
+  background: #9BE03A;
 }
 
 .pe {
@@ -420,6 +420,11 @@ body {
   gap: var(--gap-col);
   font-size: 15px;
   text-align: center;
+}
+
+.rules-modal-scroll {
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 
 .rules-modal-content p {
@@ -788,4 +793,9 @@ body {
 .stats-head {
   background: var(--bgp);
   color: var(--textp);
+}
+
+.tiny {
+  font-size: 14px;
+  text-align: center;
 }

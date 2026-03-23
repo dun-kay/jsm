@@ -80,7 +80,7 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
           <div className="access-pill-actions">
             {state?.shareBonusAvailable && !state.paidUnlockActive && (
               <button className="btn btn-soft access-pill-btn" type="button" onClick={() => setShowModal(true)}>
-               🎁 Share for +1 session
+               🎁 Share +2 plays
               </button>
             )}
             {!state?.paidUnlockActive && (
