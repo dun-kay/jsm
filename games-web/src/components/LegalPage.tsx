@@ -65,6 +65,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Free access:</b> 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> Up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
             <p><b>Unlimited access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device.</p>
+            <p><b>Per-player access:</b> Sessions are per user/browser. In a group of 8, all 8 players must each have at least 1 free session (or active unlimited). Sessions cannot be shared.</p>
             <p><b>When sessions count:</b> A session counts when gameplay starts, not while browsing or waiting in lobby.</p>
             <p><b>Payment confirmation:</b> Unlimited access starts after successful Stripe confirmation.</p>
             <p><b>What can break continuity:</b> Clearing cookies/local storage, private/incognito mode, browser/device changes, strict privacy tools, or blocked storage may reset access state.</p>
