@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { consumeSession, getAccessState, type AccessState } from "./accessApi";
+import { confirmCheckoutSession, consumeSession, getAccessState, type AccessState } from "./accessApi";
 
 export function usePlayAccess() {
   const [accessState, setAccessState] = useState<AccessState | null>(null);
@@ -22,6 +22,7 @@ export function usePlayAccess() {
     if (url.searchParams.get("payment") !== "success") {
       return;
     }
+    const sessionId = url.searchParams.get("session_id") || "";
 
     let cancelled = false;
     const clearPaymentQuery = () => {
@@ -34,6 +35,13 @@ export function usePlayAccess() {
     const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
     const settle = async () => {
+      if (sessionId) {
+        try {
+          await confirmCheckoutSession(sessionId);
+        } catch {
+          // keep going; webhook + polling may still settle
+        }
+      }
       for (let i = 0; i < 10; i += 1) {
         if (cancelled) {
           return;

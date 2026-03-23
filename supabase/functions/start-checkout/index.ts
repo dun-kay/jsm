@@ -45,8 +45,7 @@ Deno.serve(async (req) => {
     if (returnToRaw) {
       try {
         const parsed = new URL(returnToRaw);
-        const allowedHost = new URL(siteUrl).host;
-        if (parsed.host === allowedHost) {
+        if (isOriginAllowed(parsed.origin)) {
           parsed.searchParams.set("payment", "success");
           parsed.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
           successUrl = parsed.toString();

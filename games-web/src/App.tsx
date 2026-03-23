@@ -109,6 +109,14 @@ export default function App() {
   const [theme, setTheme] = useState<ThemeMode>(() => readStoredTheme());
 
   useEffect(() => {
+    if (window.location.hostname === "www.jumpship.media") {
+      const target = new URL(window.location.href);
+      target.hostname = "jumpship.media";
+      window.location.replace(target.toString());
+    }
+  }, []);
+
+  useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     try {
       window.localStorage.setItem(THEME_STORAGE_KEY, theme);
