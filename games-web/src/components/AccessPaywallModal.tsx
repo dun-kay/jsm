@@ -80,7 +80,7 @@ export default function AccessPaywallModal({
     if ((state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable) {
       return "Share the site with a friend for +2 free sessions 🎁";
     }
-    return "Unlock unlimited to continue, from $1.00 USD 🔓";
+    return "Unlock unlimited to continue, from $1.00 🔓";
   }, [state?.paidUnlockActive]);
   const freeLeft = state?.freeSessionsLeft ?? 0;
   const freeLabel = `${freeLeft} free session${freeLeft === 1 ? "" : "s"} remaining.`;
