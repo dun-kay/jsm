@@ -55,11 +55,18 @@ Deno.serve(async (req) => {
       const paymentRef = session.payment_intent
         ? String(session.payment_intent)
         : String(session.id);
+      const unlockHoursRaw = Number(session.metadata?.unlock_hours || "4");
+      const unlockHours =
+        Number.isFinite(unlockHoursRaw) && unlockHoursRaw >= 1 && unlockHoursRaw <= 24 * 90
+          ? Math.floor(unlockHoursRaw)
+          : 4;
+      const amountCents = typeof session.amount_total === "number" ? session.amount_total : unlockHours === 24 * 30 ? 999 : 100;
+      const currency = String(session.currency || "usd").toLowerCase();
 
       await supabase.rpc("access_apply_payment_unlock", {
         p_browser_token: browserToken,
         p_payment_reference: paymentRef,
-        p_unlock_hours: 4
+        p_unlock_hours: unlockHours
       });
 
       await supabase
@@ -70,8 +77,8 @@ Deno.serve(async (req) => {
             stripe_checkout_session_id: session.id,
             stripe_payment_intent_id: session.payment_intent ? String(session.payment_intent) : null,
             status: "paid",
-            amount_cents: 100,
-            currency: "usd"
+            amount_cents: amountCents,
+            currency
           },
           { onConflict: "stripe_checkout_session_id" }
         );

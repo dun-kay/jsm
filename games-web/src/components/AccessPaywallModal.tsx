@@ -68,11 +68,11 @@ export default function AccessPaywallModal({
   const freeLeft = state?.freeSessionsLeft ?? 0;
   const freeLabel = `${freeLeft} free session${freeLeft === 1 ? "" : "s"} remaining.`;
 
-  async function handleCheckout() {
+  async function handleCheckout(plan: "4h" | "30d") {
     setBusy(true);
     setErrorText("");
     try {
-      const { checkoutUrl } = await startCheckout(window.location.href);
+      const { checkoutUrl } = await startCheckout(window.location.href, plan);
       window.location.assign(checkoutUrl);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to start checkout.");
@@ -143,10 +143,13 @@ export default function AccessPaywallModal({
 
         {!state?.paidUnlockActive && (
           <>
-            <button className="btn btn-key" type="button" onClick={() => void handleCheckout()} disabled={busy}>
+            <button className="btn btn-key" type="button" onClick={() => void handleCheckout("4h")} disabled={busy}>
               {busy ? "Loading..." : "Unlimited play for 4h 🔓"}
             </button>
 
+            <button className="btn btn-soft" type="button" onClick={() => void handleCheckout("30d")} disabled={busy}>
+              {busy ? "Loading..." : "Unlimited play for 30 days"}
+            </button>
             {state?.shareBonusAvailable && (
               <>
                 <button className="btn btn-soft" type="button" onClick={() => void handleShare()} disabled={busy}>
@@ -186,3 +189,4 @@ export default function AccessPaywallModal({
     </div>
   );
 }
+
