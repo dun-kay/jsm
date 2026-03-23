@@ -9,7 +9,6 @@ export function usePlayAccess() {
   const refreshAccessState = useCallback(async () => {
     const next = await getAccessState();
     setAccessState(next);
-    return next;
   }, []);
 
   useEffect(() => {
@@ -40,7 +39,8 @@ export function usePlayAccess() {
           return;
         }
         try {
-          const next = await refreshAccessState();
+          const next = await getAccessState();
+          setAccessState(next);
           if (next.paidUnlockActive) {
             setShowPaywall(false);
             clearPaymentQuery();
