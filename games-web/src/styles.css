@@ -775,6 +775,18 @@ body {
   flex-wrap: wrap;
 }
 
+.play-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.play-meta-row .play {
+  margin: 0;
+}
+
 .stats-list {
   border: 2px solid var(--line);
   border-radius: 18px;
