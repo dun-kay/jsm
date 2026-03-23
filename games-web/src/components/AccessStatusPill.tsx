@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import AccessPaywallModal from "./AccessPaywallModal";
-import { getAccessState, type AccessState } from "../lib/accessApi";
+import { confirmCheckoutSession, getAccessState, type AccessState } from "../lib/accessApi";
 
 function formatTimeLeft(endIso: string | null, nowMs: number): string {
   if (!endIso) {
@@ -60,6 +60,7 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
     if (url.searchParams.get("payment") !== "success") {
       return;
     }
+    const sessionId = url.searchParams.get("session_id") || "";
 
     let cancelled = false;
     const clearPaymentQuery = () => {
@@ -71,6 +72,13 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
     const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
 
     const settle = async () => {
+      if (sessionId) {
+        try {
+          await confirmCheckoutSession(sessionId);
+        } catch {
+          // keep going; webhook + polling may still settle
+        }
+      }
       for (let i = 0; i < 10; i += 1) {
         if (cancelled) {
           return;

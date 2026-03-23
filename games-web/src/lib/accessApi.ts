@@ -190,3 +190,25 @@ export async function requestPaymentHelp(reason: PaymentHelpReason, note: string
     message: String((data as { message?: string } | null)?.message || "Request received.")
   };
 }
+
+export async function confirmCheckoutSession(sessionId: string): Promise<{ confirmed: boolean; applied: boolean; reason?: string }> {
+  const supabase = getSupabaseClient();
+  const browserToken = ensureBrowserToken();
+  const { data, error } = await supabase.functions.invoke("confirm-checkout", {
+    body: {
+      browserToken,
+      sessionId
+    }
+  });
+
+  if (error) {
+    throw new Error(error.message || "Unable to confirm checkout.");
+  }
+
+  const result = data as { confirmed?: boolean; applied?: boolean; reason?: string } | null;
+  return {
+    confirmed: Boolean(result?.confirmed),
+    applied: Boolean(result?.applied),
+    reason: result?.reason
+  };
+}
