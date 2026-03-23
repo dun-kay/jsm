@@ -42,6 +42,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Billing:</b> Payments are processed by Stripe. By purchasing, you authorize the applicable charge shown at checkout.</p>
             <p><b>Session counting:</b> A session is counted when gameplay starts (not just browsing, lobby, or reading rules).</p>
             <p><b>Storage and continuity:</b> Clearing cookies/local storage, using incognito/private mode, or switching browsers/devices may reset or break access continuity.</p>
+            <p><b>Disclaimer:</b> Paid access and free sessions are tied to this browser/device via local storage and cookies. If you clear cookies/local storage, use private mode, or switch browsers/devices, access may be lost. By continuing or purchasing, you accept this setup and understand this is not grounds for a refund. Issues, contact support.</p>
             <p><b>Refunds and disputes:</b> Refunds are handled case-by-case at our discretion. If payment issues occur, contact support.</p>
             <p><b>Availability and abuse:</b> We may limit, suspend, or block access to protect platform stability, prevent abuse, or comply with legal obligations.</p>
             <p><b>Liability:</b> To the extent allowed by law, {COMPANY} is not liable for losses, damages, or disputes arising from use of the app.</p>
