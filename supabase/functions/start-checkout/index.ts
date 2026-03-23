@@ -40,17 +40,19 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Invalid browser token." }, 400, origin);
     }
 
+    const canonicalOrigin = new URL(siteUrl).origin;
     let successUrl = `${siteUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`;
     let cancelUrl = `${siteUrl}/?payment=cancelled`;
     if (returnToRaw) {
       try {
         const parsed = new URL(returnToRaw);
         if (isOriginAllowed(parsed.origin)) {
-          parsed.searchParams.set("payment", "success");
-          parsed.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
-          successUrl = parsed.toString();
+          const successParsed = new URL(`${parsed.pathname}${parsed.search}${parsed.hash}`, canonicalOrigin);
+          successParsed.searchParams.set("payment", "success");
+          successParsed.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
+          successUrl = successParsed.toString();
 
-          const cancelParsed = new URL(returnToRaw);
+          const cancelParsed = new URL(`${parsed.pathname}${parsed.search}${parsed.hash}`, canonicalOrigin);
           cancelParsed.searchParams.set("payment", "cancelled");
           cancelUrl = cancelParsed.toString();
         }

@@ -47,9 +47,17 @@ Deno.serve(async (req) => {
       event.type === "checkout.session.async_payment_succeeded"
     ) {
       const session = event.data.object as Stripe.Checkout.Session;
-      const browserToken = String(session.metadata?.browser_token || "");
+      let browserToken = String(session.metadata?.browser_token || "");
       if (!UUID_REGEX.test(browserToken)) {
-        return response(200, "Ignored event with invalid browser token.");
+        const { data: pending } = await supabase
+          .from("access_payments")
+          .select("browser_token")
+          .eq("stripe_checkout_session_id", session.id)
+          .maybeSingle<{ browser_token: string }>();
+        browserToken = String(pending?.browser_token || "");
+      }
+      if (!UUID_REGEX.test(browserToken)) {
+        return response(200, "Ignored event with missing browser token.");
       }
 
       const paymentRef = session.payment_intent
