@@ -10,7 +10,7 @@ type LegalPageProps = {
 
 const LAST_UPDATED = "March 20, 2026";
 const COMPANY = "Jump Ship Media";
-const CONTACT = "james[symbol]jumpship.media";
+const CONTACT_URL = "https://tally.so/r/XxqNzP";
 const CURRENT_YEAR = new Date().getFullYear();
 
 export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalPageProps) {
@@ -37,7 +37,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>No guarantees:</b> The app is provided "as is" without warranties of uptime, uninterrupted access, or fitness for a specific purpose.</p>
             <p><b>Play access model:</b> Access is browser/device based. No account is required.</p>
             <p><b>Free access:</b> You receive 1 free session to use every 4 hours. Free sessions do not roll over.</p>
-            <p><b>Share bonus:</b> You may claim up to +1 extra free session in that same 4-hour window via the share flow.</p>
+            <p><b>Share bonus:</b> You may claim up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
             <p><b>Paid access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device only.</p>
             <p><b>Billing:</b> Payments are processed by Stripe. By purchasing, you authorize the applicable charge shown at checkout.</p>
             <p><b>Session counting:</b> A session is counted when gameplay starts (not just browsing, lobby, or reading rules).</p>
@@ -45,7 +45,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Refunds and disputes:</b> Refunds are handled case-by-case at our discretion. If payment issues occur, contact support.</p>
             <p><b>Availability and abuse:</b> We may limit, suspend, or block access to protect platform stability, prevent abuse, or comply with legal obligations.</p>
             <p><b>Liability:</b> To the extent allowed by law, {COMPANY} is not liable for losses, damages, or disputes arising from use of the app.</p>
-            <p><b>Contact:</b> {CONTACT}</p>
+            <p><b>Contact:</b> <a href={CONTACT_URL} target="_blank" rel="noreferrer">Contact link</a></p>
           </div>
         ) : isPrivacy ? (
           <div className="runtime-flow legal-copy">
@@ -57,13 +57,13 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Data sharing:</b> We do not sell personal data. We may share data with service providers strictly to operate the service (for example, hosting/database/payment processing).</p>
             <p><b>Retention:</b> We keep operational records for as long as reasonably required for service operation, troubleshooting, fraud prevention, legal, and accounting needs.</p>
             <p><b>Your choices:</b> You can clear browser data at any time, but this may reset access continuity on that browser/device.</p>
-            <p><b>Contact:</b> {CONTACT}</p>
+            <p><b>Contact:</b> <a href={CONTACT_URL} target="_blank" rel="noreferrer">Contact link</a></p>
           </div>
         ) : (
           <div className="runtime-flow legal-copy">
             <p><b>How access works:</b> No account needed. Access is tied to this browser/device.</p>
             <p><b>Free access:</b> 1 free session to use every 4 hours. Free sessions do not roll over.</p>
-            <p><b>Share bonus:</b> Up to +1 extra free session in that same 4-hour window via the share flow.</p>
+            <p><b>Share bonus:</b> Up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
             <p><b>Unlimited access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser/device.</p>
             <p><b>When sessions count:</b> A session counts when gameplay starts, not while browsing or waiting in lobby.</p>
             <p><b>Payment confirmation:</b> Unlimited access starts after successful Stripe confirmation.</p>

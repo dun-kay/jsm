@@ -61,7 +61,7 @@ export default function AccessPaywallModal({
       return "Unlimited play active 🔓";
     }
     if ((state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable) {
-      return "Unlock unlimited play for 4h, just $1.00 USD 🔓";
+      return "Share the site with a friend for +2 free sessions 🎁";
     }
     return "Unlock unlimited play to continue, just $1.00 USD 🔓";
   }, [state?.paidUnlockActive]);
@@ -129,15 +129,15 @@ export default function AccessPaywallModal({
         <h2>{title}</h2>
         {state?.paidUnlockActive ? (
           <p className="body-text small">
-            You can play unlimited sessions for the next {formatRemaining(state.windowSecondsLeft)}, on this browser/device only.
+            You can play unlimited sessions for the next {formatRemaining(state.windowSecondsLeft)}, on this browser/device.
           </p>
         ) : (state?.freeSessionsLeft || 0) > 0 || state?.shareBonusAvailable ? (
           <p className="body-text small">
-            You have {freeLabel} Unlock unlimited sessions/play for 4h, $1.00 USD.
+            You have {freeLabel} <b>Unlock unlimited sessions/play for 4h, $1.00 USD.</b> <p className="tiny"><i>For the share bonus to work, you must copy & share the link with a friend or to a social account.</i></p>
           </p>
         ) : (
           <p className="body-text small">
-            You have {freeLabel} Unlock unlimited sessions/play for 4h, $1.00 USD.
+            You have {freeLabel} <b>Unlock unlimited sessions/play for 4h, $1.00 USD.</b>
           </p>
         )}
 
@@ -150,7 +150,7 @@ export default function AccessPaywallModal({
             {state?.shareBonusAvailable && (
               <>
                 <button className="btn btn-soft" type="button" onClick={() => void handleShare()} disabled={busy}>
-                🎁 Share for +1 session (free)
+                🎁 Share for +2 sessions (free)
                 </button>
                 {shareStep === "waiting" && <p className="body-text small">Checking share authenticity...</p>}
                 {shareStep === "confirm" && <p className="body-text small">Did you share it with a friend?</p>}
@@ -172,7 +172,7 @@ export default function AccessPaywallModal({
         <button className="btn btn-soft" type="button" onClick={onClose} disabled={busy}>
           Maybe later
         </button>
-
+        <p className="tiny"><i>Disclaimer: Access is tied to this browser/device via local storage and cookies. If you clear cookies/local storage, use private mode, or switch browsers/devices, access may be lost. By continuing or purchasing, you accept this setup and understand this is not grounds for a refund.</i></p>
         <div className="footer-links-inline">
           <a href="https://tally.so/r/XxqNzP" target="_blank" rel="noreferrer">
             Support
