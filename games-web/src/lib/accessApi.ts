@@ -58,7 +58,9 @@ function readCookie(name: string): string {
 }
 
 function writeCookie(name: string, value: string, maxAgeSeconds: number): void {
-  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Lax; Secure`;
+  const host = window.location.hostname.toLowerCase();
+  const domainPart = host === "jumpship.media" || host.endsWith(".jumpship.media") ? "; Domain=.jumpship.media" : "";
+  document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAgeSeconds}; Path=/; SameSite=Lax; Secure${domainPart}`;
 }
 
 function ensureBrowserToken(): string {

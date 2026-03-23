@@ -48,8 +48,22 @@ Deno.serve(async (req) => {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const metadataToken = String(session.metadata?.browser_token || "");
-    if (!UUID_REGEX.test(metadataToken) || metadataToken !== browserToken) {
-      return jsonResponse({ error: "Checkout session does not match browser token." }, 403, origin);
+    let effectiveBrowserToken = browserToken;
+    if (UUID_REGEX.test(metadataToken)) {
+      effectiveBrowserToken = metadataToken;
+    } else {
+      const { data: pending } = await supabase
+        .from("access_payments")
+        .select("browser_token")
+        .eq("stripe_checkout_session_id", session.id)
+        .maybeSingle<{ browser_token: string }>();
+      const fromPending = String(pending?.browser_token || "");
+      if (UUID_REGEX.test(fromPending)) {
+        effectiveBrowserToken = fromPending;
+      }
+    }
+    if (!UUID_REGEX.test(effectiveBrowserToken)) {
+      return jsonResponse({ error: "Checkout session missing browser token." }, 403, origin);
     }
 
     const isComplete = session.status === "complete";
@@ -81,7 +95,7 @@ Deno.serve(async (req) => {
     const currency = String(session.currency || "usd").toLowerCase();
 
     await supabase.rpc("access_apply_payment_unlock", {
-      p_browser_token: browserToken,
+      p_browser_token: effectiveBrowserToken,
       p_payment_reference: paymentRef,
       p_unlock_hours: unlockHours
     });
@@ -90,7 +104,7 @@ Deno.serve(async (req) => {
       .from("access_payments")
       .upsert(
         {
-          browser_token: browserToken,
+          browser_token: effectiveBrowserToken,
           stripe_checkout_session_id: session.id,
           stripe_payment_intent_id: session.payment_intent ? String(session.payment_intent) : null,
           status: "paid",
@@ -116,4 +130,3 @@ Deno.serve(async (req) => {
     );
   }
 });
-
