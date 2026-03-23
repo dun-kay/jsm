@@ -33,7 +33,10 @@ export default function HomeGamesGrid({
             />
             <h2>{game.title}</h2>
             <p>{game.description}</p>
-            <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
+            <div className="play-meta-row">
+              <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
+              <div className="play">{game.playTime}</div>
+            </div>
           </button>
         ))}
       </section>
