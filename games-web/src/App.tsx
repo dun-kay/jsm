@@ -19,6 +19,11 @@ type RouteState =
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
 type ThemeMode = "light" | "dark";
+type MetaConfig = {
+  title: string;
+  description: string;
+  robots?: "index,follow" | "noindex,nofollow";
+};
 
 const SESSION_CONTEXT_KEY = "notes_runtime_session";
 const THEME_STORAGE_KEY = "notes_theme_mode";
@@ -110,6 +115,127 @@ function readStoredTheme(): ThemeMode {
   }
 }
 
+function upsertMetaTag(name: string, content: string) {
+  let tag = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute("name", name);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute("content", content);
+}
+
+function upsertCanonical(href: string) {
+  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", href);
+}
+
+function getMetaForRoute(route: RouteState): MetaConfig {
+  const bySlug: Record<string, { h: string; b: string }> = {
+    "secret-category": {
+      h: "Play Secret Categories | Games With Friends",
+      b: "One player is the spy. Use one-word clues to keep the secret hidden from them."
+    },
+    "popular-people": {
+      h: "Play Popular People | Games With Friends",
+      b: "Guess your friends' chosen popular person before they guess yours."
+    },
+    "fruit-bowl": {
+      h: "Play Fruit Bowl | Games With Friends",
+      b: "Guess the prompts your team pulls from the fruit bowl. Describe, act, or use a word."
+    },
+    "murder-club": {
+      h: "Play Murder Club | Games With Friends",
+      b: "Find the hidden killer & their accomplices. Vote to submit or reject evidence."
+    }
+  };
+
+  const rulesBySlug: Record<string, { h: string; b: string }> = {
+    "secret-category": {
+      h: "Secret Categories Rules | Games With Friends",
+      b: "Game Rules: One player is the spy. Use one-word clues to keep the secret hidden from them."
+    },
+    "popular-people": {
+      h: "Popular People Rules | Games With Friends",
+      b: "Game Rules: Guess your friends' chosen popular person before they guess yours."
+    },
+    "fruit-bowl": {
+      h: "Fruit Bowl Rules | Games With Friends",
+      b: "Game Rules: Guess the prompts your team pulls from the fruit bowl. Describe, act, or use a word."
+    },
+    "murder-club": {
+      h: "Murder Club Rules | Games With Friends",
+      b: "Game Rules: Find the hidden killer & their accomplices. Vote to submit or reject evidence."
+    }
+  };
+
+  if (route.kind === "home") {
+    return {
+      title: "Play Games With Friends by Jump Ship Media",
+      description: "The fastest way to make a night more fun. Play IRL social games with your friends."
+    };
+  }
+
+  if (route.kind === "onboarding") {
+    const meta = bySlug[route.slug];
+    if (meta) {
+      return { title: meta.h, description: meta.b };
+    }
+  }
+
+  if (route.kind === "game-rules") {
+    const meta = rulesBySlug[route.slug];
+    if (meta) {
+      return { title: meta.h, description: meta.b };
+    }
+  }
+
+  if (route.kind === "legal") {
+    if (route.page === "terms") {
+      return {
+        title: "Terms | Games With Friends by Jump Ship Media",
+        description: "Games with friends is a way to play IRL social with your friends, straight from your phone."
+      };
+    }
+    if (route.page === "privacy") {
+      return {
+        title: "Privacy policy | Games With Friends by Jump Ship Media",
+        description: "Games with friends is a way to play IRL social with your friends, straight from your phone."
+      };
+    }
+    return {
+      title: "How Unlimited PlayWorks | Games With Friends by Jump Ship Media",
+      description: "Unlocking unlimited gives you unlimited game sessions/play for 4h or 30 days."
+    };
+  }
+
+  if (route.kind === "stats") {
+    return {
+      title: "Session Stats | Games With Friends",
+      description: "Internal stats page.",
+      robots: "noindex,nofollow"
+    };
+  }
+
+  if (route.kind === "runtime") {
+    return {
+      title: "Game Session | Games With Friends",
+      description: "Live game runtime.",
+      robots: "noindex,nofollow"
+    };
+  }
+
+  return {
+    title: "Play Games With Friends by Jump Ship Media",
+    description: "The fastest way to make a night more fun. Play IRL social games with your friends."
+  };
+}
+
 export default function App() {
   const [route, setRoute] = useState<RouteState>(() => parseRoute(window.location.pathname));
   const [runtimeSession, setRuntimeSession] = useState<GameSessionContext | null>(() => readRuntimeSession());
@@ -137,6 +263,14 @@ export default function App() {
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
+
+  useEffect(() => {
+    const meta = getMetaForRoute(route);
+    document.title = meta.title;
+    upsertMetaTag("description", meta.description);
+    upsertMetaTag("robots", meta.robots || "index,follow");
+    upsertCanonical(`${window.location.origin}${window.location.pathname}`);
+  }, [route]);
 
   const enabledGames = useMemo(() => GAMES.filter((game) => game.enabled), []);
   const toggleTheme = () => setTheme((old) => (old === "light" ? "dark" : "light"));
