@@ -190,7 +190,7 @@ export default function AccessPaywallModal({
         )}
 
         <button className="btn btn-soft tiny" type="button" onClick={onClose} disabled={busy}>
-          Maybe later
+          Back
         </button>
         <p className="tiny"><i>Disclaimer: Access is tied to this browser type/device via local storage. If you clear cookies/local storage, use private mode, or switch browser types/devices, access may be lost. By continuing you accept this and understand it is not grounds for a refund. Issues, contact support.</i></p>
         <div className="footer-links-inline">
