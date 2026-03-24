@@ -115,7 +115,7 @@ export default function AccessStatusPill({ hidden = false }: AccessStatusPillPro
       return `Play free +${state.freeSessionsLeft} 🎉`;
     }
     if (state.shareBonusAvailable) {
-      return "Free plays used";
+      return "Free plays +0";
     }
     return "Free plays used, get unlimited from $1.00";
   }, [state, nowMs]);
