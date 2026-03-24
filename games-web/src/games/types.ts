@@ -9,6 +9,7 @@ export type GameConfig = {
   minPlayers: number;
   maxPlayers: number;
   playTime: string;
+  ageGuide: string;
   joinPrefix?: string;
   route: string;
   enabled: boolean;

@@ -12,6 +12,7 @@ export const GAMES: GameConfig[] = [
     minPlayers: 3,
     maxPlayers: 18,
     playTime: "5 - 15 mins",
+    ageGuide: "Ages 10+",
     joinPrefix: "A",
     route: "/g/secret-category/",
     enabled: true
@@ -27,6 +28,7 @@ export const GAMES: GameConfig[] = [
     minPlayers: 3,
     maxPlayers: 18,
     playTime: "10 - 20mins",
+    ageGuide: "Ages 8+",
     joinPrefix: "B",
     route: "/g/popular-people/",
     enabled: true
@@ -42,6 +44,7 @@ export const GAMES: GameConfig[] = [
     minPlayers: 4,
     maxPlayers: 18,
     playTime: "15 - 30mins",
+    ageGuide: "Ages 8+",
     joinPrefix: "C",
     route: "/g/fruit-bowl/",
     enabled: true
@@ -57,6 +60,7 @@ export const GAMES: GameConfig[] = [
     minPlayers: 4,
     maxPlayers: 18,
     playTime: "10 - 20mins",
+    ageGuide: "Ages 14+",
     joinPrefix: "D",
     route: "/g/murder-club/",
     enabled: true
