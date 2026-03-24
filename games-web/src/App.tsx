@@ -4,6 +4,7 @@ import GameRuntimeHost from "./components/GameRuntimeHost";
 import HomeGamesGrid from "./components/HomeGamesGrid";
 import LegalPage from "./components/LegalPage";
 import StatsPage from "./components/StatsPage";
+import GameRulesPage from "./components/GameRulesPage";
 import FixedFooterLinks from "./components/FixedFooterLinks";
 import CookieNotice from "./components/CookieNotice";
 import AccessStatusPill from "./components/AccessStatusPill";
@@ -14,6 +15,7 @@ type RouteState =
   | { kind: "home" }
   | { kind: "stats" }
   | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
+  | { kind: "game-rules"; slug: string }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
 type ThemeMode = "light" | "dark";
@@ -50,6 +52,11 @@ function parseRoute(pathname: string): RouteState {
   const onboardingMatch = path.match(/^\/g\/([^/]+)\/$/);
   if (onboardingMatch) {
     return { kind: "onboarding", slug: onboardingMatch[1] };
+  }
+
+  const gameRulesMatch = path.match(/^\/g\/([^/]+)\/rules\/$/);
+  if (gameRulesMatch) {
+    return { kind: "game-rules", slug: gameRulesMatch[1] };
   }
 
   const runtimeMatch = path.match(/^\/play\/([^/]+)\/$/);
@@ -213,6 +220,43 @@ export default function App() {
         }}
       />
     );
+    }
+  }
+
+  if (route.kind === "game-rules") {
+    if (route.slug === "celebrities") {
+      navigate("/g/popular-people/rules/");
+      return null;
+    }
+    if (route.slug === "fruit-bowel") {
+      navigate("/g/fruit-bowl/rules/");
+      return null;
+    }
+    if (route.slug === "murder-clubs") {
+      navigate("/g/murder-club/rules/");
+      return null;
+    }
+
+    const game = getGameBySlug(route.slug);
+    if (!game) {
+      page = (
+        <HomeGamesGrid
+          games={enabledGames}
+          onOpenGame={(entry) => navigate(entry.route)}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
+      );
+    } else {
+      page = (
+        <GameRulesPage
+          game={game}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onPlay={() => navigate(game.route)}
+          onBack={() => navigate("/")}
+        />
+      );
     }
   }
 
