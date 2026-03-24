@@ -74,12 +74,12 @@ Deno.serve(async (req) => {
         ? {
             key: "30d",
             unlockHours: 24 * 30,
-            amountCents: 999,
+            amountCents: 600,
             lineItem: {
               quantity: 1,
               price_data: {
                 currency: "usd",
-                unit_amount: 999,
+                unit_amount: 600,
                 product: "prod_UCN80vk13eYXL8"
               }
             }

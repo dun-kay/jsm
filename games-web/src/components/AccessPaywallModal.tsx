@@ -154,7 +154,7 @@ export default function AccessPaywallModal({
           </p>
         ) : (
           <p className="body-text small">
-            You have {freeLabel} <b>Unlock unlimited sessions/play. 4h for $1.00 USD or 30 days for $9.99 USD.</b>
+            You have {freeLabel} <b>Unlock unlimited sessions/play. 4h for $1.00 USD or 30 days for $6.00 USD.</b>
           </p>
         )}
 
@@ -165,7 +165,7 @@ export default function AccessPaywallModal({
             </button>
 
             <button className="btn btn-key tiny" type="button" onClick={() => void handleCheckout("30d")} disabled={busy}>
-              {busy ? "Loading..." : " Unlimited for 30 days, $9.99 🔓"}
+              {busy ? "Loading..." : " Unlimited for 30 days, $6.00 🔓"}
             </button>
             {state?.shareBonusAvailable && (
               <>
