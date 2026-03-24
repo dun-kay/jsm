@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
       typeof session.amount_total === "number"
         ? session.amount_total
         : unlockHours === 24 * 30
-          ? 999
+          ? 600
           : 100;
     const currency = String(session.currency || "usd").toLowerCase();
 

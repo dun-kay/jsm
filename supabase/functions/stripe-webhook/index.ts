@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
         Number.isFinite(unlockHoursRaw) && unlockHoursRaw >= 1 && unlockHoursRaw <= 24 * 90
           ? Math.floor(unlockHoursRaw)
           : 4;
-      const amountCents = typeof session.amount_total === "number" ? session.amount_total : unlockHours === 24 * 30 ? 999 : 100;
+      const amountCents = typeof session.amount_total === "number" ? session.amount_total : unlockHours === 24 * 30 ? 600 : 100;
       const currency = String(session.currency || "usd").toLowerCase();
 
       await supabase.rpc("access_apply_payment_unlock", {
