@@ -36,6 +36,7 @@ export default function HomeGamesGrid({
             <div className="play-meta-row">
               <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
               <div className="play">{game.playTime}</div>
+              <div className="play">{game.ageGuide}</div>
             </div>
           </button>
         ))}

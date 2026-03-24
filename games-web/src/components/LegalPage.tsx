@@ -36,6 +36,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Use at your own risk:</b> You are responsible for your own actions and conduct while using this app.</p>
             <p><b>No guarantees:</b> The app is provided "as is" without warranties of uptime, uninterrupted access, or fitness for a specific purpose.</p>
             <p><b>Play access model:</b> Access is browser type/device based. No account is required.</p>
+            <p><b>Age guidance:</b> Any age labels shown on games are advisory only for player discretion; we do not perform age verification or age-based access blocking.</p>
             <p><b>Free access:</b> You receive 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> You may claim up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
             <p><b>Paid access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser type/device only. $9.99 USD unlocks unlimited sessions for 30 days on that browser type/device only. Refreshing the page or closing the tab and coming back to the same browser type is possible (provided your access time has not lapsed); unless you purchase in private mode (not recommended), clear cookies/local storage, or change your browser type.</p>
