@@ -88,7 +88,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>Each player has 3 hidden animal cards: <b>Crazy Llama 🦙, Poison Dart Frog 🐸, Mountain Gorilla 🦍</b>.</p>
         <p>One of those 3 cards is Charlatan-marked.</p>
         <br />
-        <p>On your turn, ask the next player: <b>Are you a [animal]?</b></p>
+        <p>On your turn, ask the next player: <b>Are you a [Llama... Frog... Gorilla..]?</b></p>
         <p>If your guess is correct, you collect their top card.</p>
         <p>If your guess is wrong, you must do an animal penalty.</p>
         <br />
