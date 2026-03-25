@@ -11,6 +11,7 @@ import {
   voteLyingLlamaBattleWinner,
   type LyingLlamaState
 } from "../../lib/lyingLlamaApi";
+import { getGameIntroRules } from "../rules";
 import AccessPaywallModal from "../../components/AccessPaywallModal";
 import { usePlayAccess } from "../../lib/usePlayAccess";
 
@@ -286,18 +287,14 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
   const myBattleVote = state.battleVotes[state.you.id] || null;
   const lastWinnerName = playerName(state, state.lastWinnerId);
   const myTopCard = state.you.stack[0] || null;
+  const introRules = getGameIntroRules("lying-llama");
 
   return (
     <section className="runtime-card runtime-flow">
       {state.phase === "rules" && (
         <>
-          <h2>You are now playing... Lying Llama</h2>
-          <p>Each player has 3 hidden animal cards:</p>
-          <p><b>Crazy Llama 🦙, Poison Dart Frog 🐸, 🦍</b></p>
-          <p>On your turn, ask the next player: "Are you a [animal]?"</p>
-          <p>If you guess correctly, you collect their top card.</p>
-          <p>One card per player is Charlatan. If it is on top, they must lie in a weird way.</p>
-          <p>Spot it, call Charlatan!, and win the card in a mini challenge.</p>
+          <h2>{introRules.title}</h2>
+          <div className="rules-modal-content">{introRules.content}</div>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
             {busy ? "Loading..." : isWaitingOnYou(state) ? "Continue" : "Waiting for others"}
           </button>
