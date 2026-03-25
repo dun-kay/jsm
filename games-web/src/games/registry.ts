@@ -87,7 +87,7 @@ export const GAMES: GameConfig[] = [
     title: "Really Donald?",
     description: "Vote real or fake, then guess who said it after the impression.",
     shortRules: "One player reads the quote. Everyone else votes real/fake and then picks the speaker from 5 options for points.",
-    heroImage: "/assets/site-logo.png",
+    heroImage: "/assets/really-donald-logo.png",
     theme: "default",
     minPlayers: 2,
     maxPlayers: 18,
