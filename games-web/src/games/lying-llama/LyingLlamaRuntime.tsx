@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   confirmLyingLlamaPenalty,
   continueLyingLlama,
@@ -57,8 +57,11 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
   const [state, setState] = useState<LyingLlamaState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
-  const [turnResultSeconds, setTurnResultSeconds] = useState<number>(3);
+  const [turnResultSeconds, setTurnResultSeconds] = useState<number>(5);
   const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
+  const autoAdvanceKeyRef = useRef<string>("");
+  const autoAdvanceTimeoutRef = useRef<number | null>(null);
+  const autoAdvanceTickRef = useRef<number | null>(null);
   const {
     accessState,
     showPaywall,
@@ -130,22 +133,61 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
 
   useEffect(() => {
     if (!state || state.phase !== "turn_result" || !isWaitingOnYou(state)) {
-      setTurnResultSeconds(3);
+      autoAdvanceKeyRef.current = "";
+      if (autoAdvanceTimeoutRef.current !== null) {
+        window.clearTimeout(autoAdvanceTimeoutRef.current);
+        autoAdvanceTimeoutRef.current = null;
+      }
+      if (autoAdvanceTickRef.current !== null) {
+        window.clearInterval(autoAdvanceTickRef.current);
+        autoAdvanceTickRef.current = null;
+      }
+      setTurnResultSeconds(5);
       return;
     }
 
-    setTurnResultSeconds(3);
-    const tickInterval = window.setInterval(() => {
+    const turnKey = [
+      state.phase,
+      state.activeAskerId || "",
+      state.activeTargetId || "",
+      state.lastOutcomeType || "",
+      state.lastWinnerId || "",
+      state.lastCardWon || "",
+      waitingKey
+    ].join("|");
+
+    if (autoAdvanceKeyRef.current === turnKey) {
+      return;
+    }
+
+    autoAdvanceKeyRef.current = turnKey;
+    if (autoAdvanceTimeoutRef.current !== null) {
+      window.clearTimeout(autoAdvanceTimeoutRef.current);
+      autoAdvanceTimeoutRef.current = null;
+    }
+    if (autoAdvanceTickRef.current !== null) {
+      window.clearInterval(autoAdvanceTickRef.current);
+      autoAdvanceTickRef.current = null;
+    }
+
+    setTurnResultSeconds(5);
+    autoAdvanceTickRef.current = window.setInterval(() => {
       setTurnResultSeconds((prev) => Math.max(prev - 1, 0));
     }, 1000);
 
-    const advanceTimeout = window.setTimeout(() => {
+    autoAdvanceTimeoutRef.current = window.setTimeout(() => {
       void doContinue();
-    }, 3000);
+    }, 5000);
 
     return () => {
-      window.clearInterval(tickInterval);
-      window.clearTimeout(advanceTimeout);
+      if (autoAdvanceTickRef.current !== null) {
+        window.clearInterval(autoAdvanceTickRef.current);
+        autoAdvanceTickRef.current = null;
+      }
+      if (autoAdvanceTimeoutRef.current !== null) {
+        window.clearTimeout(autoAdvanceTimeoutRef.current);
+        autoAdvanceTimeoutRef.current = null;
+      }
     };
   }, [state?.phase, waitingKey, state?.you.id]);
 
@@ -322,7 +364,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
             </>
           ) : state.activeTargetId === state.you.id ? (
             <div><h2>{askerName} is trying to guess your card.</h2><br></br>
-            <p>Your card:<p></p><b><u>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!</u><p></p></b>{myTopCard?.isCharlatan ? "(this is a Charlaton Card)" : ""} {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}</p>
+            <p>Your card:<p></p><b><u>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!</u><p></p></b>{myTopCard?.isCharlatan ? "(Charlaton Card)" : ""} {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}</p>
             </div>
           ) : (
             <div><h2>{askerName} is asking {targetName} about their card.</h2><br></br><p>Listen carefully, it'll help you later to try remember what cards have been guessed.</p></div>
@@ -334,17 +376,17 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           {state.activeTargetId === state.you.id ? (
             <>
-              <h2>{askerName} asked if your card is a {displayAnimal(state.selectedAnimal)}!</h2>
-              <p>Your card:</p>
-              <p><b><u>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!</u></b></p>
-              {myTopCard?.isCharlatan && <p>(this is a Charlatan Card)</p>}
+              <h2>{askerName} asked if your card is a {displayAnimal(state.selectedAnimal)}!</h2><br></br>
+              <p>Your card:<p></p>
+              <b><u>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!</u></b></p>
+              {myTopCard?.isCharlatan && <p>(Charlatan Card)</p>}
               <div className="runtime-list">
                 {targetGuessIsCorrect && myTopCard?.isCharlatan ? (
                   <>
-                    <p>
-                      You must lie: No, I am not a {displayAnimal(state.selectedAnimal)}!, but while{" "}
-                      {state.charlatanPrompt || "doing your Charlatan action"}.
-                    </p>
+                    <br></br><p><b>
+                      Your Charlatan action:<p></p></b> {state.charlatanPrompt || "doing your Charlatan action"} <p></p><br></br>Make sure you say:<p></p><b><u>No, I am not a {displayAnimal(state.selectedAnimal)}!</u></b>
+                      
+                    </p><br></br>
                     <button type="button" className="btn btn-soft" onClick={() => void doTargetResponse(true, false)} disabled={busy}>
                       {askerName} did not call Charlatan
                     </button>
@@ -354,17 +396,20 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
                   </>
                 ) : targetGuessIsCorrect ? (
                   <button type="button" className="btn btn-key" onClick={() => void doTargetResponse(true)} disabled={busy}>
-                    Yes, I'm a {myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!
+                    Yes, I am a {myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!
                   </button>
                 ) : (
+                  <div><br></br>
                   <button type="button" className="btn btn-soft" onClick={() => void doTargetResponse(false)} disabled={busy}>
-                    No, I'm not a {displayAnimal(state.selectedAnimal)}!
+                    No, I am not a {displayAnimal(state.selectedAnimal)}!
                   </button>
+                  <p>Don't say what your card is unless it is guessed correctly.</p>
+                  </div>
                 )}
               </div>
             </>
           ) : state.activeAskerId === state.you.id ? (
-            <div><h2>{targetName} is confirming your guess.</h2><br></br><p>Make sure they say it out loud so the whole group can hear.</p></div>
+            <div><h2>{targetName} is confirming your guess.</h2><br></br><p><b>Don't forget to watch for their Charlatan action, call them out if you think they're lying!</b></p></div>
           ) : (
             <div><h2>{targetName} is confirming the guess.</h2><br></br><p>Make sure they say it out loud so the whole group can hear.</p></div>
           )}
@@ -394,14 +439,14 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
 
       {state.phase === "charlatan_battle" && (
         <>
-          <h2>Charlatan battle</h2>
+          <h2>Charlatan battle</h2><br></br>
           <p><b>{state.battlePrompt}</b></p>
           {(state.activeAskerId === state.you.id || state.activeTargetId === state.you.id) ? (
             <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-              {busy ? "Loading..." : isWaitingOnYou(state) ? "Ready" : "Waiting for other player"}
+              {busy ? "Loading..." : isWaitingOnYou(state) ? "Completed" : "Waiting for other player"}
             </button>
           ) : (
-            <p>Charlatan battle: {askerName} vs {targetName}</p>
+            <p><br></br><b>You do not have to do anything. Just watch along: {askerName} vs {targetName}</b></p>
           )}
         </>
       )}
@@ -410,7 +455,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           {(state.activeAskerId === state.you.id || state.activeTargetId === state.you.id) ? (
             <>
-              <h2>Who won?</h2>
+              <h2>Who won?</h2><p>Who won the Charlatan battle?</p><p></p>
               <div className="bottom-row">
                 <button type="button" className="btn btn-soft" onClick={() => void doVoteWinner(state.activeAskerId || "")} disabled={busy || !state.activeAskerId}>
                   {askerName}
@@ -422,7 +467,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
               {myBattleVote && <p>You voted: {playerName(state, myBattleVote)}</p>}
             </>
           ) : (
-            <p>Waiting for Charlatan result...</p>
+            <h2>Waiting for Charlatan battle result...</h2>
           )}
         </>
       )}
