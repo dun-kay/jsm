@@ -80,6 +80,22 @@ export const GAMES: GameConfig[] = [
     joinPrefix: "E",
     route: "/g/lying-llama/",
     enabled: true
+  },
+  {
+    id: "F",
+    slug: "really-donald",
+    title: "Really Donald?",
+    description: "Vote real or fake, then guess who said it after the impression.",
+    shortRules: "One player reads the quote. Everyone else votes real/fake and then picks the speaker from 5 options for points.",
+    heroImage: "/assets/site-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 12+",
+    joinPrefix: "F",
+    route: "/g/really-donald/",
+    enabled: true
   }
 ];
 

@@ -98,6 +98,23 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>Most collected cards at the end wins.</p>
       </>
     )
+  },
+  "really-donald": {
+    title: "You are now playing... Really Donald?",
+    content: (
+      <>
+        <p>One player reads out a ridiculous quote.</p>
+        <p>Everyone else votes: <b>Real</b> or <b>Fake</b>.</p>
+        <br />
+        <p>Then the truth is revealed.</p>
+        <p>After that, the reader does an impression of who actually said it.</p>
+        <p>Everyone guesses who it was from 5 options.</p>
+        <br />
+        <p><b>Get Real/Fake right = +1</b></p>
+        <p><b>Get speaker right = +1</b></p>
+        <p>Most points after 3 rounds wins.</p>
+      </>
+    )
   }
 };
 

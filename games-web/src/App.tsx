@@ -156,6 +156,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "lying-llama": {
       h: "Play Lying Llama | Games With Friends",
       b: "Bluff, catch Charlatans, and collect the most cards to win."
+    },
+    "really-donald": {
+      h: "Play Really Donald? | Games With Friends",
+      b: "Vote real or fake, then guess the speaker after a live impression."
     }
   };
 
@@ -179,6 +183,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "lying-llama": {
       h: "Lying Llama Rules | Games With Friends",
       b: "Game Rules: Ask, bluff, call Charlatan, and collect the most cards to win."
+    },
+    "really-donald": {
+      h: "Really Donald? Rules | Games With Friends",
+      b: "Game Rules: Vote real or fake, then guess who said it from five options."
     }
   };
 
