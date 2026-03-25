@@ -49,6 +49,10 @@ function playerName(state: LyingLlamaState, playerId: string | null): string {
   return state.players.find((p) => p.id === playerId)?.name || "";
 }
 
+function isSameAnimal(a: string | null | undefined, b: string | null | undefined): boolean {
+  return (a || "").trim().toLowerCase() === (b || "").trim().toLowerCase();
+}
+
 export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaRuntimeProps) {
   const [state, setState] = useState<LyingLlamaState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
@@ -288,6 +292,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
   const lastWinnerName = playerName(state, state.lastWinnerId);
   const myTopCard = state.you.stack[0] || null;
   const introRules = getGameIntroRules("lying-llama");
+  const targetGuessIsCorrect = isSameAnimal(state.selectedAnimal, myTopCard?.animal);
 
   return (
     <section className="runtime-card runtime-flow">
@@ -305,9 +310,9 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           {state.activeAskerId === state.you.id ? (
             <>
-              <h2>Your turn</h2>
-              <p>Guess {targetName}'s top card.</p>
-              <p><b>Make sure you say your guess out loud so everyone can hear you!</b></p>
+              <h2>It's your turn, try guess {targetName}'s top card.</h2>
+              <p></p>
+              <p>Make sure you say your guess out loud so everyone can hear you!</p><p></p>
               <div className="runtime-list">
                 {ANIMALS.map((animal) => (
                   <button key={animal} type="button" className="btn btn-soft" onClick={() => void doPickAnimal(animal)} disabled={busy}>
@@ -317,9 +322,11 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
               </div>
             </>
           ) : state.activeTargetId === state.you.id ? (
-            <p><b>{askerName}</b> is choosing a guess for your top card.</p>
+            <div><h2>{askerName} is trying to guess your top card.</h2><br></br>
+            <p>Your top card:<p></p><b>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!<p></p>{myTopCard?.isCharlatan ? " This is a Charlaton Card" : ""}, {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}</b></p>
+            </div>
           ) : (
-            <p><b>{askerName}</b> is asking <b>{targetName}</b>.</p>
+            <div><h2>{askerName} is asking {targetName} about their top card.</h2><br></br><p>Listen carefully, it'll help you later to try remember what cards have been guessed.</p></div>
           )}
         </>
       )}
@@ -329,15 +336,25 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
           {state.activeTargetId === state.you.id ? (
             <>
               <h2>{myTopCard ? `${displayAnimal(myTopCard.animal)}${myTopCard.isCharlatan ? " - Charlatan" : ""}` : "Top card"}</h2>
+              <p>
+                <b>
+                  Your card: {myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}
+                  {myTopCard?.isCharlatan ? " (Charlatan card)" : ""}
+                  {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}
+                </b>
+              </p>
               <p>{askerName} asked you if your top card is {displayAnimal(state.selectedAnimal)}.</p>
               <p><b>Let them know how they did!</b></p>
               <div className="runtime-list">
-                <button type="button" className="btn btn-key" onClick={() => void doTargetResponse(true)} disabled={busy}>
-                  Confirm guess (if correct)
-                </button>
-                <button type="button" className="btn btn-soft" onClick={() => void doTargetResponse(false)} disabled={busy}>
-                  Give penalty (if wrong)
-                </button>
+                {targetGuessIsCorrect ? (
+                  <button type="button" className="btn btn-key" onClick={() => void doTargetResponse(true)} disabled={busy}>
+                    Confirm guess (if correct)
+                  </button>
+                ) : (
+                  <button type="button" className="btn btn-soft" onClick={() => void doTargetResponse(false)} disabled={busy}>
+                    Give penalty (if wrong)
+                  </button>
+                )}
               </div>
             </>
           ) : state.activeAskerId === state.you.id ? (
@@ -353,12 +370,13 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
           {state.activeAskerId === state.you.id ? (
             <>
               <h2>Did you catch a Charlatan?</h2>
+              {state.charlatanPrompt && <p><b>Tell used: {state.charlatanPrompt}</b></p>}
               <div className="bottom-row">
                 <button type="button" className="btn btn-key" onClick={() => void doCharlatanDecision(true)} disabled={busy}>
-                  Charlatan!
+                  Charlatan called (start challenge)
                 </button>
                 <button type="button" className="btn btn-soft" onClick={() => void doCharlatanDecision(false)} disabled={busy}>
-                  Let it go
+                  Charlatan not called (give penalty)
                 </button>
               </div>
             </>
