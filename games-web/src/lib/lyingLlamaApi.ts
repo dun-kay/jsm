@@ -13,9 +13,8 @@ export type LyingLlamaPlayer = {
 export type LyingLlamaState = {
   phase:
     | "rules"
-    | "deal_reveal"
     | "turn_prompt"
-    | "charlatan_prompt"
+    | "target_response"
     | "charlatan_call"
     | "charlatan_battle"
     | "charlatan_vote"
@@ -138,6 +137,18 @@ export function pickLyingLlamaAnimal(gameCode: string, playerToken: string, anim
   });
 }
 
+export function submitLyingLlamaTargetResponse(
+  gameCode: string,
+  playerToken: string,
+  correctGuess: boolean
+): Promise<LyingLlamaState> {
+  return rpcState("ll_submit_target_response", {
+    p_game_code: gameCode,
+    p_player_token: playerToken,
+    p_correct_guess: correctGuess
+  });
+}
+
 export function decideCharlatan(gameCode: string, playerToken: string, callCharlatan: boolean): Promise<LyingLlamaState> {
   return rpcState("ll_charlatan_decision", {
     p_game_code: gameCode,
@@ -168,4 +179,3 @@ export function playAgainLyingLlama(gameCode: string, playerToken: string): Prom
     p_player_token: playerToken
   });
 }
-
