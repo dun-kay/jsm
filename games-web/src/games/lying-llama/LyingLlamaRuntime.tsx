@@ -32,7 +32,7 @@ function displayAnimal(animal: string | null | undefined): string {
     return "Poison Dart Frog 🐸";
   }
   if (animal === "Mountain Gorilla") {
-    return "🦍";
+    return "Mountain Gorilla 🦍";
   }
   return animal;
 }
