@@ -80,6 +80,24 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p><p></p>It’s similar to social deduction style games like Mafia or Werewolf.</p>
       </>
     )
+  },
+  "lying-llama": {
+    title: "You are now playing... Lying Llama",
+    content: (
+      <>
+        <p>Each player has 3 hidden animal cards: <b>Crazy Llama 🦙, Poison Dart Frog 🐸, & Mountain Gorilla 🦍</b>.</p>
+        <p>One of those 3 cards is Charlatan-marked.</p>
+        <br />
+        <p>On your turn, ask the next player: <b>Are you a [Llama... Frog... or Gorilla...]?</b></p>
+        <p>If your guess is correct, you collect their top card.</p>
+        <p>If your guess is wrong, you must do an animal penalty.</p>
+        <br />
+        <p>If the target card is Charlatan, they must lie with a weird tell.</p>
+        <p>You can call <b>Charlatan!</b> and battle for the card.</p>
+        <br />
+        <p>Most collected cards at the end wins.</p>
+      </>
+    )
   }
 };
 

@@ -4,6 +4,7 @@ import SecretCategoryRuntime from "../games/secret-category/SecretCategoryRuntim
 import PopularPeopleRuntime from "../games/popular-people/PopularPeopleRuntime";
 import FruitBowlRuntime from "../games/fruit-bowl/FruitBowlRuntime";
 import MurderClubRuntime from "../games/murder-club/MurderClubRuntime";
+import LyingLlamaRuntime from "../games/lying-llama/LyingLlamaRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState, quitGame, touchPlayer } from "../lib/lobbyApi";
 
@@ -126,7 +127,8 @@ export default function GameRuntimeHost({
     (game?.slug === "secret-category" ||
       game?.slug === "popular-people" ||
       game?.slug === "fruit-bowl" ||
-      game?.slug === "murder-club") &&
+      game?.slug === "murder-club" ||
+      game?.slug === "lying-llama") &&
     initialSession?.playerToken
   ) {
     return (
@@ -150,6 +152,9 @@ export default function GameRuntimeHost({
         )}
         {game.slug === "murder-club" && (
           <MurderClubRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
+        )}
+        {game.slug === "lying-llama" && (
+          <LyingLlamaRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
         {showQuitConfirm && (
           <div className="modal-backdrop" role="dialog" aria-modal="true">

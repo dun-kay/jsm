@@ -152,6 +152,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "murder-club": {
       h: "Play Murder Club | Games With Friends",
       b: "Find the hidden killer & their accomplices. Vote to submit or reject evidence."
+    },
+    "lying-llama": {
+      h: "Play Lying Llama | Games With Friends",
+      b: "Bluff, catch Charlatans, and collect the most cards to win."
     }
   };
 
@@ -171,6 +175,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "murder-club": {
       h: "Murder Club Rules | Games With Friends",
       b: "Game Rules: Find the hidden killer & their accomplices. Vote to submit or reject evidence."
+    },
+    "lying-llama": {
+      h: "Lying Llama Rules | Games With Friends",
+      b: "Game Rules: Ask, bluff, call Charlatan, and collect the most cards to win."
     }
   };
 
