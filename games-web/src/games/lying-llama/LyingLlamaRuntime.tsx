@@ -211,14 +211,14 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
     }
   }
 
-  async function doTargetResponse(correctGuess: boolean) {
+  async function doTargetResponse(correctGuess: boolean, charlatanCalled: boolean | null = null) {
     if (!state || busy || state.phase !== "target_response" || state.activeTargetId !== state.you.id) {
       return;
     }
     setBusy(true);
     setErrorText("");
     try {
-      const next = await submitLyingLlamaTargetResponse(gameCode, playerToken, correctGuess);
+      const next = await submitLyingLlamaTargetResponse(gameCode, playerToken, correctGuess, charlatanCalled);
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to confirm the guess result.");
@@ -289,7 +289,6 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
   }
 
   const myBattleVote = state.battleVotes[state.you.id] || null;
-  const lastWinnerName = playerName(state, state.lastWinnerId);
   const myTopCard = state.you.stack[0] || null;
   const introRules = getGameIntroRules("lying-llama");
   const targetGuessIsCorrect = isSameAnimal(state.selectedAnimal, myTopCard?.animal);
@@ -310,7 +309,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           {state.activeAskerId === state.you.id ? (
             <>
-              <h2>It's your turn, try guess {targetName}'s top card.</h2>
+              <h2>It's your turn, try guess {targetName}'s card.</h2>
               <p></p>
               <p>Make sure you say your guess out loud so everyone can hear you!</p><p></p>
               <div className="runtime-list">
@@ -322,11 +321,11 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
               </div>
             </>
           ) : state.activeTargetId === state.you.id ? (
-            <div><h2>{askerName} is trying to guess your top card.</h2><br></br>
-            <p>Your top card:<p></p><b>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!<p></p>{myTopCard?.isCharlatan ? " This is a Charlaton Card" : ""}, {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}</b></p>
+            <div><h2>{askerName} is trying to guess your card.</h2><br></br>
+            <p>Your card:<p></p><b><u>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!</u><p></p></b>{myTopCard?.isCharlatan ? "(this is a Charlaton Card)" : ""} {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}</p>
             </div>
           ) : (
-            <div><h2>{askerName} is asking {targetName} about their top card.</h2><br></br><p>Listen carefully, it'll help you later to try remember what cards have been guessed.</p></div>
+            <div><h2>{askerName} is asking {targetName} about their card.</h2><br></br><p>Listen carefully, it'll help you later to try remember what cards have been guessed.</p></div>
           )}
         </>
       )}
@@ -335,32 +334,39 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           {state.activeTargetId === state.you.id ? (
             <>
-              <h2>{myTopCard ? `${displayAnimal(myTopCard.animal)}${myTopCard.isCharlatan ? " - Charlatan" : ""}` : "Top card"}</h2>
-              <p>
-                <b>
-                  Your card: {myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}
-                  {myTopCard?.isCharlatan ? " (Charlatan card)" : ""}
-                  {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}
-                </b>
-              </p>
-              <p>{askerName} asked you if your top card is {displayAnimal(state.selectedAnimal)}.</p>
-              <p><b>Let them know how they did!</b></p>
+              <h2>{askerName} asked if your card is a {displayAnimal(state.selectedAnimal)}!</h2>
+              <p>Your card:</p>
+              <p><b><u>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!</u></b></p>
+              {myTopCard?.isCharlatan && <p>(this is a Charlatan Card)</p>}
               <div className="runtime-list">
-                {targetGuessIsCorrect ? (
+                {targetGuessIsCorrect && myTopCard?.isCharlatan ? (
+                  <>
+                    <p>
+                      You must lie: No, I am not a {displayAnimal(state.selectedAnimal)}!, but while{" "}
+                      {state.charlatanPrompt || "doing your Charlatan action"}.
+                    </p>
+                    <button type="button" className="btn btn-soft" onClick={() => void doTargetResponse(true, false)} disabled={busy}>
+                      {askerName} did not call Charlatan
+                    </button>
+                    <button type="button" className="btn btn-key" onClick={() => void doTargetResponse(true, true)} disabled={busy}>
+                      {askerName} called Charlatan
+                    </button>
+                  </>
+                ) : targetGuessIsCorrect ? (
                   <button type="button" className="btn btn-key" onClick={() => void doTargetResponse(true)} disabled={busy}>
-                    Confirm guess (if correct)
+                    Yes, I'm a {myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!
                   </button>
                 ) : (
                   <button type="button" className="btn btn-soft" onClick={() => void doTargetResponse(false)} disabled={busy}>
-                    Give penalty (if wrong)
+                    No, I'm not a {displayAnimal(state.selectedAnimal)}!
                   </button>
                 )}
               </div>
             </>
           ) : state.activeAskerId === state.you.id ? (
-            <p>{targetName} is confirming your guess.</p>
+            <div><h2>{targetName} is confirming your guess.</h2><br></br><p>Make sure they say it out loud so the whole group can hear.</p></div>
           ) : (
-            <p>{targetName} is confirming the guess result.</p>
+            <div><h2>{targetName} is confirming the guess.</h2><br></br><p>Make sure they say it out loud so the whole group can hear.</p></div>
           )}
         </>
       )}
@@ -425,15 +431,16 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           {state.activeAskerId === state.you.id ? (
             <>
-              <h2>Wrong guess</h2>
-              <p>You guessed: <b>{displayAnimal(state.penaltyAnimal)}</b></p>
-              <p><b>{state.penaltyText}</b></p>
+              <h2>You guessed wrong!</h2>
+              <p></p>
+              <p><p>Your penalty:</p><b>{state.penaltyText}</b></p><p></p>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
                 {busy ? "Loading..." : "I did it"}
               </button>
+              <p>Make sure you do it properly, the game can't proceed until it's served...</p>
             </>
           ) : (
-            <p>{askerName} is doing their penalty...</p>
+            <div><h2>{askerName} is doing their penalty...</h2><br></br><p>Make sure they do it correctly:<p></p><b>{state.penaltyText}</b><p></p><br></br>The game can't proceed until {askerName} serves the penalty properly...</p></div>
           )}
         </>
       )}
@@ -443,6 +450,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
           {state.activeTargetId === state.you.id ? (
             <>
               <h2>Did they do it properly?</h2>
+              <p></p><p><i>... {state.penaltyText}</i></p><p></p>
               <div className="bottom-row">
                 <button type="button" className="btn btn-key" onClick={() => void doPenaltyConfirm(true)} disabled={busy}>
                   Yes
@@ -453,21 +461,19 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
               </div>
             </>
           ) : (
-            <p>{targetName} is confirming the penalty.</p>
+            <h2>{targetName} is confirming the penalty.</h2>
           )}
         </>
       )}
 
       {state.phase === "turn_result" && (
         <>
-          <h2>Turn result</h2>
-          <p>{state.lastOutcomeText || "Turn complete."}</p>
-          {state.lastCardWon && <p>Card won: <b>{displayAnimal(state.lastCardWon)}</b></p>}
-          {lastWinnerName && <p>Winner: <b>{lastWinnerName}</b></p>}
+          <h2>Scoreboard</h2><p></p>
+          <p>Results:</p>
           <div className="player-grid teams">
             {state.scores.map((row) => (
               <div key={row.playerId} className="player-pill team">
-                {row.name}: {row.collectedCount}
+                {row.name} has: {row.collectedCount} Cards
               </div>
             ))}
           </div>

@@ -140,12 +140,14 @@ export function pickLyingLlamaAnimal(gameCode: string, playerToken: string, anim
 export function submitLyingLlamaTargetResponse(
   gameCode: string,
   playerToken: string,
-  correctGuess: boolean
+  correctGuess: boolean,
+  charlatanCalled: boolean | null = null
 ): Promise<LyingLlamaState> {
   return rpcState("ll_submit_target_response", {
     p_game_code: gameCode,
     p_player_token: playerToken,
-    p_correct_guess: correctGuess
+    p_correct_guess: correctGuess,
+    p_charlatan_called: charlatanCalled
   });
 }
 
