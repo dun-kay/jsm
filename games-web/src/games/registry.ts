@@ -64,6 +64,22 @@ export const GAMES: GameConfig[] = [
     joinPrefix: "D",
     route: "/g/murder-club/",
     enabled: true
+  },
+  {
+    id: "E",
+    slug: "lying-llama",
+    title: "Lying Llama",
+    description: "Bluff, spot Charlatans, and win cards with mini challenge battles.",
+    shortRules: "Ask the next player if they are a chosen animal. Catch Charlatans, survive penalties, and collect the most cards to win.",
+    heroImage: "/assets/site-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 6+",
+    joinPrefix: "E",
+    route: "/g/lying-llama/",
+    enabled: true
   }
 ];
 
