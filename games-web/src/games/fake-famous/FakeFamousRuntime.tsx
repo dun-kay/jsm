@@ -36,6 +36,17 @@ function namesFromIds(state: FakeFamousState, ids: string[]): string {
   return ids.map((id) => playerName(state, id)).filter(Boolean).join(", ");
 }
 
+function formatWinnerNames(state: FakeFamousState, ids: string[]): string {
+  const names = ids.map((id) => playerName(state, id)).filter(Boolean);
+  if (names.length <= 1) {
+    return names[0] || "No winner";
+  }
+  if (names.length === 2) {
+    return `${names[0]} & ${names[1]}`;
+  }
+  return `${names.slice(0, -1).join(", ")}, & ${names[names.length - 1]}`;
+}
+
 export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousRuntimeProps) {
   const introRules = getGameIntroRules("fake-famous");
   const [state, setState] = useState<FakeFamousState | null>(null);
@@ -216,6 +227,8 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
   const activeName = playerName(state, state.activePlayerId);
   const card = state.currentCard;
   const truthLabel = card?.isReal ? "Real" : "Fake";
+  const selectedTruthVote = state.truthVotes[state.you.id];
+  const selectedSpeakerVote = state.speakerVotes[state.you.id];
 
   return (
     <section className="runtime-card runtime-flow">
@@ -232,14 +245,10 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
       {state.phase === "round_intro" && (
         <>
           <h2>Round {state.roundNumber}</h2>
-          <p>Everyone gets one turn this round.</p>
-          <div className="player-grid teams">
-            {state.players.map((p) => (
-              <div key={p.id} className="player-pill team">{p.name}: {p.score}</div>
-            ))}
-          </div>
+          <p>Everyone reads out a quote.<p></p>You guess if it's fake or not & who said it (impressions may be involved).</p>
+          <br></br>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-            {busy ? "Loading..." : isWaitingOnYou(state) ? "Continue" : "Waiting for others"}
+            {busy ? "Loading..." : isWaitingOnYou(state) ? " Begin" : "Waiting for others"}
           </button>
         </>
       )}
@@ -248,18 +257,19 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
         <>
           {state.activePlayerId === state.you.id ? (
             <>
-              <h2>Your quote</h2>
-              <p><b>{card?.quoteText || "..."}</b></p>
-              <p>Real/Fake answer: <b>{truthLabel}</b></p>
-              <p>Correct speaker: <b>{card?.correctSpeaker || ""}</b></p>
-              <p>Read this quote out loud. Do not reveal the answer yet.</p>
+              <p>Your quote:</p>
+              <h2>"{card?.quoteText || "..."}"</h2>
+              <br></br>
+              <p>Read the quote out loud.</p>
+              <p>Do not reaveal that the quote is: {truthLabel}.</p><br></br>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-                {busy ? "Loading..." : "Ready"}
+                {busy ? "Loading..." : "Continue..."}
               </button>
             </>
           ) : (
             <>
-              <h2>{activeName} is reading the quote</h2>
+              <h2>{activeName} is reading the quote...</h2>
+              <br></br>
               <p>Listen carefully.</p>
             </>
           )}
@@ -268,28 +278,55 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
 
       {state.phase === "truth_vote" && (
         <>
-          <h2>Real or Fake?</h2>
-          <p><b>{card?.quoteText || "..."}</b></p>
+          <p><b>Quote vote:</b></p>
+          <p>Real or Fake?</p>
+          <p></p>
+          <h2>"{card?.quoteText || "..."}"</h2><br></br>
           {state.activePlayerId === state.you.id ? (
             <p>Waiting for everyone to vote...</p>
           ) : (
-            <div className="bottom-row">
-              <button type="button" className="btn btn-key" onClick={() => void voteTruth("real")} disabled={busy}>Real</button>
-              <button type="button" className="btn btn-soft" onClick={() => void voteTruth("fake")} disabled={busy}>Fake</button>
-            </div>
+            <>
+              <div className="bottom-row">
+                <button
+                  type="button"
+                  className={selectedTruthVote === "real" ? "btn btn-key" : "btn btn-key"}
+                  onClick={() => void voteTruth("real")}
+                  disabled={busy || Boolean(selectedTruthVote)}
+                >
+                  Real
+                </button>
+                <button
+                  type="button"
+                  className={selectedTruthVote === "fake" ? "btn btn-key" : "btn btn-key"}
+                  onClick={() => void voteTruth("fake")}
+                  disabled={busy || Boolean(selectedTruthVote)}
+                >
+                  Fake
+                </button>
+              </div>
+              {selectedTruthVote && (
+                <p className="hint-text nb">You selected {selectedTruthVote}...</p>
+              )}
+            </>
           )}
         </>
       )}
 
       {state.phase === "truth_result" && (
         <>
-          <h2>Truth reveal</h2>
-          <p><b>{card?.quoteText || "..."}</b></p>
-          <p>It was: <b>{truthLabel}</b></p>
-          <p>+1 for Real/Fake: <b>{namesFromIds(state, state.truthWinners)}</b></p>
-          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-            {busy ? "Loading..." : isWaitingOnYou(state) ? "Continue" : "Waiting for others"}
-          </button>
+        <p>Reveal:</p>
+          <h2>"{card?.quoteText || "..."}"</h2>
+          <br></br>
+          <p><b>It's a: {truthLabel} quote!</b></p>
+          <br></br>
+          <p>+1 point for: <b>{namesFromIds(state, state.truthWinners)}</b></p>
+          {state.activePlayerId === state.you.id ? (
+            <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+              {busy ? "Loading..." : "Continue"}
+            </button>
+          ) : (
+            <p className="hint-text nb">Waiting for {activeName} to click continue...</p>
+          )}
         </>
       )}
 
@@ -297,17 +334,19 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
         <>
           {state.activePlayerId === state.you.id ? (
             <>
-              <h2>Now do the impression</h2>
-              <p>Speaker: <b>{card?.correctSpeaker || ""}</b></p>
-              <p>Tip: <b>{card?.impressionTip || ""}</b></p>
+              <h2>Now do the impression...</h2><br></br>
+              <p>Quote: "{card?.quoteText || "..."}"</p>
+              <p><b>Who said it: {card?.correctSpeaker || ""}</b></p>
+              <p>Tip: {card?.impressionTip || ""}</p><br></br>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-                {busy ? "Loading..." : "Ready for guesses"}
+                {busy ? "Loading..." : "Continue..."}
               </button>
             </>
           ) : (
             <>
-              <h2>{activeName} is doing the impression...</h2>
-              <p>Get ready to guess the speaker.</p>
+              <h2>{activeName} is doing an impression...</h2>
+              <p></p>
+              <p>Get ready to guess was said the quote.</p>
             </>
           )}
         </>
@@ -315,46 +354,61 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
 
       {state.phase === "speaker_vote" && (
         <>
-          <h2>Who said it?</h2>
+          <h2>Who said it?</h2><p></p>
           {state.activePlayerId === state.you.id ? (
-            <p>Waiting for everyone to guess who said it...</p>
+            <p>Waiting for everyone to guess...</p>
           ) : (
-            <div className="runtime-list">
-              {(card?.speakerOptions || []).map((speaker) => (
-                <button key={speaker} type="button" className="btn btn-soft" onClick={() => void voteSpeaker(speaker)} disabled={busy}>
-                  {speaker}
-                </button>
-              ))}
-            </div>
+            <>
+              <div className="runtime-list">
+                {(card?.speakerOptions || []).map((speaker) => (
+                  <button
+                    key={speaker}
+                    type="button"
+                    className={selectedSpeakerVote === speaker ? "btn btn-key" : "btn btn-soft"}
+                    onClick={() => void voteSpeaker(speaker)}
+                    disabled={busy || Boolean(selectedSpeakerVote)}
+                  >
+                    {speaker}
+                  </button>
+                ))}
+              </div>
+              {selectedSpeakerVote && (
+                <p className="hint-text nb">You selected {selectedSpeakerVote}...</p>
+              )}
+            </>
           )}
         </>
       )}
 
       {state.phase === "turn_result" && (
         <>
-          <h2>Turn result</h2>
-          <p><b>{card?.quoteText || "..."}</b></p>
-          <p>It was: <b>{truthLabel}</b></p>
-          <p>Speaker: <b>{card?.correctSpeaker || ""}</b></p>
-          <p>+1 for Real/Fake: <b>{namesFromIds(state, state.truthWinners)}</b></p>
-          <p>+1 for Speaker: <b>{namesFromIds(state, state.speakerWinners)}</b></p>
+          <h2>Turn result, "{card?.quoteText || "..."}"</h2>
+          <p></p>
+          <p>The quote was: {truthLabel}</p>
+          <p>Speaker: {card?.correctSpeaker || ""}</p><p></p>
+          <p>Score:</p>
           <div className="player-grid teams">
             {state.players.map((p) => (
-              <div key={p.id} className="player-pill team">{p.name}: {p.score}</div>
+              <div key={p.id} className="player-pill team">{p.name}: {p.score} points</div>
             ))}
-          </div>
-          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
-            {busy ? "Loading..." : isWaitingOnYou(state) ? "Continue" : "Waiting for others"}
-          </button>
+          </div><p></p>
+          {state.activePlayerId === state.you.id ? (
+            <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
+              {busy ? "Loading..." : "Continue"}
+            </button>
+          ) : (
+            <p className="hint-text nb">Waiting for {activeName} to click continue...</p>
+          )}
         </>
       )}
 
       {state.phase === "round_result" && (
         <>
-          <h2>Round {Math.max(1, state.roundNumber - 1)} complete</h2>
+          <h2>Round {Math.max(1, state.roundNumber - 1)} complete...</h2>
+          <p></p><p>Score:</p>
           <div className="player-grid teams">
             {state.players.map((p) => (
-              <div key={p.id} className="player-pill team">{p.name}: {p.score}</div>
+              <div key={p.id} className="player-pill team">{p.name}: {p.score} points</div>
             ))}
           </div>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
@@ -365,20 +419,21 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
 
       {state.phase === "result" && (
         <>
-          <h2>Final results</h2>
+          <h2>
+            {state.winnerIds.length <= 1
+              ? `Final result, the winner is ${formatWinnerNames(state, state.winnerIds)}!`
+              : `Final result, the winners are ${formatWinnerNames(state, state.winnerIds)}!`}
+          </h2><br></br>
+          <p>Final score:</p>
           <div className="player-grid teams">
             {state.players
               .slice()
               .sort((a, b) => b.score - a.score)
               .map((p) => (
-                <div key={p.id} className="player-pill team">{p.name}: {p.score}</div>
+                <div key={p.id} className="player-pill team">{p.name}: {p.score} points</div>
               ))}
           </div>
-          {state.winnerIds.length > 0 && (
-            <p>
-              Winner{state.winnerIds.length > 1 ? "s" : ""}: <b>{namesFromIds(state, state.winnerIds)}</b>
-            </p>
-          )}
+          <br></br>
           {state.you.isHost ? (
             <button type="button" className="btn btn-key" onClick={() => void doPlayAgain()} disabled={busy}>
               Play again

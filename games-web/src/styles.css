@@ -192,6 +192,10 @@ body {
   text-align: center;
 }
 
+.nb {
+  font-weight: 300;
+}
+
 .error-text {
   margin: 10px 0 0;
   font-size: 14px;
