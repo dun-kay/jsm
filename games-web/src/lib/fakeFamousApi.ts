@@ -1,6 +1,6 @@
 import { getSupabaseClient } from "./supabase";
 
-export type ReallyDonaldQuote = {
+export type FakeFamousQuote = {
   id: string;
   quoteText: string;
   isReal: boolean;
@@ -9,7 +9,7 @@ export type ReallyDonaldQuote = {
   impressionTip: string;
 };
 
-export type ReallyDonaldPlayer = {
+export type FakeFamousPlayer = {
   id: string;
   name: string;
   isHost: boolean;
@@ -17,7 +17,7 @@ export type ReallyDonaldPlayer = {
   score: number;
 };
 
-export type ReallyDonaldState = {
+export type FakeFamousState = {
   phase:
     | "rules"
     | "round_intro"
@@ -32,9 +32,9 @@ export type ReallyDonaldState = {
   roundNumber: number;
   turnIndex: number;
   activePlayerId: string | null;
-  players: ReallyDonaldPlayer[];
+  players: FakeFamousPlayer[];
   scores: Record<string, number>;
-  currentCard: ReallyDonaldQuote | null;
+  currentCard: FakeFamousQuote | null;
   truthVotes: Record<string, "real" | "fake">;
   speakerVotes: Record<string, string>;
   truthWinners: string[];
@@ -50,7 +50,7 @@ export type ReallyDonaldState = {
   };
 };
 
-function mapState(data: unknown): ReallyDonaldState {
+function mapState(data: unknown): FakeFamousState {
   const raw = data as Record<string, unknown>;
   const currentCardRaw = (raw.currentCard as Record<string, unknown>) || {};
   const hasCard = Object.keys(currentCardRaw).length > 0;
@@ -65,7 +65,7 @@ function mapState(data: unknown): ReallyDonaldState {
   }
 
   return {
-    phase: (raw.phase as ReallyDonaldState["phase"]) ?? "rules",
+    phase: (raw.phase as FakeFamousState["phase"]) ?? "rules",
     roundNumber: Number(raw.roundNumber ?? 1),
     turnIndex: Number(raw.turnIndex ?? 0),
     activePlayerId: (raw.activePlayerId as string | null) ?? null,
@@ -103,16 +103,16 @@ function mapState(data: unknown): ReallyDonaldState {
   };
 }
 
-async function rpcState(fn: string, params: Record<string, unknown>): Promise<ReallyDonaldState> {
+async function rpcState(fn: string, params: Record<string, unknown>): Promise<FakeFamousState> {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase.rpc(fn, params);
   if (error || !data) {
-    throw new Error(error?.message || "Really Donald request failed.");
+    throw new Error(error?.message || "Fake Famous request failed.");
   }
   return mapState(data);
 }
 
-export function initReallyDonald(gameCode: string, playerToken: string, quotes: ReallyDonaldQuote[] | null): Promise<ReallyDonaldState> {
+export function initFakeFamous(gameCode: string, playerToken: string, quotes: FakeFamousQuote[] | null): Promise<FakeFamousState> {
   return rpcState("rd_init_game", {
     p_game_code: gameCode,
     p_player_token: playerToken,
@@ -120,25 +120,25 @@ export function initReallyDonald(gameCode: string, playerToken: string, quotes: 
   });
 }
 
-export function getReallyDonaldState(gameCode: string, playerToken: string): Promise<ReallyDonaldState> {
+export function getFakeFamousState(gameCode: string, playerToken: string): Promise<FakeFamousState> {
   return rpcState("rd_get_state", {
     p_game_code: gameCode,
     p_player_token: playerToken
   });
 }
 
-export function continueReallyDonald(gameCode: string, playerToken: string): Promise<ReallyDonaldState> {
+export function continueFakeFamous(gameCode: string, playerToken: string): Promise<FakeFamousState> {
   return rpcState("rd_continue", {
     p_game_code: gameCode,
     p_player_token: playerToken
   });
 }
 
-export function submitReallyDonaldTruthVote(
+export function submitFakeFamousTruthVote(
   gameCode: string,
   playerToken: string,
   choice: "real" | "fake"
-): Promise<ReallyDonaldState> {
+): Promise<FakeFamousState> {
   return rpcState("rd_submit_truth_vote", {
     p_game_code: gameCode,
     p_player_token: playerToken,
@@ -146,11 +146,11 @@ export function submitReallyDonaldTruthVote(
   });
 }
 
-export function submitReallyDonaldSpeakerVote(
+export function submitFakeFamousSpeakerVote(
   gameCode: string,
   playerToken: string,
   speaker: string
-): Promise<ReallyDonaldState> {
+): Promise<FakeFamousState> {
   return rpcState("rd_submit_speaker_vote", {
     p_game_code: gameCode,
     p_player_token: playerToken,
@@ -158,11 +158,11 @@ export function submitReallyDonaldSpeakerVote(
   });
 }
 
-export function playAgainReallyDonald(
+export function playAgainFakeFamous(
   gameCode: string,
   playerToken: string,
-  quotes: ReallyDonaldQuote[] | null
-): Promise<ReallyDonaldState> {
+  quotes: FakeFamousQuote[] | null
+): Promise<FakeFamousState> {
   return rpcState("rd_play_again", {
     p_game_code: gameCode,
     p_player_token: playerToken,

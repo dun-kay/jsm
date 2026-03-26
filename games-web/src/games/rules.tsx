@@ -99,8 +99,8 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
       </>
     )
   },
-  "really-donald": {
-    title: "You are now playing... Really Donald?",
+  "fake-famous": {
+    title: "You are now playing... Fake Famous",
     content: (
       <>
         <p>One player reads out a famous "quote". <b>Half the time the quote is real, the other half it's made up.</b></p>

@@ -157,8 +157,8 @@ function getMetaForRoute(route: RouteState): MetaConfig {
       h: "Play Lying Llama | Games With Friends",
       b: "Bluff, catch Charlatans, and collect the most cards to win."
     },
-    "really-donald": {
-      h: "Play Really Donald? | Games With Friends",
+    "fake-famous": {
+      h: "Play Fake Famous | Games With Friends",
       b: "Vote real or fake, then guess the speaker after a live impression."
     }
   };
@@ -184,8 +184,8 @@ function getMetaForRoute(route: RouteState): MetaConfig {
       h: "Lying Llama Rules | Games With Friends",
       b: "Game Rules: Ask, bluff, call Charlatan, and collect the most cards to win."
     },
-    "really-donald": {
-      h: "Really Donald? Rules | Games With Friends",
+    "fake-famous": {
+      h: "Fake Famous Rules | Games With Friends",
       b: "Game Rules: Vote real or fake, then guess who said it from five options."
     }
   };
@@ -333,6 +333,10 @@ export default function App() {
   }
 
   if (route.kind === "onboarding") {
+    if (route.slug === "really-donald") {
+      navigate("/g/fake-famous/");
+      return null;
+    }
     if (route.slug === "celebrities") {
       navigate("/g/popular-people/");
       return null;
@@ -374,6 +378,10 @@ export default function App() {
   }
 
   if (route.kind === "game-rules") {
+    if (route.slug === "really-donald") {
+      navigate("/g/fake-famous/rules/");
+      return null;
+    }
     if (route.slug === "celebrities") {
       navigate("/g/popular-people/rules/");
       return null;

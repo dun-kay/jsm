@@ -2,43 +2,43 @@ import { useEffect, useState } from "react";
 import AccessPaywallModal from "../../components/AccessPaywallModal";
 import { usePlayAccess } from "../../lib/usePlayAccess";
 import {
-  continueReallyDonald,
-  getReallyDonaldState,
-  initReallyDonald,
-  playAgainReallyDonald,
-  submitReallyDonaldSpeakerVote,
-  submitReallyDonaldTruthVote,
-  type ReallyDonaldState
-} from "../../lib/reallyDonaldApi";
+  continueFakeFamous,
+  getFakeFamousState,
+  initFakeFamous,
+  playAgainFakeFamous,
+  submitFakeFamousSpeakerVote,
+  submitFakeFamousTruthVote,
+  type FakeFamousState
+} from "../../lib/fakeFamousApi";
 import { getGameIntroRules } from "../rules";
 import quotePool from "./quotePool.json";
 
-type ReallyDonaldRuntimeProps = {
+type FakeFamousRuntimeProps = {
   gameCode: string;
   playerToken: string;
 };
 
-function isWaitingOnYou(state: ReallyDonaldState): boolean {
+function isWaitingOnYou(state: FakeFamousState): boolean {
   return state.waitingOn.includes(state.you.id);
 }
 
-function playerName(state: ReallyDonaldState, playerId: string | null): string {
+function playerName(state: FakeFamousState, playerId: string | null): string {
   if (!playerId) {
     return "";
   }
   return state.players.find((p) => p.id === playerId)?.name || "";
 }
 
-function namesFromIds(state: ReallyDonaldState, ids: string[]): string {
+function namesFromIds(state: FakeFamousState, ids: string[]): string {
   if (ids.length === 0) {
     return "None";
   }
   return ids.map((id) => playerName(state, id)).filter(Boolean).join(", ");
 }
 
-export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDonaldRuntimeProps) {
-  const introRules = getGameIntroRules("really-donald");
-  const [state, setState] = useState<ReallyDonaldState | null>(null);
+export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousRuntimeProps) {
+  const introRules = getGameIntroRules("fake-famous");
+  const [state, setState] = useState<FakeFamousState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
   const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
@@ -58,7 +58,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
 
     const bootstrap = async () => {
       try {
-        const next = await initReallyDonald(gameCode, playerToken, quotePool);
+        const next = await initFakeFamous(gameCode, playerToken, quotePool);
         if (!active) {
           return;
         }
@@ -71,7 +71,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
         const message = ((error as Error).message || "").toLowerCase();
         if (message.includes("host must initialize")) {
           try {
-            const next = await initReallyDonald(gameCode, playerToken, null);
+            const next = await initFakeFamous(gameCode, playerToken, null);
             if (!active) {
               return;
             }
@@ -93,7 +93,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
 
     const interval = window.setInterval(async () => {
       try {
-        const next = await getReallyDonaldState(gameCode, playerToken);
+        const next = await getFakeFamousState(gameCode, playerToken);
         if (!active) {
           return;
         }
@@ -146,7 +146,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
     setBusy(true);
     setErrorText("");
     try {
-      const next = await continueReallyDonald(gameCode, playerToken);
+      const next = await continueFakeFamous(gameCode, playerToken);
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to continue.");
@@ -162,7 +162,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
     setBusy(true);
     setErrorText("");
     try {
-      const next = await submitReallyDonaldTruthVote(gameCode, playerToken, choice);
+      const next = await submitFakeFamousTruthVote(gameCode, playerToken, choice);
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to submit vote.");
@@ -178,7 +178,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
     setBusy(true);
     setErrorText("");
     try {
-      const next = await submitReallyDonaldSpeakerVote(gameCode, playerToken, speaker);
+      const next = await submitFakeFamousSpeakerVote(gameCode, playerToken, speaker);
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to submit speaker vote.");
@@ -194,7 +194,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
     setBusy(true);
     setErrorText("");
     try {
-      const next = await playAgainReallyDonald(gameCode, playerToken, quotePool);
+      const next = await playAgainFakeFamous(gameCode, playerToken, quotePool);
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to start another game.");
@@ -206,7 +206,7 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
   if (!state) {
     return (
       <section className="runtime-card">
-        <h2>Really Donald?</h2>
+        <h2>Fake Famous</h2>
         <p>Loading game...</p>
         {errorText && <p className="hint-text error-text">{errorText}</p>}
       </section>

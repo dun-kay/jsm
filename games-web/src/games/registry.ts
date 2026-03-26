@@ -83,18 +83,18 @@ export const GAMES: GameConfig[] = [
   },
   {
     id: "F",
-    slug: "really-donald",
-    title: "Really Donald?",
+    slug: "fake-famous",
+    title: "Fake Famous",
     description: "Vote real or fake, then guess who said it after the impression.",
     shortRules: "One player reads the quote. Everyone else votes real/fake and then picks the speaker from 5 options for points.",
-    heroImage: "/assets/really-donald-logo.png",
+    heroImage: "/assets/fake-famous-logo.png",
     theme: "default",
     minPlayers: 2,
     maxPlayers: 18,
     playTime: "5 - 15 mins",
     ageGuide: "Ages 12+",
     joinPrefix: "F",
-    route: "/g/really-donald/",
+    route: "/g/fake-famous/",
     enabled: true
   }
 ];
