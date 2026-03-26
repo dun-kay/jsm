@@ -92,7 +92,7 @@ export const GAMES: GameConfig[] = [
     minPlayers: 2,
     maxPlayers: 18,
     playTime: "5 - 15 mins",
-    ageGuide: "Ages 12+",
+    ageGuide: "Ages 10+",
     joinPrefix: "F",
     route: "/g/fake-famous/",
     enabled: true
