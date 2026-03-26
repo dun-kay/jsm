@@ -10,6 +10,7 @@ import {
   submitReallyDonaldTruthVote,
   type ReallyDonaldState
 } from "../../lib/reallyDonaldApi";
+import { getGameIntroRules } from "../rules";
 import quotePool from "./quotePool.json";
 
 type ReallyDonaldRuntimeProps = {
@@ -36,6 +37,7 @@ function namesFromIds(state: ReallyDonaldState, ids: string[]): string {
 }
 
 export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDonaldRuntimeProps) {
+  const introRules = getGameIntroRules("really-donald");
   const [state, setState] = useState<ReallyDonaldState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
@@ -219,14 +221,8 @@ export default function ReallyDonaldRuntime({ gameCode, playerToken }: ReallyDon
     <section className="runtime-card runtime-flow">
       {state.phase === "rules" && (
         <>
-          <h2>You are now playing... Really Donald?</h2>
-          <p>One player reads out a ridiculous quote.</p>
-          <p>Everyone else votes: <b>Real</b> or <b>Fake</b>.</p>
-          <p>Then the truth is revealed.</p>
-          <p>After that, the reader does an impression of who actually said it.</p>
-          <p>Everyone guesses who it was from 5 options.</p>
-          <p>Get Real/Fake right = +1. Get speaker right = +1.</p>
-          <p>Most points after 3 rounds wins.</p>
+          <h2>{introRules.title}</h2>
+          <div className="rules-modal-content">{introRules.content}</div>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
             {busy ? "Loading..." : isWaitingOnYou(state) ? "Continue" : "Waiting for others"}
           </button>
