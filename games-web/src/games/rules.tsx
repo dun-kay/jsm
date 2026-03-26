@@ -87,7 +87,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
       <>
         <p><b>Warning: this game is extremely weird.</b><p></p>It will take a few rounds to "get it", but I promise it's super fun & addictive.</p>
         <br></br>
-        <p>The game is <b>meant to be played very fast.</b> So push your friends to play faster & faster... like your mouths should be blurring you're so fast.</p>
+        <p>The game is <b>meant to be played very fast.</b> So push your friends to play faster & faster...</p>
         <br />
         <p>Each player has 3 hidden animal cards: <b>Crazy Llama 🦙, Poison Dart Frog 🐸, & Mountain Gorilla 🦍</b>.</p>
         <p>One of those 3 cards is Charlatan-marked.</p>
