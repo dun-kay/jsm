@@ -301,7 +301,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
             <p>Your card:<p></p><b><u>{myTopCard ? displayAnimal(myTopCard.animal) : "Unknown"}!</u><p></p></b>{myTopCard?.isCharlatan ? "(Charlaton Card)" : ""} {myTopCard?.isCharlatan && state.charlatanPrompt ? ` - ${state.charlatanPrompt}` : ""}</p>
             </div>
           ) : (
-            <div><h2>{askerName} is asking {targetName} about their card.</h2><br></br><p>Listen carefully, it'll help you later to try remember what cards have been guessed.</p><br></br><p><b>If {askerName} makes an incorrect Charlatan guess, it's your job to make them give a public apology.</b></p></div>
+            <div><h2>{askerName} is asking {targetName} about their card.</h2><br></br><p>Listen carefully, it'll help you later to try remember what cards have been guessed.</p><br></br><p><b>If {askerName} makes an incorrect Charlatan guess, it's your job to make sure they apologise.</b></p></div>
           )}
         </>
       )}
