@@ -103,15 +103,16 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are now playing... Fake Famous",
     content: (
       <>
-        <p>One player reads out a famous "quote". <b>Half the time the quote is real, the other half it's made up.</b></p>
-        <p>Everyone votes if they think the quote is: <b>Real</b> or <b>Fake</b>.</p>
+        <p>One player reads out a famous "quote".<p></p><b>Sometimes it's real, sometimes it's fake.</b></p>
         <br />
-        <p>The truth is then revealed.</p>
-        <p>If the quote was real, the reader does an impression of the person who actually said it.</p>
-        <p>Everyone tried to guess who said the quote based on the impression.</p>
+        <p>Everyone votes if they think the quote is <b>real</b> or <b>fake</b>. The answer is then revealed.</p>
         <br />
-        <p><b>Get Real/Fake right = +1</b></p>
-        <p><b>Get speaker right = +1</b></p>
+        <p>If the quote was real, the reader <b>does an impression of the person who said it.</b></p>
+        <br />
+        <p>Everyone tries to guess who said the quote based on the impression.</p>
+        <br />
+        <p><b>+1 point</b> for guessing if it was real or fake.<b>+1 point</b> for guessing who said it.</p>
+        <br />
         <p>Most points after 3 rounds wins.</p>
         </>
     )
