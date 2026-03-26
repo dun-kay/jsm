@@ -515,7 +515,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           <h2>Scoreboard</h2><p></p>
           <p>Results:</p>
-          <div className="player-grid teams">
+          <div className="player-grid teamsz">
             {state.scores.map((row) => (
               <div key={row.playerId} className="player-pill team">
                 {row.name} has: {row.collectedCount} Cards
@@ -530,7 +530,7 @@ export default function LyingLlamaRuntime({ gameCode, playerToken }: LyingLlamaR
         <>
           <h2>Game over</h2>
           <p>Most collected cards wins.</p>
-          <div className="player-grid teams">
+          <div className="player-grid teamsz">
             {state.scores.map((row) => (
               <div key={row.playerId} className="player-pill team">
                 {row.name}: {row.collectedCount}

@@ -70,7 +70,7 @@ export const GAMES: GameConfig[] = [
     slug: "lying-llama",
     title: "Lying Llama",
     description: "Bluff, spot Charlatans, and win cards with mini challenge battles.",
-    shortRules: "Ask the next player if they are a chosen animal. Catch Charlatans, survive penalties, and collect the most cards to win.",
+    shortRules: "Ask the next player if they are a Llama 🦙, Frog 🐸, or Gorilla 🦍. Catch Charlatans, survive penalties, and collect the most cards.",
     heroImage: "/assets/lying-llama-logo.png",
     theme: "default",
     minPlayers: 2,

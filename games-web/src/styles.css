@@ -336,6 +336,12 @@ body {
   background: #5891FF;
 }
 
+.teamsz {
+  grid-template-columns: 1fr;
+  min-height: 400px;
+  background: #AB9DFF;
+}
+
 .fb {
   grid-template-columns: 1fr 1fr;
   min-height: 150px;
