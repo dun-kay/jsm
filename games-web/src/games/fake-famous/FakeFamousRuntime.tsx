@@ -6,6 +6,7 @@ import {
   getFakeFamousState,
   initFakeFamous,
   playAgainFakeFamous,
+  rerollFakeFamousCategory,
   submitFakeFamousSpeakerVote,
   submitFakeFamousTruthVote,
   type FakeFamousState
@@ -214,6 +215,22 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
     }
   }
 
+  async function doRerollCategory() {
+    if (!state || busy || !state.you.isHost || state.phase !== "round_intro" || state.turnIndex !== 0) {
+      return;
+    }
+    setBusy(true);
+    setErrorText("");
+    try {
+      const next = await rerollFakeFamousCategory(gameCode, playerToken);
+      setState(next);
+    } catch (error) {
+      setErrorText((error as Error).message || "Unable to re-spin category.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (!state) {
     return (
       <section className="runtime-card">
@@ -245,6 +262,14 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
       {state.phase === "round_intro" && (
         <>
           <h2>Round {state.roundNumber}</h2>
+          <p>Category: <b>{state.selectedCategory || "Loading..."}</b></p>
+          {state.you.isHost && state.turnIndex === 0 ? (
+            <button type="button" className="btn btn-soft" onClick={() => void doRerollCategory()} disabled={busy || !isWaitingOnYou(state)}>
+              {busy ? "Loading..." : "Re-spin category"}
+            </button>
+          ) : state.turnIndex === 0 ? (
+            <p className="hint-text nb">Ask the host to re-spin the category.</p>
+          ) : null}
           <p>Everyone reads out a quote.<p></p>You guess if it's fake or not & who said it (impressions may be involved).</p>
           <br></br>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
