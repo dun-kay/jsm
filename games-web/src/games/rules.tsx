@@ -113,7 +113,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <br />
         <p><b>+1 point</b> for guessing if it was real or fake.<b>+1 point</b> for guessing who said it.</p>
         <br />
-        <p>Most points after 3 rounds wins.</p>
+        <p>Most points after 2 rounds wins.</p>
         </>
     )
   }
