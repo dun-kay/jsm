@@ -39,6 +39,7 @@ export type FakeFamousState = {
   speakerVotes: Record<string, string>;
   truthWinners: string[];
   speakerWinners: string[];
+  selectedCategory: string | null;
   waitingOn: string[];
   winnerIds: string[];
   lastError: string | null;
@@ -91,6 +92,7 @@ function mapState(data: unknown): FakeFamousState {
     speakerVotes: (raw.speakerVotes as Record<string, string>) || {},
     truthWinners: ((raw.truthWinners as string[]) || []).map(String),
     speakerWinners: ((raw.speakerWinners as string[]) || []).map(String),
+    selectedCategory: (raw.selectedCategory as string | null) ?? null,
     waitingOn: ((raw.waitingOn as string[]) || []).map(String),
     winnerIds: ((raw.winnerIds as string[]) || []).map(String),
     lastError: (raw.lastError as string | null) ?? null,
@@ -112,7 +114,7 @@ async function rpcState(fn: string, params: Record<string, unknown>): Promise<Fa
   return mapState(data);
 }
 
-export function initFakeFamous(gameCode: string, playerToken: string, quotes: FakeFamousQuote[] | null): Promise<FakeFamousState> {
+export function initFakeFamous(gameCode: string, playerToken: string, quotes: unknown): Promise<FakeFamousState> {
   return rpcState("rd_init_game", {
     p_game_code: gameCode,
     p_player_token: playerToken,
@@ -161,11 +163,18 @@ export function submitFakeFamousSpeakerVote(
 export function playAgainFakeFamous(
   gameCode: string,
   playerToken: string,
-  quotes: FakeFamousQuote[] | null
+  quotes: unknown
 ): Promise<FakeFamousState> {
   return rpcState("rd_play_again", {
     p_game_code: gameCode,
     p_player_token: playerToken,
     p_quotes: quotes
+  });
+}
+
+export function rerollFakeFamousCategory(gameCode: string, playerToken: string): Promise<FakeFamousState> {
+  return rpcState("rd_reroll_category", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
   });
 }
