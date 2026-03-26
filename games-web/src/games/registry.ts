@@ -70,7 +70,7 @@ export const GAMES: GameConfig[] = [
     slug: "lying-llama",
     title: "Lying Llama",
     description: "Bluff, spot Charlatans, and win cards with mini challenge battles.",
-    shortRules: "Ask the next player if they are a chosen animal. Catch Charlatans, survive penalties, and collect the most cards to win.",
+    shortRules: "Ask the next player if they are a Llama 🦙, Frog 🐸, or Gorilla 🦍. Catch Charlatans, survive penalties, and collect the most cards.",
     heroImage: "/assets/lying-llama-logo.png",
     theme: "default",
     minPlayers: 2,
@@ -79,6 +79,22 @@ export const GAMES: GameConfig[] = [
     ageGuide: "Ages 6+",
     joinPrefix: "E",
     route: "/g/lying-llama/",
+    enabled: true
+  },
+  {
+    id: "F",
+    slug: "fake-famous",
+    title: "Fake Famous",
+    description: "Vote real or fake, then guess who said it after the impression.",
+    shortRules: "One player reads the quote. Everyone else votes real/fake and then picks the speaker from 5 options for points.",
+    heroImage: "/assets/fake-famous-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 12+",
+    joinPrefix: "F",
+    route: "/g/fake-famous/",
     enabled: true
   }
 ];

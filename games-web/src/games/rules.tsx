@@ -98,6 +98,23 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>Most collected cards at the end wins.</p>
       </>
     )
+  },
+  "fake-famous": {
+    title: "You are now playing... Fake Famous",
+    content: (
+      <>
+        <p>One player reads out a famous "quote". <b>Half the time the quote is real, the other half it's made up.</b></p>
+        <p>Everyone votes if they think the quote is: <b>Real</b> or <b>Fake</b>.</p>
+        <br />
+        <p>The truth is then revealed.</p>
+        <p>If the quote was real, the reader does an impression of the person who actually said it.</p>
+        <p>Everyone tried to guess who said the quote based on the impression.</p>
+        <br />
+        <p><b>Get Real/Fake right = +1</b></p>
+        <p><b>Get speaker right = +1</b></p>
+        <p>Most points after 3 rounds wins.</p>
+        </>
+    )
   }
 };
 

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "rd_quote_001",
+    "quoteText": "I am the least racist person you have ever interviewed.",
+    "isReal": true,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Kanye West",
+      "Joe Rogan",
+      "Elon Musk",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Sound confident, repetitive, and slightly offended."
+  },
+  {
+    "id": "rd_quote_002",
+    "quoteText": "My memory is so good I can remember things that never happened.",
+    "isReal": false,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Boris Johnson",
+      "Arnold Schwarzenegger",
+      "Piers Morgan",
+      "Alex Jones"
+    ],
+    "impressionTip": "Repeat yourself, pause for emphasis, and use dramatic certainty."
+  },
+  {
+    "id": "rd_quote_003",
+    "quoteText": "I am a stable genius.",
+    "isReal": true,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Elon Musk",
+      "Kanye West",
+      "Andrew Tate",
+      "Joe Rogan"
+    ],
+    "impressionTip": "Be intense, confident, and slightly theatrical."
+  },
+  {
+    "id": "rd_quote_004",
+    "quoteText": "Nobody knows more about wind than me. I am basically wind.",
+    "isReal": false,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Greta Thunberg",
+      "Joe Biden",
+      "Barack Obama",
+      "Elon Musk"
+    ],
+    "impressionTip": "Use big hand gestures and overconfident delivery."
+  },
+  {
+    "id": "rd_quote_005",
+    "quoteText": "Sorry losers and haters, but my I.Q. is one of the highest and you all know it!",
+    "isReal": true,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Conor McGregor",
+      "Kanye West",
+      "Andrew Tate",
+      "Logan Paul"
+    ],
+    "impressionTip": "Sound braggy, fast, and slightly confrontational."
+  }
+]
