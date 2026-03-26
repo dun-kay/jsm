@@ -113,8 +113,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p><b>Get Real/Fake right = +1</b></p>
         <p><b>Get speaker right = +1</b></p>
         <p>Most points after 3 rounds wins.</p>
-        <p>The game gets its name from Donald Duck, whose fiery temper often led him to say unbelievable things.</p>
-      </>
+        </>
     )
   }
 };
