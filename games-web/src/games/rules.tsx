@@ -85,6 +85,8 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are now playing... Lying Llama",
     content: (
       <>
+        <p><b>Warning: this game is extremely weird.</b><p></p>It will take a few rounds to "get it", but I promise it's super fun & addictive (in a good way) once you do.</p>
+        <br />
         <p>Each player has 3 hidden animal cards: <b>Crazy Llama 🦙, Poison Dart Frog 🐸, & Mountain Gorilla 🦍</b>.</p>
         <p>One of those 3 cards is Charlatan-marked.</p>
         <br />
