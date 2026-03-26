@@ -36,6 +36,17 @@ function namesFromIds(state: FakeFamousState, ids: string[]): string {
   return ids.map((id) => playerName(state, id)).filter(Boolean).join(", ");
 }
 
+function formatWinnerNames(state: FakeFamousState, ids: string[]): string {
+  const names = ids.map((id) => playerName(state, id)).filter(Boolean);
+  if (names.length <= 1) {
+    return names[0] || "No winner";
+  }
+  if (names.length === 2) {
+    return `${names[0]} & ${names[1]}`;
+  }
+  return `${names.slice(0, -1).join(", ")}, & ${names[names.length - 1]}`;
+}
+
 export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousRuntimeProps) {
   const introRules = getGameIntroRules("fake-famous");
   const [state, setState] = useState<FakeFamousState | null>(null);
@@ -408,7 +419,11 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
 
       {state.phase === "result" && (
         <>
-          <h2>Final result, the winner is {namesFromIds(state, state.winnerIds)}!</h2><br></br>
+          <h2>
+            {state.winnerIds.length <= 1
+              ? `Final result, the winner is ${formatWinnerNames(state, state.winnerIds)}!`
+              : `Final result, the winners are ${formatWinnerNames(state, state.winnerIds)}!`}
+          </h2><br></br>
           <p>Final score:</p>
           <div className="player-grid teams">
             {state.players
