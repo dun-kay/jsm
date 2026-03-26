@@ -1,72 +1,2802 @@
 [
   {
-    "id": "rd_quote_001",
-    "quoteText": "I am the least racist person you have ever interviewed.",
+    "id": "ff_quote_001",
+    "quoteText": "I am a very stable genius.",
     "isReal": true,
     "correctSpeaker": "Donald Trump",
     "speakerOptions": [
       "Donald Trump",
-      "Kanye West",
-      "Joe Rogan",
-      "Elon Musk",
-      "Conor McGregor"
-    ],
-    "impressionTip": "Sound confident, repetitive, and slightly offended."
-  },
-  {
-    "id": "rd_quote_002",
-    "quoteText": "My memory is so good I can remember things that never happened.",
-    "isReal": false,
-    "correctSpeaker": "Donald Trump",
-    "speakerOptions": [
-      "Donald Trump",
-      "Boris Johnson",
-      "Arnold Schwarzenegger",
-      "Piers Morgan",
-      "Alex Jones"
-    ],
-    "impressionTip": "Repeat yourself, pause for emphasis, and use dramatic certainty."
-  },
-  {
-    "id": "rd_quote_003",
-    "quoteText": "I am a stable genius.",
-    "isReal": true,
-    "correctSpeaker": "Donald Trump",
-    "speakerOptions": [
-      "Donald Trump",
-      "Elon Musk",
-      "Kanye West",
-      "Andrew Tate",
-      "Joe Rogan"
-    ],
-    "impressionTip": "Be intense, confident, and slightly theatrical."
-  },
-  {
-    "id": "rd_quote_004",
-    "quoteText": "Nobody knows more about wind than me. I am basically wind.",
-    "isReal": false,
-    "correctSpeaker": "Donald Trump",
-    "speakerOptions": [
-      "Donald Trump",
-      "Greta Thunberg",
       "Joe Biden",
       "Barack Obama",
-      "Elon Musk"
+      "Boris Johnson",
+      "Hillary Clinton"
     ],
-    "impressionTip": "Use big hand gestures and overconfident delivery."
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
   },
   {
-    "id": "rd_quote_005",
-    "quoteText": "Sorry losers and haters, but my I.Q. is one of the highest and you all know it!",
+    "id": "ff_quote_002",
+    "quoteText": "Make America Great Again!",
     "isReal": true,
     "correctSpeaker": "Donald Trump",
     "speakerOptions": [
       "Donald Trump",
-      "Conor McGregor",
-      "Kanye West",
-      "Andrew Tate",
-      "Logan Paul"
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
     ],
-    "impressionTip": "Sound braggy, fast, and slightly confrontational."
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_003",
+    "quoteText": "I know words. I have the best words.",
+    "isReal": true,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_004",
+    "quoteText": "Nobody builds walls better than me, believe me.",
+    "isReal": true,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_005",
+    "quoteText": "Sorry losers and haters, but my I.Q. is one of the highest.",
+    "isReal": true,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_006",
+    "quoteText": "I never lose debates, I just run out of patient listeners.",
+    "isReal": false,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_007",
+    "quoteText": "If confidence were policy, we'd have solved everything by lunch.",
+    "isReal": false,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_008",
+    "quoteText": "My strategy is simple: speak first, fact-check later.",
+    "isReal": false,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_009",
+    "quoteText": "I campaign in bullet points and govern in plot twists.",
+    "isReal": false,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_010",
+    "quoteText": "I don't dodge questions, I politically reinterpret them.",
+    "isReal": false,
+    "correctSpeaker": "Donald Trump",
+    "speakerOptions": [
+      "Donald Trump",
+      "Joe Biden",
+      "Barack Obama",
+      "Boris Johnson",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Punchy, repetitive, braggy, and very confident."
+  },
+  {
+    "id": "ff_quote_011",
+    "quoteText": "If you're going through hell, keep going.",
+    "isReal": true,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_012",
+    "quoteText": "Never, never, never give up.",
+    "isReal": true,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_013",
+    "quoteText": "Success is not final, failure is not fatal.",
+    "isReal": true,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_014",
+    "quoteText": "History will be kind to me, for I intend to write it.",
+    "isReal": true,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_015",
+    "quoteText": "To improve is to change; to be perfect is to change often.",
+    "isReal": true,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_016",
+    "quoteText": "I never lose debates, I just run out of patient listeners.",
+    "isReal": false,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_017",
+    "quoteText": "If confidence were policy, we'd have solved everything by lunch.",
+    "isReal": false,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_018",
+    "quoteText": "My strategy is simple: speak first, fact-check later.",
+    "isReal": false,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_019",
+    "quoteText": "I campaign in bullet points and govern in plot twists.",
+    "isReal": false,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_020",
+    "quoteText": "I don't dodge questions, I politically reinterpret them.",
+    "isReal": false,
+    "correctSpeaker": "Winston Churchill",
+    "speakerOptions": [
+      "Winston Churchill",
+      "Franklin D. Roosevelt",
+      "Nelson Mandela",
+      "Margaret Thatcher",
+      "Abraham Lincoln"
+    ],
+    "impressionTip": "Gravelly, stubborn, dramatic pauses."
+  },
+  {
+    "id": "ff_quote_021",
+    "quoteText": "Imagination is more important than knowledge.",
+    "isReal": true,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_022",
+    "quoteText": "God does not play dice with the universe.",
+    "isReal": true,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_023",
+    "quoteText": "I have no special talent. I am only passionately curious.",
+    "isReal": true,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_024",
+    "quoteText": "Life is like riding a bicycle. To keep your balance, keep moving.",
+    "isReal": true,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_025",
+    "quoteText": "Try not to become a man of success, but a man of value.",
+    "isReal": true,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_026",
+    "quoteText": "Every equation is just a poem wearing numbers.",
+    "isReal": false,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_027",
+    "quoteText": "I trust experiments more than opinions in expensive suits.",
+    "isReal": false,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_028",
+    "quoteText": "A good question is a shortcut to ten bad answers.",
+    "isReal": false,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_029",
+    "quoteText": "Curiosity is the only engine that never runs out of fuel.",
+    "isReal": false,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_030",
+    "quoteText": "If a theory can't survive doubt, it was only decoration.",
+    "isReal": false,
+    "correctSpeaker": "Albert Einstein",
+    "speakerOptions": [
+      "Albert Einstein",
+      "Marie Curie",
+      "Isaac Newton",
+      "Stephen Hawking",
+      "Nikola Tesla"
+    ],
+    "impressionTip": "Thoughtful, gentle, slightly absent-minded."
+  },
+  {
+    "id": "ff_quote_031",
+    "quoteText": "Stay hungry, stay foolish.",
+    "isReal": true,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_032",
+    "quoteText": "Innovation distinguishes between a leader and a follower.",
+    "isReal": true,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_033",
+    "quoteText": "Your time is limited, so don't waste it living someone else's life.",
+    "isReal": true,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_034",
+    "quoteText": "Design is not just what it looks like. Design is how it works.",
+    "isReal": true,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_035",
+    "quoteText": "Sometimes life hits you in the head with a brick. Don't lose faith.",
+    "isReal": true,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_036",
+    "quoteText": "Move fast, break less, and document everything after midnight.",
+    "isReal": false,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_037",
+    "quoteText": "The future ships late, but it still ships.",
+    "isReal": false,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_038",
+    "quoteText": "I prototype first and apologize to my calendar later.",
+    "isReal": false,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_039",
+    "quoteText": "Great products feel obvious right after they're invented.",
+    "isReal": false,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_040",
+    "quoteText": "If it scales in a spreadsheet, it still hasn't met reality.",
+    "isReal": false,
+    "correctSpeaker": "Steve Jobs",
+    "speakerOptions": [
+      "Steve Jobs",
+      "Elon Musk",
+      "Bill Gates",
+      "Mark Zuckerberg",
+      "Jeff Bezos"
+    ],
+    "impressionTip": "Calm intensity, visionary vibe, crisp emphasis."
+  },
+  {
+    "id": "ff_quote_041",
+    "quoteText": "I have a dream.",
+    "isReal": true,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_042",
+    "quoteText": "Injustice anywhere is a threat to justice everywhere.",
+    "isReal": true,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_043",
+    "quoteText": "The time is always right to do what is right.",
+    "isReal": true,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_044",
+    "quoteText": "Darkness cannot drive out darkness; only light can do that.",
+    "isReal": true,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_045",
+    "quoteText": "Our lives begin to end the day we become silent.",
+    "isReal": true,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_046",
+    "quoteText": "Silence helps the problem, never the people.",
+    "isReal": false,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_047",
+    "quoteText": "Courage is choosing to speak before permission arrives.",
+    "isReal": false,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_048",
+    "quoteText": "Progress starts when comfort stops running the room.",
+    "isReal": false,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_049",
+    "quoteText": "Hope is strongest when it has a plan attached.",
+    "isReal": false,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_050",
+    "quoteText": "Justice moves fastest when ordinary people refuse to sit down.",
+    "isReal": false,
+    "correctSpeaker": "Martin Luther King Jr.",
+    "speakerOptions": [
+      "Martin Luther King Jr.",
+      "Nelson Mandela",
+      "Malala Yousafzai",
+      "Barack Obama",
+      "Maya Angelou"
+    ],
+    "impressionTip": "Rhythmic, hopeful, preacher-like cadence."
+  },
+  {
+    "id": "ff_quote_051",
+    "quoteText": "I am the greatest.",
+    "isReal": true,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_052",
+    "quoteText": "Float like a butterfly, sting like a bee.",
+    "isReal": true,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_053",
+    "quoteText": "Don't count the days; make the days count.",
+    "isReal": true,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_054",
+    "quoteText": "Service to others is the rent you pay for your room on earth.",
+    "isReal": true,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_055",
+    "quoteText": "He who is not courageous enough to take risks will accomplish nothing.",
+    "isReal": true,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_056",
+    "quoteText": "Talent starts the race, discipline finishes it.",
+    "isReal": false,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_057",
+    "quoteText": "The scoreboard is just honesty in giant numbers.",
+    "isReal": false,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_058",
+    "quoteText": "I train so hard even my excuses get tired.",
+    "isReal": false,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_059",
+    "quoteText": "Pressure is loud, but preparation is louder.",
+    "isReal": false,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_060",
+    "quoteText": "Winning is usually just recovery done faster than everyone else.",
+    "isReal": false,
+    "correctSpeaker": "Muhammad Ali",
+    "speakerOptions": [
+      "Muhammad Ali",
+      "Serena Williams",
+      "Michael Jordan",
+      "Cristiano Ronaldo",
+      "Conor McGregor"
+    ],
+    "impressionTip": "Fast, rhythmic, bold bravado."
+  },
+  {
+    "id": "ff_quote_061",
+    "quoteText": "The secret of getting ahead is getting started.",
+    "isReal": true,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_062",
+    "quoteText": "If you tell the truth, you don't have to remember anything.",
+    "isReal": true,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_063",
+    "quoteText": "Kindness is the language which the deaf can hear and the blind can see.",
+    "isReal": true,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_064",
+    "quoteText": "The man who does not read has no advantage over one who cannot read.",
+    "isReal": true,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_065",
+    "quoteText": "Whenever you find yourself on the side of the majority, pause and reflect.",
+    "isReal": true,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_066",
+    "quoteText": "A sharp sentence can outlive a loud century.",
+    "isReal": false,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_067",
+    "quoteText": "Humor is truth wearing better timing.",
+    "isReal": false,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_068",
+    "quoteText": "I edit until the lie sounds like honesty.",
+    "isReal": false,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_069",
+    "quoteText": "A diary is just gossip with one witness.",
+    "isReal": false,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_070",
+    "quoteText": "Style begins where overthinking runs out of ink.",
+    "isReal": false,
+    "correctSpeaker": "Mark Twain",
+    "speakerOptions": [
+      "Mark Twain",
+      "Oscar Wilde",
+      "Ernest Hemingway",
+      "Maya Angelou",
+      "George Orwell"
+    ],
+    "impressionTip": "Dry, witty, with a smirk."
+  },
+  {
+    "id": "ff_quote_071",
+    "quoteText": "Be yourself; everyone else is already taken.",
+    "isReal": true,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_072",
+    "quoteText": "Always forgive your enemies; nothing annoys them so much.",
+    "isReal": true,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_073",
+    "quoteText": "Experience is simply the name we give our mistakes.",
+    "isReal": true,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_074",
+    "quoteText": "To live is the rarest thing in the world.",
+    "isReal": true,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_075",
+    "quoteText": "We are all in the gutter, but some look at the stars.",
+    "isReal": true,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_076",
+    "quoteText": "A sharp sentence can outlive a loud century.",
+    "isReal": false,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_077",
+    "quoteText": "Humor is truth wearing better timing.",
+    "isReal": false,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_078",
+    "quoteText": "I edit until the lie sounds like honesty.",
+    "isReal": false,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_079",
+    "quoteText": "A diary is just gossip with one witness.",
+    "isReal": false,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_080",
+    "quoteText": "Style begins where overthinking runs out of ink.",
+    "isReal": false,
+    "correctSpeaker": "Oscar Wilde",
+    "speakerOptions": [
+      "Oscar Wilde",
+      "Mark Twain",
+      "George Bernard Shaw",
+      "Virginia Woolf",
+      "Jane Austen"
+    ],
+    "impressionTip": "Elegant, dramatic, razor-sharp sarcasm."
+  },
+  {
+    "id": "ff_quote_081",
+    "quoteText": "It always seems impossible until it's done.",
+    "isReal": true,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_082",
+    "quoteText": "I never lose. I either win or learn.",
+    "isReal": true,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_083",
+    "quoteText": "Education is the most powerful weapon to change the world.",
+    "isReal": true,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_084",
+    "quoteText": "Resentment is like drinking poison and hoping it kills your enemies.",
+    "isReal": true,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_085",
+    "quoteText": "After climbing a great hill, one finds many more hills to climb.",
+    "isReal": true,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_086",
+    "quoteText": "Silence helps the problem, never the people.",
+    "isReal": false,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_087",
+    "quoteText": "Courage is choosing to speak before permission arrives.",
+    "isReal": false,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_088",
+    "quoteText": "Progress starts when comfort stops running the room.",
+    "isReal": false,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_089",
+    "quoteText": "Hope is strongest when it has a plan attached.",
+    "isReal": false,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_090",
+    "quoteText": "Justice moves fastest when ordinary people refuse to sit down.",
+    "isReal": false,
+    "correctSpeaker": "Nelson Mandela",
+    "speakerOptions": [
+      "Nelson Mandela",
+      "Martin Luther King Jr.",
+      "Desmond Tutu",
+      "Barack Obama",
+      "Malala Yousafzai"
+    ],
+    "impressionTip": "Warm, steady, statesmanlike."
+  },
+  {
+    "id": "ff_quote_091",
+    "quoteText": "Failure is an option here. If not, you're not innovating enough.",
+    "isReal": true,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_092",
+    "quoteText": "Persistence is very important. You should not give up.",
+    "isReal": true,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_093",
+    "quoteText": "Some people don't like change, but you need to embrace it.",
+    "isReal": true,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_094",
+    "quoteText": "When something is important, you do it even if odds are against you.",
+    "isReal": true,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_095",
+    "quoteText": "I think ordinary people can choose to be extraordinary.",
+    "isReal": true,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_096",
+    "quoteText": "Move fast, break less, and document everything after midnight.",
+    "isReal": false,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_097",
+    "quoteText": "The future ships late, but it still ships.",
+    "isReal": false,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_098",
+    "quoteText": "I prototype first and apologize to my calendar later.",
+    "isReal": false,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_099",
+    "quoteText": "Great products feel obvious right after they're invented.",
+    "isReal": false,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_100",
+    "quoteText": "If it scales in a spreadsheet, it still hasn't met reality.",
+    "isReal": false,
+    "correctSpeaker": "Elon Musk",
+    "speakerOptions": [
+      "Elon Musk",
+      "Steve Jobs",
+      "Bill Gates",
+      "Jeff Bezos",
+      "Mark Zuckerberg"
+    ],
+    "impressionTip": "Fast, nerdy confidence with sudden intensity."
+  },
+  {
+    "id": "ff_quote_101",
+    "quoteText": "People haven't always been there for me, but music always has.",
+    "isReal": true,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_102",
+    "quoteText": "No matter what happens in life, be good to people.",
+    "isReal": true,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_103",
+    "quoteText": "If you're lucky enough to be different, don't ever change.",
+    "isReal": true,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_104",
+    "quoteText": "This is a new year. A new beginning. And things will change.",
+    "isReal": true,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_105",
+    "quoteText": "Fearless is getting up and fighting for what you want.",
+    "isReal": true,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_106",
+    "quoteText": "A chorus is where feelings learn choreography.",
+    "isReal": false,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_107",
+    "quoteText": "I write bridges for people who hate admitting feelings.",
+    "isReal": false,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_108",
+    "quoteText": "Every era starts with one risky melody.",
+    "isReal": false,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_109",
+    "quoteText": "If the hook doesn't hit, the glitter won't save it.",
+    "isReal": false,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_110",
+    "quoteText": "Heartbreak is just premium songwriting fuel.",
+    "isReal": false,
+    "correctSpeaker": "Taylor Swift",
+    "speakerOptions": [
+      "Taylor Swift",
+      "Beyonce",
+      "Adele",
+      "Rihanna",
+      "Billie Eilish"
+    ],
+    "impressionTip": "Expressive, heartfelt, storyteller vibe."
+  },
+  {
+    "id": "ff_quote_111",
+    "quoteText": "Turn your wounds into wisdom.",
+    "isReal": true,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_112",
+    "quoteText": "You become what you believe.",
+    "isReal": true,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_113",
+    "quoteText": "Think like a queen. A queen is not afraid to fail.",
+    "isReal": true,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_114",
+    "quoteText": "The biggest adventure is to live the life of your dreams.",
+    "isReal": true,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_115",
+    "quoteText": "Doing your best now puts you in the best place for the next moment.",
+    "isReal": true,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_116",
+    "quoteText": "Good questions are kinder than perfect answers.",
+    "isReal": false,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_117",
+    "quoteText": "If the room is quiet, ask the harder question.",
+    "isReal": false,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_118",
+    "quoteText": "Empathy is not soft, it's advanced strategy.",
+    "isReal": false,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_119",
+    "quoteText": "A camera sees everything except your intent.",
+    "isReal": false,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_120",
+    "quoteText": "The best interviews sound like listening, not performing.",
+    "isReal": false,
+    "correctSpeaker": "Oprah Winfrey",
+    "speakerOptions": [
+      "Oprah Winfrey",
+      "Ellen DeGeneres",
+      "Michelle Obama",
+      "Maya Angelou",
+      "Brene Brown"
+    ],
+    "impressionTip": "Warm, affirming, inspirational host voice."
+  },
+  {
+    "id": "ff_quote_121",
+    "quoteText": "Nothing can dim the light that shines from within.",
+    "isReal": true,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_122",
+    "quoteText": "Try to be a rainbow in someone's cloud.",
+    "isReal": true,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_123",
+    "quoteText": "You may meet many defeats, but you must not be defeated.",
+    "isReal": true,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_124",
+    "quoteText": "People will forget what you said, but never how you made them feel.",
+    "isReal": true,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_125",
+    "quoteText": "If you don't like something, change it.",
+    "isReal": true,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_126",
+    "quoteText": "A sharp sentence can outlive a loud century.",
+    "isReal": false,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_127",
+    "quoteText": "Humor is truth wearing better timing.",
+    "isReal": false,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_128",
+    "quoteText": "I edit until the lie sounds like honesty.",
+    "isReal": false,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_129",
+    "quoteText": "A diary is just gossip with one witness.",
+    "isReal": false,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_130",
+    "quoteText": "Style begins where overthinking runs out of ink.",
+    "isReal": false,
+    "correctSpeaker": "Maya Angelou",
+    "speakerOptions": [
+      "Maya Angelou",
+      "Toni Morrison",
+      "Virginia Woolf",
+      "Oprah Winfrey",
+      "Alice Walker"
+    ],
+    "impressionTip": "Poetic, grounded, gentle authority."
+  },
+  {
+    "id": "ff_quote_131",
+    "quoteText": "No one can make you feel inferior without your consent.",
+    "isReal": true,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_132",
+    "quoteText": "Do one thing every day that scares you.",
+    "isReal": true,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_133",
+    "quoteText": "The future belongs to those who believe in their dreams.",
+    "isReal": true,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_134",
+    "quoteText": "With the new day comes new strength and new thoughts.",
+    "isReal": true,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_135",
+    "quoteText": "You must do the thing you think you cannot do.",
+    "isReal": true,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_136",
+    "quoteText": "Silence helps the problem, never the people.",
+    "isReal": false,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_137",
+    "quoteText": "Courage is choosing to speak before permission arrives.",
+    "isReal": false,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_138",
+    "quoteText": "Progress starts when comfort stops running the room.",
+    "isReal": false,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_139",
+    "quoteText": "Hope is strongest when it has a plan attached.",
+    "isReal": false,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_140",
+    "quoteText": "Justice moves fastest when ordinary people refuse to sit down.",
+    "isReal": false,
+    "correctSpeaker": "Eleanor Roosevelt",
+    "speakerOptions": [
+      "Eleanor Roosevelt",
+      "Michelle Obama",
+      "Hillary Clinton",
+      "Malala Yousafzai",
+      "Margaret Thatcher"
+    ],
+    "impressionTip": "Measured, clear, principled."
+  },
+  {
+    "id": "ff_quote_141",
+    "quoteText": "Fashion fades, only style remains the same.",
+    "isReal": true,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_142",
+    "quoteText": "Simplicity is the keynote of all true elegance.",
+    "isReal": true,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_143",
+    "quoteText": "A girl should be two things: classy and fabulous.",
+    "isReal": true,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_144",
+    "quoteText": "In order to be irreplaceable one must always be different.",
+    "isReal": true,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_145",
+    "quoteText": "The most courageous act is still to think for yourself.",
+    "isReal": true,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_146",
+    "quoteText": "Elegance is confidence with the volume turned down.",
+    "isReal": false,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_147",
+    "quoteText": "Trends are weather, style is climate.",
+    "isReal": false,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_148",
+    "quoteText": "If it's comfortable and dangerous, wear it twice.",
+    "isReal": false,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_149",
+    "quoteText": "Good tailoring is diplomacy for your shoulders.",
+    "isReal": false,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_150",
+    "quoteText": "Fashion is architecture that learned to dance.",
+    "isReal": false,
+    "correctSpeaker": "Coco Chanel",
+    "speakerOptions": [
+      "Coco Chanel",
+      "Anna Wintour",
+      "Donatella Versace",
+      "Vivienne Westwood",
+      "Audrey Hepburn"
+    ],
+    "impressionTip": "Sharp, chic, slightly ruthless."
+  },
+  {
+    "id": "ff_quote_151",
+    "quoteText": "Nothing in life is to be feared; it is only to be understood.",
+    "isReal": true,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_152",
+    "quoteText": "Be less curious about people and more curious about ideas.",
+    "isReal": true,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_153",
+    "quoteText": "I was taught that the way of progress was neither swift nor easy.",
+    "isReal": true,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_154",
+    "quoteText": "I am among those who think that science has great beauty.",
+    "isReal": true,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_155",
+    "quoteText": "Life is not easy for any of us. But what of that?",
+    "isReal": true,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_156",
+    "quoteText": "Every equation is just a poem wearing numbers.",
+    "isReal": false,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_157",
+    "quoteText": "I trust experiments more than opinions in expensive suits.",
+    "isReal": false,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_158",
+    "quoteText": "A good question is a shortcut to ten bad answers.",
+    "isReal": false,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_159",
+    "quoteText": "Curiosity is the only engine that never runs out of fuel.",
+    "isReal": false,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_160",
+    "quoteText": "If a theory can't survive doubt, it was only decoration.",
+    "isReal": false,
+    "correctSpeaker": "Marie Curie",
+    "speakerOptions": [
+      "Marie Curie",
+      "Albert Einstein",
+      "Rosalind Franklin",
+      "Ada Lovelace",
+      "Jane Goodall"
+    ],
+    "impressionTip": "Calm, precise, scientific conviction."
+  },
+  {
+    "id": "ff_quote_161",
+    "quoteText": "One child, one teacher, one book, one pen can change the world.",
+    "isReal": true,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_162",
+    "quoteText": "When the whole world is silent, even one voice becomes powerful.",
+    "isReal": true,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_163",
+    "quoteText": "We realize our voices matter only when we are silenced.",
+    "isReal": true,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_164",
+    "quoteText": "I don't want revenge. I want education for sons and daughters.",
+    "isReal": true,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_165",
+    "quoteText": "Let us make our future now.",
+    "isReal": true,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_166",
+    "quoteText": "Silence helps the problem, never the people.",
+    "isReal": false,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_167",
+    "quoteText": "Courage is choosing to speak before permission arrives.",
+    "isReal": false,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_168",
+    "quoteText": "Progress starts when comfort stops running the room.",
+    "isReal": false,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_169",
+    "quoteText": "Hope is strongest when it has a plan attached.",
+    "isReal": false,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_170",
+    "quoteText": "Justice moves fastest when ordinary people refuse to sit down.",
+    "isReal": false,
+    "correctSpeaker": "Malala Yousafzai",
+    "speakerOptions": [
+      "Malala Yousafzai",
+      "Greta Thunberg",
+      "Michelle Obama",
+      "Nelson Mandela",
+      "Martin Luther King Jr."
+    ],
+    "impressionTip": "Young, firm, principled conviction."
+  },
+  {
+    "id": "ff_quote_171",
+    "quoteText": "You may have to fight a battle more than once to win it.",
+    "isReal": true,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_172",
+    "quoteText": "Watch your thoughts, for they will become actions.",
+    "isReal": true,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_173",
+    "quoteText": "Plan your work for today and every day, then work your plan.",
+    "isReal": true,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_174",
+    "quoteText": "If you want something done, ask a woman.",
+    "isReal": true,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_175",
+    "quoteText": "Being powerful is like being a lady.",
+    "isReal": true,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_176",
+    "quoteText": "I never lose debates, I just run out of patient listeners.",
+    "isReal": false,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_177",
+    "quoteText": "If confidence were policy, we'd have solved everything by lunch.",
+    "isReal": false,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_178",
+    "quoteText": "My strategy is simple: speak first, fact-check later.",
+    "isReal": false,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_179",
+    "quoteText": "I campaign in bullet points and govern in plot twists.",
+    "isReal": false,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_180",
+    "quoteText": "I don't dodge questions, I politically reinterpret them.",
+    "isReal": false,
+    "correctSpeaker": "Margaret Thatcher",
+    "speakerOptions": [
+      "Margaret Thatcher",
+      "Winston Churchill",
+      "Theresa May",
+      "Angela Merkel",
+      "Hillary Clinton"
+    ],
+    "impressionTip": "Firm, clipped, authoritative."
+  },
+  {
+    "id": "ff_quote_181",
+    "quoteText": "A champion is defined by how they recover when they fall.",
+    "isReal": true,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_182",
+    "quoteText": "Every woman's success should inspire another.",
+    "isReal": true,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_183",
+    "quoteText": "I decide who I am, and what I'll do, and what I'll win.",
+    "isReal": true,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_184",
+    "quoteText": "With a defeat, you get up, make it better, and try again.",
+    "isReal": true,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_185",
+    "quoteText": "Luck has nothing to do with it.",
+    "isReal": true,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_186",
+    "quoteText": "Talent starts the race, discipline finishes it.",
+    "isReal": false,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_187",
+    "quoteText": "The scoreboard is just honesty in giant numbers.",
+    "isReal": false,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_188",
+    "quoteText": "I train so hard even my excuses get tired.",
+    "isReal": false,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_189",
+    "quoteText": "Pressure is loud, but preparation is louder.",
+    "isReal": false,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_190",
+    "quoteText": "Winning is usually just recovery done faster than everyone else.",
+    "isReal": false,
+    "correctSpeaker": "Serena Williams",
+    "speakerOptions": [
+      "Serena Williams",
+      "Muhammad Ali",
+      "Venus Williams",
+      "Simone Biles",
+      "Billie Jean King"
+    ],
+    "impressionTip": "Focused, competitive, fearless."
+  },
+  {
+    "id": "ff_quote_191",
+    "quoteText": "Pressure is a privilege.",
+    "isReal": true,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_192",
+    "quoteText": "Champions keep playing until they get it right.",
+    "isReal": true,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_193",
+    "quoteText": "You have to see it to be it.",
+    "isReal": true,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_194",
+    "quoteText": "Be bold. If you're going to make an error, make a doozy.",
+    "isReal": true,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_195",
+    "quoteText": "Everyone has fire, but champions know when to ignite the spark.",
+    "isReal": true,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_196",
+    "quoteText": "Talent starts the race, discipline finishes it.",
+    "isReal": false,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_197",
+    "quoteText": "The scoreboard is just honesty in giant numbers.",
+    "isReal": false,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_198",
+    "quoteText": "I train so hard even my excuses get tired.",
+    "isReal": false,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_199",
+    "quoteText": "Pressure is loud, but preparation is louder.",
+    "isReal": false,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
+  },
+  {
+    "id": "ff_quote_200",
+    "quoteText": "Winning is usually just recovery done faster than everyone else.",
+    "isReal": false,
+    "correctSpeaker": "Billie Jean King",
+    "speakerOptions": [
+      "Billie Jean King",
+      "Serena Williams",
+      "Martina Navratilova",
+      "Muhammad Ali",
+      "Megan Rapinoe"
+    ],
+    "impressionTip": "Direct, competitive, no-nonsense."
   }
 ]
