@@ -17,6 +17,22 @@ export const GAMES: GameConfig[] = [
     route: "/g/murder-club/",
     enabled: true
   },
+    {
+    id: "A",
+    slug: "secret-category",
+    title: "Secret Categories",
+    description: "One player is the spy. Use one-word clues to keep the secret hidden from them.",
+    shortRules: "Everyone sees the main category. The secret category is hidden from one player (the spy). Give one-word clues relating to the secret cateogry without revealing it to the spy.",
+    heroImage: "/assets/secret-categories-logo.png",
+    theme: "default",
+    minPlayers: 3,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 10+",
+    joinPrefix: "A",
+    route: "/g/secret-category/",
+    enabled: true
+  },
    {
     id: "B",
     slug: "popular-people",
@@ -31,22 +47,6 @@ export const GAMES: GameConfig[] = [
     ageGuide: "Ages 8+",
     joinPrefix: "B",
     route: "/g/popular-people/",
-    enabled: true
-  },
-  {
-    id: "A",
-    slug: "secret-category",
-    title: "Secret Categories",
-    description: "One player is the spy. Use one-word clues to keep the secret hidden from them.",
-    shortRules: "Everyone sees the main category. The secret category is hidden from one player (the spy). Give one-word clues relating to the secret cateogry without revealing it to the spy.",
-    heroImage: "/assets/secret-categories-logo.png",
-    theme: "default",
-    minPlayers: 3,
-    maxPlayers: 18,
-    playTime: "5 - 15 mins",
-    ageGuide: "Ages 10+",
-    joinPrefix: "A",
-    route: "/g/secret-category/",
     enabled: true
   },
   {
