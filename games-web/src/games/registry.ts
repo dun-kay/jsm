@@ -1,6 +1,38 @@
 import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
+      {
+    id: "D",
+    slug: "murder-club",
+    title: "Murder Club",
+    description: "Find the hidden killer & their accomplices. Vote to submit or reject evidence.",
+    shortRules: "One killer hides amoung you. Vote to submit or reject case evidence. Catch the killer before they derail the investigation.",
+    heroImage: "/assets/murder-club-logo.png",
+    theme: "default",
+    minPlayers: 4,
+    maxPlayers: 18,
+    playTime: "10 - 20 mins",
+    ageGuide: "Ages 14+",
+    joinPrefix: "D",
+    route: "/g/murder-club/",
+    enabled: true
+  },
+   {
+    id: "B",
+    slug: "popular-people",
+    title: "Popular People",
+    description: "Guess your friends' chosen popular person before they guess yours.",
+    shortRules: "Each player picks one popular person in secret. Use social deduction and cunning to figure out everyone's choice before they figure out yours.",
+    heroImage: "/assets/popular-people-logo.png",
+    theme: "default",
+    minPlayers: 3,
+    maxPlayers: 18,
+    playTime: "10 - 20mins",
+    ageGuide: "Ages 8+",
+    joinPrefix: "B",
+    route: "/g/popular-people/",
+    enabled: true
+  },
   {
     id: "A",
     slug: "secret-category",
@@ -18,22 +50,6 @@ export const GAMES: GameConfig[] = [
     enabled: true
   },
   {
-    id: "B",
-    slug: "popular-people",
-    title: "Popular People",
-    description: "Guess your friends' chosen popular person before they guess yours.",
-    shortRules: "Each player picks one popular person in secret. Use social deduction and cunning to figure out everyone's choice before they figure out yours.",
-    heroImage: "/assets/popular-people-logo.png",
-    theme: "default",
-    minPlayers: 3,
-    maxPlayers: 18,
-    playTime: "10 - 20mins",
-    ageGuide: "Ages 8+",
-    joinPrefix: "B",
-    route: "/g/popular-people/",
-    enabled: true
-  },
-  {
     id: "C",
     slug: "fruit-bowl",
     title: "Fruit Bowl",
@@ -47,22 +63,6 @@ export const GAMES: GameConfig[] = [
     ageGuide: "Ages 8+",
     joinPrefix: "C",
     route: "/g/fruit-bowl/",
-    enabled: true
-  },
-  {
-    id: "D",
-    slug: "murder-club",
-    title: "Murder Club",
-    description: "Find the hidden killer & their accomplices. Vote to submit or reject evidence.",
-    shortRules: "One killer hides amoung you. Vote to submit or reject case evidence. Catch the killer before they derail the investigation.",
-    heroImage: "/assets/murder-club-logo.png",
-    theme: "default",
-    minPlayers: 4,
-    maxPlayers: 18,
-    playTime: "10 - 20 mins",
-    ageGuide: "Ages 14+",
-    joinPrefix: "D",
-    route: "/g/murder-club/",
     enabled: true
   },
   {
