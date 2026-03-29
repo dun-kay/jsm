@@ -29,10 +29,10 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are abot to play... Popular People",
     content: (
       <>
-        <p><b>Each player enters a popular person.</b> Don't reveal them.</p>
-        <p>Pick someone recognisable, a <b>celebrity... character... athlete... public person.</b></p>
+        <p>Each player enters a <b>secret popular person.</b></p>
+        <p>Pick someone recognisable, <b>a celebrity... character... athlete... public person.</b></p>
         <br />
-        <p><b>All players get 30 seconds to study the popular people.</b> One player starts by guessing another player's person.</p>
+        <p><b>All players get 30 seconds to study the list.</b> One player starts by guessing a person.</p>
         <br />
         <p>If they guess correctly, <b>that player is collected and joins the guesser's team.</b> The guesser asks again.</p>
         <p>If incorrect, <b>the asked player goes next.</b></p>
