@@ -29,17 +29,17 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are abot to play... Popular People",
     content: (
       <>
-        <p><b>Each player enters a popular person.</b> Don't reveal this to the other players.</p>
-        <p>Pick someone most players would recognise, a <b>celebrity, character, athlete, or public person.</b></p>
+        <p><b>Each player enters a popular person.</b> Don't reveal them.</p>
+        <p>Pick someone recognisable, a <b>celebrity... character... athlete... public person.</b></p>
         <br />
-        <p><b>All players then get 30 seconds to study the list of popular people.</b> One player starts by guessing another player's popular person.</p>
+        <p><b>All players get 30 seconds to study the popular people.</b> One player starts by guessing another player's person.</p>
         <br />
-        <p>If they guess correctly, that player joins the guesser's team. <b>They are now collected by that player & they get to ask again.</b></p>
-        <p>If they guess incorrectly, <b>the player who was asked guesses next.</b></p>
+        <p>If they guess correctly, <b>that player is collected and joins the guesser's team.</b> The guesser asks again.</p>
+        <p>If incorrect, <b>the asked player goes next.</b></p>
         <p>After the first guess, everyone gets 30 more seconds to review the list. <b>The list is then hidden for the remainder of the game.</b></p>
         <br />
-        <p><b>The game ends when one team collects all the players by guessing their celebrities.</b></p>
-        <p>Collected players can help with advice, but only non-collected players ask questions.</p>
+        <p><b>The game ends when one team collects all the players.</b></p>
+        <p>Collected players help with advice, but don't ask questions.</p>
       </>
     )
   },
