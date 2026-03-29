@@ -108,7 +108,6 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
   const myId = state?.you.id || "";
   const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
   const isMyTurnToPick = state?.phase === "guess_pick" && state.currentAskerId === myId;
-  const isMyTurnToGuess = state?.phase === "guess_input" && state.currentAskerId === myId;
   const isMyTurnToConfirm =
     state?.phase === "guess_confirm" && (state.currentAskerId === myId || state.currentTargetId === myId);
   const hasSubmittedMyConfirm = Boolean(
@@ -237,7 +236,12 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
     setErrorText("");
     try {
       const next = await pickCelebTarget(gameCode, playerToken, targetPlayerId);
-      setState(next);
+      if (next.phase === "guess_input" && next.currentAskerId === myId) {
+        const advanced = await submitCelebGuess(gameCode, playerToken, "Verbal guess");
+        setState(advanced);
+      } else {
+        setState(next);
+      }
     } catch (error) {
       setErrorText((error as Error).message || "Unable to pick target.");
     } finally {
@@ -260,6 +264,16 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
       setBusy(false);
     }
   }
+
+  useEffect(() => {
+    if (!state || busy) {
+      return;
+    }
+    if (state.phase !== "guess_input" || state.currentAskerId !== myId) {
+      return;
+    }
+    void doSubmitGuess();
+  }, [state, busy, myId]);
 
   async function doConfirm(isCorrect: boolean) {
     if (!state || busy || hasSubmittedMyConfirm) {
@@ -354,7 +368,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
       {state.phase === "reveal" && (
         <>
-          <h2>Study the popular people list.</h2>
+          <h2>30s to study the popular people list!</h2>
           <p>It might help you to remember the list if one player reads it aloud.</p>
           <br></br><p>{revealSecondsLeft}s remaining</p>
           <div className="player-grid cele">
@@ -418,15 +432,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
       {state.phase === "guess_input" && (
         <>
-          {isMyTurnToGuess ? (
-            <>
-              <h2>Ask {targetName} who their popular person is.</h2>
-              <p>Ask your guess out loud, you'll confirm their response on the next screen.</p>
-              <button type="button" className="btn btn-key" onClick={() => void doSubmitGuess()} disabled={busy}>
-                Confirm guess...
-              </button>
-            </>
-          ) : isMyTeamLeaderAsking ? (
+          {isMyTeamLeaderAsking ? (
             <p><h2>
               {askerName} is asking {targetName}.
             </h2>
@@ -435,7 +441,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
               contributing your ideas.</p></p>
           ) : (
             <p><h2>{askerName} is guessing {targetName}'s popular person.</h2><br></br>
-            <p>Don't forget to keep a mental note of their answer...</p></p>
+            <p>Stand by for guess confirmation...</p></p>
           )}
 
           <div className="players-panel">
