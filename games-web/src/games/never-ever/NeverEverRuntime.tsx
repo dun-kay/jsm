@@ -203,11 +203,11 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
         <>
           {isReader ? (
             <>
-              <p>Your card:</p>
+              <p>Read your card out loud:</p>
               <h2>{state.currentCard || "..."}</h2>
-              <p>Read this out loud to everyone.</p>
+              <p>Everyone votes next...</p>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-                {busy ? "Loading..." : "Done reading"}
+                {busy ? "Loading..." : "Done"}
               </button>
             </>
           ) : (
@@ -221,7 +221,6 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
 
       {state.phase === "vote" && (
         <>
-          <p><b>{activeName} reads:</b></p>
           <h2>{state.currentCard || "..."}</h2>
           <p>Choose your answer:</p>
           <div className="runtime-list">
@@ -237,19 +236,20 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
               </button>
             ))}
           </div>
-          {selectedChoice && <p className="hint-text nb">You selected {selectedChoice}, waiting...</p>}
+          {selectedChoice && <p className="hint-text nb">You selected: {selectedChoice}...</p>}
         </>
       )}
 
       {state.phase === "callout" && (
         <>
-          <h2>Called out...</h2>
-          <p><b>{state.currentCard || "..."}</b></p>
-          <p>Least-selected answer used: <b>{state.calledOutOption || "N/A"}</b></p>
-          <div className="player-grid teams">
+          <h2>Who's the odd one out?</h2>
+          <p></p>
+          <p>{state.currentCard || "..."}..<p></p><b>{state.calledOutOption || "N/A"}</b></p>
+          <p></p>
+          <div className="player-grid teams mc">
             {state.calledOut.map((id) => (
               <div key={id} className="player-pill team">
-                {playerName(state, id)}: {state.votes[id]}
+                {playerName(state, id)}
               </div>
             ))}
           </div>
@@ -258,7 +258,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
               {busy ? "Loading..." : "Continue"}
             </button>
           ) : (
-            <p className="hint-text nb">Waiting for a called-out player to continue...</p>
+            <p className="hint-text nb">Click continue/serve a penalty...</p>
           )}
         </>
       )}
