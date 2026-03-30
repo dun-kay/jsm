@@ -65,6 +65,22 @@ export const GAMES: GameConfig[] = [
     route: "/g/fruit-bowl/",
     enabled: true
   },
+    {
+    id: "G",
+    slug: "never-ever",
+    title: "Never Ever",
+    description: "The party game that reveals the real you.",
+    shortRules: "Each turn, one player reads a spicy card out loud, then everyone votes if they would do it: Again, never again, maybe?, or never ever.",
+    heroImage: "/assets/never-ever-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 17+",
+    joinPrefix: "G",
+    route: "/g/never-ever/",
+    enabled: true
+  },
   {
     id: "E",
     slug: "lying-llama",

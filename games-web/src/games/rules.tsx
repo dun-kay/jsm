@@ -6,6 +6,24 @@ type GameIntroRules = {
 };
 
 const RULES_BY_SLUG: Record<string, GameIntroRules> = {
+  "never-ever": {
+    title: "You are about to play... Never Ever",
+    content: (
+      <>
+        <p>The party game that <b>reveals the real you.</b></p>
+        <br></br>
+        <p>Over 2 rounds players draw cards that <b>expose your secrets.</b></p>
+        <br></br>
+        <p>Each turn, one player reads a spicy card out loud, then everyone votes if they would do it: <b>Again, never again, maybe?, or never ever.</b></p>
+        <br />
+        <p>Vote truthfully, <b>the least voted for option gets called out...</b></p>
+        <br></br>
+        <p>You might <b>find out things about your friends you never knew</b> or didn't want to...</p>
+        <br></br>
+        <p>Like which of your friends would definitely <b>have sex on a plane... again.</b></p>
+      </>
+    )
+  },
   "secret-category": {
     title: "You are about to play... Secret Categories",
     content: (
