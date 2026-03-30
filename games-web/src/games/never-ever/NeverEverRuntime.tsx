@@ -124,6 +124,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
   const isCalledOut = Boolean(state?.calledOut.includes(myId));
   const activeName = state ? playerName(state, state.currentReaderId) : "";
   const isHungVote = (state?.calledOutOption || "").toLowerCase().includes("hung vote");
+  const canContinueCallout = isHungVote ? isWaitingOnYou : isCalledOut;
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
@@ -246,8 +247,8 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
         <>
           <h2>Who's the odd one out?</h2>
           <p></p>
-          <p>{state.currentCard || "..."}</p>
-          <p><b>{state.calledOutOption || "N/A"}</b></p>
+          <p>{state.currentCard || "..."}..<p></p>
+          <b>{state.calledOutOption || "N/A"}</b></p>
           <p></p>
           <div className="player-grid teams mc">
             {isHungVote ? (
@@ -260,7 +261,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
               ))
             )}
           </div>
-          {isCalledOut ? (
+          {canContinueCallout ? (
             <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
               {busy ? "Loading..." : "Continue"}
             </button>
