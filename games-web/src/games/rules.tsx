@@ -10,16 +10,17 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are about to play... Most Likely",
     content: (
       <>
-        <p>One player reads a card that starts with <b>Most likely to...</b></p>
+        <p>The party game that <b>sets the record straight.</b></p>
+        <br></br>
+        <p>Two players face off by reading a spicy card,<p></p><b>who is most likely to...?</b></p>
         <br />
-        <p>Two players vote first: <b>Me</b> or <b>Them</b>.</p>
-        <p>Then the rest of the group validates the outcome.</p>
+        <p><b>Make $1 million, get married, go broke, etc...</b></p>
+        <br></br>
+        <p>The rest of the group <b>validates the outcome.</b></p>
         <br />
-        <p>If the pair agrees, the group votes <b>Agree</b> or <b>Disagree</b>.</p>
-        <p>If the pair disagrees, the group picks who is most likely.</p>
+        <p>If the pair can't agree, <b>the group picks.</b></p>
         <br />
-        <p>Hung group votes force a <b>re-vote</b>.</p>
-        <p>The winner serves the penalty and reads the next card.</p>
+        <p>Each round, <b>the winner serves a group penalty</b> (so pick one together now).</p>
       </>
     )
   },

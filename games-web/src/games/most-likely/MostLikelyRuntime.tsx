@@ -84,15 +84,22 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
     };
 
     void bootstrap();
+    let pollInFlight = false;
     const interval = window.setInterval(async () => {
+      if (pollInFlight || document.hidden) {
+        return;
+      }
+      pollInFlight = true;
       try {
         const next = await getMostLikelyState(gameCode, playerToken);
         if (!active) return;
         setState(next);
       } catch {
         // transient poll failure
+      } finally {
+        pollInFlight = false;
       }
-    }, 1500);
+    }, 2000);
 
     return () => {
       active = false;
@@ -123,6 +130,15 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
   const proposedWinnerName = state ? playerName(state, state.proposedWinnerId) : "";
   const myPairVote = state?.pairVotes?.[myId] || "";
   const myGroupVote = state?.groupVotes?.[myId] || "";
+  const meSelected = myPairVote !== "" && myPairVote === (state?.pairPlayerAId || "");
+  const themSelected = myPairVote !== "" && myPairVote === (state?.pairPlayerBId || "");
+  const isTieResult = state?.phase === "turn_result" && (state?.winnerIds?.length || 0) > 1;
+  const myPairVoteLabel =
+    myPairVote === ""
+      ? ""
+      : myPairVote === (state?.pairPlayerAId || "")
+        ? pairAName
+        : pairBName;
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
@@ -201,8 +217,6 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
     );
   }
 
-  const groupVoterCount = state.players.filter((p) => p.id !== state.pairPlayerAId && p.id !== state.pairPlayerBId).length;
-
   return (
     <section className="runtime-card runtime-flow">
       {state.phase === "rules" && (
@@ -219,17 +233,17 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
         <>
           {isReader ? (
             <>
-              <p>Read this card out loud:</p>
-              <h2>{state.currentCard || "..."}</h2>
-              <p>{pairAName} vs {pairBName}</p>
+              <p>Read this card out:</p>
+              <h2>{state.currentCard || "..."}</h2><p></p>
+              <p><b>{pairAName} or {pairBName}</b></p>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-                {busy ? "Loading..." : "Done reading"}
+                {busy ? "Loading..." : "Done"}
               </button>
             </>
           ) : (
             <>
-              <h2>{activeName} is reading...</h2>
-              <p>{pairAName} and {pairBName} vote next.</p>
+              <h2>Listen up, {activeName} is reading</h2><p></p>
+              <p><b>{pairAName} vs {pairBName} vote next...</b></p>
             </>
           )}
         </>
@@ -238,28 +252,28 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
       {state.phase === "pair_vote" && (
         <>
           <h2>{state.currentCard || "..."}</h2>
-          <p><b>{pairAName}</b> and <b>{pairBName}</b>: Who is most likely to?</p>
+          <p><b>{pairAName}</b> and <b>{pairBName}</b>: Who is most likely to?</p><p></p>
           {isPairPlayer ? (
             <>
               <div className="runtime-list">
                 <button
                   type="button"
-                  className={myPairVote === "me" ? "btn btn-key" : "btn btn-soft"}
+                  className={meSelected ? "btn btn-key" : "btn btn-soft"}
                   onClick={() => void doPairVote("me")}
                   disabled={busy || Boolean(myPairVote)}
                 >
-                  Me
+                  {pairAName}
                 </button>
                 <button
                   type="button"
-                  className={myPairVote === "them" ? "btn btn-key" : "btn btn-soft"}
+                  className={themSelected ? "btn btn-key" : "btn btn-soft"}
                   onClick={() => void doPairVote("them")}
                   disabled={busy || Boolean(myPairVote)}
                 >
-                  Them
+                  {pairBName}
                 </button>
               </div>
-              {myPairVote && <p className="hint-text nb">You selected {myPairVote}.</p>}
+              {myPairVoteLabel && <p className="hint-text nb">You selected: {myPairVoteLabel}.</p>}
             </>
           ) : (
             <p className="hint-text nb">Waiting for {pairAName} and {pairBName} to vote...</p>
@@ -269,8 +283,8 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
 
       {state.phase === "group_vote" && (
         <>
-          <h2>Group validate</h2>
-          <p><b>{state.currentCard || "..."}</b></p>
+          <h2>Group discussion, who is:</h2>
+          <p><b>{state.currentCard || "..."}</b></p><p></p>
           {state.groupMode === "consensus" ? (
             <p>
               {pairAName} and {pairBName} both picked <b>{proposedWinnerName}</b>.  
@@ -278,8 +292,7 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
             </p>
           ) : (
             <p>
-              {pairAName} and {pairBName} could not agree.  
-              Who is most likely to?
+              {pairAName} and {pairBName} could not agree, help them settle it.
             </p>
           )}
           {isWaitingOnYou ? (
@@ -325,7 +338,7 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
               )}
             </div>
           ) : (
-            <p className="hint-text nb">Waiting for group votes ({groupVoterCount})...</p>
+            <p className="hint-text nb">Waiting for group votes...</p>
           )}
           {myGroupVote && <p className="hint-text nb">You selected: {myGroupVote}.</p>}
         </>
@@ -333,9 +346,10 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
 
       {state.phase === "turn_result" && (
         <>
-          <h2>Penalty result</h2>
-          <p><b>{state.currentCard || "..."}</b></p>
-          <div className="player-grid teams mc">
+          <h2>{isTieResult ? `Tie: ${state.currentCard || "..."}` : `Winner: ${state.currentCard || "..."}`}</h2>
+          <p></p>
+          <p>{isTieResult ? "The group can't agree, both serve a penalty:" : "Winner serves a penalty:"}</p>
+          <div className="player-grid teams ml">
             {state.winnerIds.map((id) => (
               <div key={id} className="player-pill team">
                 {playerName(state, id)}
@@ -347,22 +361,22 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
               {busy ? "Loading..." : "Continue"}
             </button>
           ) : (
-            <p className="hint-text nb">Waiting for winner to continue...</p>
+            <p className="hint-text nb">Waiting...</p>
           )}
         </>
       )}
 
       {state.phase === "result" && (
         <>
-          <h2>Most Likely results</h2>
+          <h2>Most Likely results:</h2>
           <p>Who served the most penalties:</p>
-          <div className="player-grid teams mc">
+          <div className="player-grid teams ml">
             {state.players
               .slice()
               .sort((a, b) => b.penaltyCount - a.penaltyCount)
               .map((p) => (
                 <div key={p.id} className="player-pill team">
-                  {p.name}: {p.penaltyCount}
+                  {p.name}: {p.penaltyCount} penalties
                 </div>
               ))}
           </div>
@@ -392,4 +406,3 @@ export default function MostLikelyRuntime({ gameCode, playerToken }: MostLikelyR
     </section>
   );
 }
-
