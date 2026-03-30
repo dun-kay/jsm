@@ -160,6 +160,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "fake-famous": {
       h: "Play Fake Famous | Games With Friends",
       b: "Vote real or fake, then guess the speaker after a live impression."
+    },
+    "never-ever": {
+      h: "Play Never Ever | Games With Friends",
+      b: "Read the card, vote your answer, and see who gets called out."
     }
   };
 
@@ -187,6 +191,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "fake-famous": {
       h: "Fake Famous Rules | Games With Friends",
       b: "Game Rules: Vote real or fake, then guess who said it from five options."
+    },
+    "never-ever": {
+      h: "Never Ever Rules | Games With Friends",
+      b: "Game Rules: Read the card, vote your answer, and see who gets called out."
     }
   };
 

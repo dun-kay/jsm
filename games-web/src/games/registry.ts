@@ -65,6 +65,22 @@ export const GAMES: GameConfig[] = [
     route: "/g/fruit-bowl/",
     enabled: true
   },
+    {
+    id: "G",
+    slug: "never-ever",
+    title: "Never Ever",
+    description: "Read the card, vote your answer, and see who gets called out.",
+    shortRules: "Two rounds, nine cards each round. Everyone votes each card. Least-picked answer gets called out.",
+    heroImage: "/assets/never-ever-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 17+",
+    joinPrefix: "G",
+    route: "/g/never-ever/",
+    enabled: true
+  },
   {
     id: "E",
     slug: "lying-llama",
