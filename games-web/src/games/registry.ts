@@ -118,7 +118,7 @@ export const GAMES: GameConfig[] = [
     slug: "most-likely",
     title: "Most Likely",
     description: "Who is most likely to? Set the record straight.",
-    shortRules: "Two players face off & vote who is most likely too... the group decides if they agree.",
+    shortRules: "Two players face off & vote who is most likely to... the group decides if they agree.",
     heroImage: "/assets/most-likely-logo.png",
     theme: "default",
     minPlayers: 3,
