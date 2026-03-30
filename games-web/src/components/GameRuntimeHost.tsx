@@ -7,6 +7,7 @@ import MurderClubRuntime from "../games/murder-club/MurderClubRuntime";
 import LyingLlamaRuntime from "../games/lying-llama/LyingLlamaRuntime";
 import FakeFamousRuntime from "../games/fake-famous/FakeFamousRuntime";
 import NeverEverRuntime from "../games/never-ever/NeverEverRuntime";
+import MostLikelyRuntime from "../games/most-likely/MostLikelyRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState, quitGame, touchPlayer } from "../lib/lobbyApi";
 
@@ -132,7 +133,8 @@ export default function GameRuntimeHost({
       game?.slug === "murder-club" ||
       game?.slug === "lying-llama" ||
       game?.slug === "fake-famous" ||
-      game?.slug === "never-ever") &&
+      game?.slug === "never-ever" ||
+      game?.slug === "most-likely") &&
     initialSession?.playerToken
   ) {
     return (
@@ -165,6 +167,9 @@ export default function GameRuntimeHost({
         )}
         {game.slug === "never-ever" && (
           <NeverEverRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
+        )}
+        {game.slug === "most-likely" && (
+          <MostLikelyRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
         {showQuitConfirm && (
           <div className="modal-backdrop" role="dialog" aria-modal="true">

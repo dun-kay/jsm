@@ -65,7 +65,7 @@ export const GAMES: GameConfig[] = [
     route: "/g/fruit-bowl/",
     enabled: true
   },
-    {
+  {
     id: "G",
     slug: "never-ever",
     title: "Never Ever",
@@ -111,6 +111,22 @@ export const GAMES: GameConfig[] = [
     ageGuide: "Ages 10+",
     joinPrefix: "F",
     route: "/g/fake-famous/",
+    enabled: true
+  },
+    {
+    id: "H",
+    slug: "most-likely",
+    title: "Most Likely",
+    description: "Vote who is most likely to do it, then let the group settle the chaos.",
+    shortRules: "Two players vote first, the group validates, and the winner serves the penalty and reads next.",
+    heroImage: "/assets/most-likely-logo.png",
+    theme: "default",
+    minPlayers: 3,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 17+",
+    joinPrefix: "H",
+    route: "/g/most-likely/",
     enabled: true
   }
 ];

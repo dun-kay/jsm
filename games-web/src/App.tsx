@@ -164,6 +164,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "never-ever": {
       h: "Play Never Ever | Games With Friends",
       b: "Read the card, vote your answer, and see who gets called out."
+    },
+    "most-likely": {
+      h: "Play Most Likely | Games With Friends",
+      b: "Two players vote first, then the group settles who is most likely."
     }
   };
 
@@ -195,6 +199,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "never-ever": {
       h: "Never Ever Rules | Games With Friends",
       b: "Game Rules: Read the card, vote your answer, and see who gets called out."
+    },
+    "most-likely": {
+      h: "Most Likely Rules | Games With Friends",
+      b: "Game Rules: Two players vote first, then the group validates the winner."
     }
   };
 
