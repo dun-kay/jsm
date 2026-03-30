@@ -1,6 +1,6 @@
 import { getSupabaseClient } from "./supabase";
 
-export type NeverEverPhase = "rules" | "round_intro" | "card_reveal" | "vote" | "callout" | "result";
+export type NeverEverPhase = "rules" | "card_reveal" | "vote" | "callout" | "result";
 export type NeverEverChoice = "Again" | "Never again" | "Maybe?" | "Never ever";
 
 export type NeverEverPlayer = {
@@ -112,12 +112,5 @@ export function playAgainNeverEver(gameCode: string, playerToken: string, cardPo
     p_game_code: gameCode,
     p_player_token: playerToken,
     p_card_pool: cardPool
-  });
-}
-
-export function rerollNeverEverCategory(gameCode: string, playerToken: string): Promise<NeverEverState> {
-  return rpcState("ne_reroll_category", {
-    p_game_code: gameCode,
-    p_player_token: playerToken
   });
 }

@@ -6,7 +6,6 @@ import {
   getNeverEverState,
   initNeverEver,
   playAgainNeverEver,
-  rerollNeverEverCategory,
   submitNeverEverVote,
   type NeverEverChoice,
   type NeverEverState
@@ -21,6 +20,22 @@ type NeverEverRuntimeProps = {
 
 const CHOICES: NeverEverChoice[] = ["Again", "Never again", "Maybe?", "Never ever"];
 
+function flattenCardPool(pool: unknown): string[] {
+  if (Array.isArray(pool)) {
+    return pool.map(String).filter((v) => v.trim().length > 0);
+  }
+  if (pool && typeof pool === "object") {
+    const categories = (pool as { categories?: Array<{ cards?: unknown[] }> }).categories;
+    if (Array.isArray(categories)) {
+      return categories
+        .flatMap((c) => (Array.isArray(c.cards) ? c.cards : []))
+        .map(String)
+        .filter((v) => v.trim().length > 0);
+    }
+  }
+  return [];
+}
+
 function playerName(state: NeverEverState, playerId: string | null): string {
   if (!playerId) return "";
   return state.players.find((p) => p.id === playerId)?.name || "";
@@ -28,6 +43,7 @@ function playerName(state: NeverEverState, playerId: string | null): string {
 
 export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRuntimeProps) {
   const introRules = getGameIntroRules("never-ever");
+  const combinedCardPool = flattenCardPool(cardPool);
   const [state, setState] = useState<NeverEverState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
@@ -48,7 +64,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
 
     const bootstrap = async () => {
       try {
-        const next = await initNeverEver(gameCode, playerToken, cardPool);
+        const next = await initNeverEver(gameCode, playerToken, combinedCardPool);
         if (!active) return;
         setState(next);
         setErrorText("");
@@ -86,7 +102,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
       active = false;
       window.clearInterval(interval);
     };
-  }, [gameCode, playerToken]);
+  }, [gameCode, playerToken, combinedCardPool]);
 
   useEffect(() => {
     if (!state) return;
@@ -152,24 +168,10 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
     setBusy(true);
     setErrorText("");
     try {
-      const next = await playAgainNeverEver(gameCode, playerToken, cardPool);
+      const next = await playAgainNeverEver(gameCode, playerToken, combinedCardPool);
       setState(next);
     } catch (error) {
       setErrorText((error as Error).message || "Unable to start another game.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function doRerollCategory() {
-    if (!state || busy || !state.you.isHost || state.phase !== "round_intro" || state.turnIndex !== 0) return;
-    setBusy(true);
-    setErrorText("");
-    try {
-      const next = await rerollNeverEverCategory(gameCode, playerToken);
-      setState(next);
-    } catch (error) {
-      setErrorText((error as Error).message || "Unable to re-spin category.");
     } finally {
       setBusy(false);
     }
@@ -193,24 +195,6 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
           <div className="rules-modal-content">{introRules.content}</div>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
             {busy ? "Loading..." : isWaitingOnYou ? "Begin" : "Waiting for others"}
-          </button>
-        </>
-      )}
-
-      {state.phase === "round_intro" && (
-        <>
-          <h2>Round {state.roundNumber}</h2>
-          <p>Category: <b>{state.selectedCategory || "Loading..."}</b></p>
-          {state.you.isHost && state.turnIndex === 0 ? (
-            <button type="button" className="btn btn-soft runtime-reroll-btn" onClick={() => void doRerollCategory()} disabled={busy || !isWaitingOnYou}>
-              {busy ? "Loading..." : "Re-spin category"}
-            </button>
-          ) : state.turnIndex === 0 ? (
-            <button type="button" className="btn btn-soft runtime-reroll-btn">Ask the host to re-spin</button>
-          ) : null}
-          <p>9 cards this round. Read the card out loud, then everyone votes.</p>
-          <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-            {busy ? "Loading..." : isWaitingOnYou ? "Continue" : "Waiting for others"}
           </button>
         </>
       )}
