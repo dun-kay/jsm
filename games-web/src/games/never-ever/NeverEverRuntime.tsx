@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AccessPaywallModal from "../../components/AccessPaywallModal";
 import { usePlayAccess } from "../../lib/usePlayAccess";
 import {
@@ -43,7 +43,7 @@ function playerName(state: NeverEverState, playerId: string | null): string {
 
 export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRuntimeProps) {
   const introRules = getGameIntroRules("never-ever");
-  const combinedCardPool = flattenCardPool(cardPool);
+  const combinedCardPool = useMemo(() => flattenCardPool(cardPool), []);
   const [state, setState] = useState<NeverEverState | null>(null);
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
@@ -274,7 +274,8 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
         <>
           <h2>Never Ever results</h2>
           <p>Most called-out players this game:</p>
-          <div className="player-grid teams">
+          <p></p>
+          <div className="player-grid teams mc">
             {state.players
               .slice()
               .sort((a, b) => b.calloutCount - a.calloutCount)
