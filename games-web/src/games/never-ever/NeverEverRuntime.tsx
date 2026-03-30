@@ -123,6 +123,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
   const selectedChoice = state?.votes?.[myId] || null;
   const isCalledOut = Boolean(state?.calledOut.includes(myId));
   const activeName = state ? playerName(state, state.currentReaderId) : "";
+  const isHungVote = (state?.calledOutOption || "").toLowerCase().includes("hung vote");
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
@@ -204,7 +205,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
           {isReader ? (
             <>
               <p>Read your card out loud:</p>
-              <h2>{state.currentCard || "..."}</h2>
+              <h2>{state.currentCard || "..."}</h2><p></p>
               <p>Everyone votes next...</p>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
                 {busy ? "Loading..." : "Done"}
@@ -212,8 +213,8 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
             </>
           ) : (
             <>
-              <h2>{activeName} is reading the card...</h2>
-              <p>Listen and get ready to vote.</p>
+              <h2>{activeName} is reading the card...</h2><p></p>
+              <p>Listen and be ready to vote if <u>you</u> would do it:<p></p>Again, never again, maybe?, or never ever.</p>
             </>
           )}
         </>
@@ -222,7 +223,8 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
       {state.phase === "vote" && (
         <>
           <h2>{state.currentCard || "..."}</h2>
-          <p>Choose your answer:</p>
+          <p>Choose your answer, would <u>you</u> do the above:</p>
+          <p></p>
           <div className="runtime-list">
             {CHOICES.map((choice) => (
               <button
@@ -244,14 +246,19 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
         <>
           <h2>Who's the odd one out?</h2>
           <p></p>
-          <p>{state.currentCard || "..."}..<p></p><b>{state.calledOutOption || "N/A"}</b></p>
+          <p>{state.currentCard || "..."}</p>
+          <p><b>{state.calledOutOption || "N/A"}</b></p>
           <p></p>
           <div className="player-grid teams mc">
-            {state.calledOut.map((id) => (
-              <div key={id} className="player-pill team">
-                {playerName(state, id)}
-              </div>
-            ))}
+            {isHungVote ? (
+              <div className="player-pill team">Hung vote</div>
+            ) : (
+              state.calledOut.map((id) => (
+                <div key={id} className="player-pill team">
+                  {playerName(state, id)}
+                </div>
+              ))
+            )}
           </div>
           {isCalledOut ? (
             <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>

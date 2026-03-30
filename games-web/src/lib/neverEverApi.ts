@@ -20,7 +20,7 @@ export type NeverEverState = {
   currentCard: string | null;
   votes: Record<string, NeverEverChoice>;
   calledOut: string[];
-  calledOutOption: NeverEverChoice | null;
+  calledOutOption: string | null;
   calloutCounts: Record<string, number>;
   waitingOn: string[];
   players: NeverEverPlayer[];
@@ -44,7 +44,7 @@ function mapState(data: unknown): NeverEverState {
     currentCard: (raw.currentCard as string | null) ?? null,
     votes: (raw.votes as Record<string, NeverEverChoice>) || {},
     calledOut: ((raw.calledOut as string[]) || []).map(String),
-    calledOutOption: (raw.calledOutOption as NeverEverChoice | null) ?? null,
+    calledOutOption: (raw.calledOutOption as string | null) ?? null,
     calloutCounts: (raw.calloutCounts as Record<string, number>) || {},
     waitingOn: ((raw.waitingOn as string[]) || []).map(String),
     players: ((raw.players as Array<Record<string, unknown>>) || []).map((p) => ({
