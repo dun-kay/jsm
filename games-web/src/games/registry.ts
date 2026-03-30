@@ -65,7 +65,7 @@ export const GAMES: GameConfig[] = [
     route: "/g/fruit-bowl/",
     enabled: true
   },
-    {
+  {
     id: "G",
     slug: "never-ever",
     title: "Never Ever",
@@ -111,6 +111,22 @@ export const GAMES: GameConfig[] = [
     ageGuide: "Ages 10+",
     joinPrefix: "F",
     route: "/g/fake-famous/",
+    enabled: true
+  },
+    {
+    id: "H",
+    slug: "most-likely",
+    title: "Most Likely",
+    description: "Who is most likely to? Set the record straight.",
+    shortRules: "Two players face off & vote who is most likely too... the group decides if they agree.",
+    heroImage: "/assets/most-likely-logo.png",
+    theme: "default",
+    minPlayers: 3,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 17+",
+    joinPrefix: "H",
+    route: "/g/most-likely/",
     enabled: true
   }
 ];

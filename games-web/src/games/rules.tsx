@@ -6,6 +6,24 @@ type GameIntroRules = {
 };
 
 const RULES_BY_SLUG: Record<string, GameIntroRules> = {
+  "most-likely": {
+    title: "You are about to play... Most Likely",
+    content: (
+      <>
+        <p>The party game that <b>sets the record straight.</b></p>
+        <br></br>
+        <p>Two players face off by reading a spicy card,<p></p><b>who is most likely to...?</b></p>
+        <br />
+        <p><b>Make $1 million, get married, go broke, etc...</b></p>
+        <br></br>
+        <p>The rest of the group <b>validates the outcome.</b></p>
+        <br />
+        <p>If the pair can't agree, <b>the group picks.</b></p>
+        <br />
+        <p>Each round, <b>the winner serves a group penalty</b> (so pick one together now).</p>
+      </>
+    )
+  },
   "never-ever": {
     title: "You are about to play... Never Ever",
     content: (
