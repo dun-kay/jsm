@@ -10,11 +10,9 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     title: "You are about to play... Never Ever",
     content: (
       <>
-        <p>The party game that <b>reveals the real you.</b></p>
+        <p>The party game that <b>reveals the real you & calls out your friends.</b></p>
         <br></br>
-        <p>Over 2 rounds players draw cards that <b>expose your secrets.</b></p>
-        <br></br>
-        <p>Each turn, one player reads a spicy card out loud, then everyone votes if they would do it: <b>Again, never again, maybe?, or never ever.</b></p>
+        <p>Each turn, one player reads a spicy card out, then everyone votes if they would do it: <b>Again, never again, maybe?, or never ever.</b></p>
         <br />
         <p>Vote truthfully, <b>the least voted for option gets called out...</b></p>
         <br></br>

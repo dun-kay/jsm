@@ -70,7 +70,7 @@ export const GAMES: GameConfig[] = [
     slug: "never-ever",
     title: "Never Ever",
     description: "The party game that reveals the real you.",
-    shortRules: "Each turn, one player reads a spicy card out loud, then everyone votes if they would do it: Again, never again, maybe?, or never ever.",
+    shortRules: "Each turn, one player reads a spicy card out, then everyone votes if they would do it: Again, never again, maybe?, or never ever.",
     heroImage: "/assets/never-ever-logo.png",
     theme: "default",
     minPlayers: 2,
