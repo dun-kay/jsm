@@ -205,7 +205,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
         <>
           {isReader ? (
             <>
-              <p>Read your card out loud:</p>
+              <p>Read your card out:</p>
               <h2>{state.currentCard || "..."}</h2><p></p>
               <p>Everyone votes next...</p>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
