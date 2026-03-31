@@ -250,7 +250,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
           <p>{state.currentCard || "..."}..<p></p>
           <b>{state.calledOutOption || "N/A"}</b></p>
           <p></p>
-          <div className="player-grid teams mc">
+          <div className="player-grid teams ne">
             {isHungVote ? (
               <div className="player-pill team">Hung vote</div>
             ) : (
@@ -276,7 +276,7 @@ export default function NeverEverRuntime({ gameCode, playerToken }: NeverEverRun
           <h2>Never Ever results</h2>
           <p>Most called-out players this game:</p>
           <p></p>
-          <div className="player-grid teams mc">
+          <div className="player-grid teams ne">
             {state.players
               .slice()
               .sort((a, b) => b.calloutCount - a.calloutCount)
