@@ -1,6 +1,22 @@
 import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
+  {
+    id: "I",
+    slug: "wormy-worm",
+    title: "Wormy Worm",
+    description: "Draw worms, avoid the loser spot, and face the penalty stakes.",
+    shortRules: "Set a penalty, draw three worm pulls each, and fight to finish with the highest worm total.",
+    heroImage: "/assets/wormy-worm-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 12+",
+    joinPrefix: "I",
+    route: "/g/wormy-worm/",
+    enabled: true
+  },
       {
     id: "D",
     slug: "murder-club",
