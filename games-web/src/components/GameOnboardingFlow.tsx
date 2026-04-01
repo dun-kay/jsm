@@ -800,7 +800,7 @@ export default function GameOnboardingFlow({
             )}
 
             {!gameStarted && flow === "join" && (
-              <div className="waiting-text">Waiting for host to start game.</div>
+              <div className="waiting-text">Waiting for host to start...</div>
             )}
 
             {gameStarted && <div className="waiting-text">Game started. Game screen comes next.</div>}

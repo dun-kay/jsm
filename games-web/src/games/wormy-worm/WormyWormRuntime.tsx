@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AccessPaywallModal from "../../components/AccessPaywallModal";
 import { usePlayAccess } from "../../lib/usePlayAccess";
 import {
@@ -7,6 +7,7 @@ import {
   initWormyWorm,
   playAgainWormyWorm,
   rerollWormyPenalty,
+  startWormyPull,
   setWormyCustomPenalty,
   setWormyPenaltyMode,
   type WormyWormState
@@ -37,6 +38,9 @@ function playerName(state: WormyWormState, playerId: string | null): string {
   return state.players.find((p) => p.id === playerId)?.name || "";
 }
 
+const WORM_EMOJI = "🪱";
+const BUCKET_EMOJI = "🪣";
+
 export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRuntimeProps) {
   const introRules = getGameIntroRules("wormy-worm");
   const autoPenalties = useMemo(() => flattenPenalties(penaltyPool), []);
@@ -45,7 +49,12 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
   const [errorText, setErrorText] = useState<string>("");
   const [customPenalty, setCustomPenalty] = useState<string>("");
   const [showPostReveal, setShowPostReveal] = useState<boolean>(false);
+  const [isPullAnimating, setIsPullAnimating] = useState<boolean>(false);
+  const [animatedWormCount, setAnimatedWormCount] = useState<number>(0);
+  const [viewerWormCount, setViewerWormCount] = useState<number>(1);
   const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
+  const pullStepTimerRef = useRef<number | null>(null);
+  const pullEndTimerRef = useRef<number | null>(null);
   const {
     accessState,
     showPaywall,
@@ -132,12 +141,66 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
     setShowPostReveal(false);
     const timer = window.setTimeout(() => {
       setShowPostReveal(true);
-    }, 4000);
+    }, 3000);
 
     return () => {
       window.clearTimeout(timer);
     };
   }, [state?.phase, state?.turnIndex, state?.currentDrawerId, state?.currentDrawCount]);
+
+  useEffect(() => {
+    if (state?.phase !== "draw_reveal") {
+      setIsPullAnimating(false);
+      setAnimatedWormCount(0);
+      setViewerWormCount(1);
+      if (pullStepTimerRef.current) {
+        window.clearTimeout(pullStepTimerRef.current);
+        pullStepTimerRef.current = null;
+      }
+      if (pullEndTimerRef.current) {
+        window.clearTimeout(pullEndTimerRef.current);
+        pullEndTimerRef.current = null;
+      }
+    }
+  }, [state?.phase]);
+
+  useEffect(() => {
+    const viewerIsDrawer = Boolean(
+      state?.currentDrawerId &&
+      state?.you?.id &&
+      state.currentDrawerId === state.you.id
+    );
+
+    if (!state || state.phase !== "draw_reveal" || viewerIsDrawer || !state.pullInProgress) {
+      return;
+    }
+
+    const target = Math.max(1, state.currentDrawCount ?? 1);
+    let current = 0;
+
+    const interval = window.setInterval(() => {
+      current += 1;
+      setViewerWormCount(Math.min(current, target));
+      if (current >= target) {
+        window.clearInterval(interval);
+      }
+    }, 190);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [state?.phase, state?.currentDrawerId, state?.you?.id, state?.pullInProgress, state?.currentDrawCount]);
+
+  useEffect(() => {
+    return () => {
+      if (pullStepTimerRef.current) {
+        window.clearTimeout(pullStepTimerRef.current);
+      }
+      if (pullEndTimerRef.current) {
+        window.clearTimeout(pullEndTimerRef.current);
+      }
+    };
+  }, []);
 
   const myId = state?.you.id || "";
   const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
@@ -155,7 +218,51 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
   const atLimit = customPenalty.length >= 20;
   const drawCount = state?.currentDrawCount ?? 0;
   const wormWord = drawCount === 1 ? "worm" : "worms";
-  const wormsEmoji = "🪱".repeat(Math.max(0, drawCount));
+  const wormsEmoji = WORM_EMOJI.repeat(Math.max(0, drawCount));
+  const animWormsEmoji = WORM_EMOJI.repeat(Math.max(1, animatedWormCount));
+  const viewerWormsEmoji = WORM_EMOJI.repeat(Math.max(1, viewerWormCount));
+
+  function runPullAnimationThenContinue() {
+    if (!state || busy || !isWaitingOnYou || !isDrawer || isPullAnimating) {
+      return;
+    }
+
+    void (async () => {
+      setBusy(true);
+      setErrorText("");
+      try {
+        const started = await startWormyPull(gameCode, playerToken);
+        setState(started);
+
+        const target = Math.max(1, drawCount);
+        let current = 0;
+        setIsPullAnimating(true);
+        setAnimatedWormCount(1);
+
+        const tick = () => {
+          current += 1;
+          setAnimatedWormCount(Math.min(current, target));
+
+          if (current >= target) {
+            pullEndTimerRef.current = window.setTimeout(async () => {
+              await doContinue();
+              setIsPullAnimating(false);
+              setAnimatedWormCount(0);
+            }, 1780);
+            return;
+          }
+
+          pullStepTimerRef.current = window.setTimeout(tick, 190);
+        };
+
+        pullStepTimerRef.current = window.setTimeout(tick, 190);
+      } catch (error) {
+        setErrorText((error as Error).message || "Unable to start pull.");
+      } finally {
+        setBusy(false);
+      }
+    })();
+  }
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
@@ -283,7 +390,7 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
               <button type="button" className="btn btn-soft" onClick={() => void doModePick("own")} disabled={busy}>
                 Own penalty
               </button>
-              <p className="hint-text nb">E.g. Do the dishes, pay for dinner...</p>
+              <p className="hint-text nb">You enter a custom penalty, (do the dishes, pay for dinner)...</p>
             </div>
           ) : (
             <p className="hint-text nb">Waiting for host to choose penalty mode...</p>
@@ -326,7 +433,6 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
         <>
           {state.you.isHost && state.penaltyMode === "auto" && (
             <div>
-              <br></br>
               <button type="button" className="btn btn-soft runtime-reroll-btn" onClick={() => void doRerollPenalty()} disabled={busy}>
                 Re-spin penalty
               </button>
@@ -334,13 +440,12 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
           )}
           {!state.you.isHost && state.penaltyMode === "auto" && (
             <div>
-              <br></br>
               <button type="button" className="btn btn-soft runtime-reroll-btn" disabled>
                 Host can re-spin
               </button>
             </div>
           )}
-          <p></p><p className="body-text">Each player draws a worm over 3 rounds.<p></p><b>Most 🪱 wins.</b></p><p></p>
+          <p></p><p className="body-text">Each player draws a worm over 3 rounds.<p></p><b>Most {WORM_EMOJI} wins.</b></p><p></p>
           {state.you.isHost ? (
             <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
               {busy ? "Loading..." : "Start"}
@@ -355,20 +460,35 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
         <>
           {isDrawer ? (
             <>
-              <p></p><p><b><u>Round {state.roundNumber}</u></b></p>
+              <p></p><p><b><u>Round {state.roundNumber}/3</u></b></p>
               <h2>Your draw:</h2>
               <p className="body-text">Pull a worm from the bucket...</p>
-              <div className="pot">🪣</div>
-              <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-                {busy ? "Loading..." : "Pull a 🪱?"}
+              <div className="wormy-stack">
+                <div className={`wormy wormy-over-pot ${isPullAnimating ? "wormy-pop wormy-shake" : ""}`}>
+                  {isPullAnimating ? animWormsEmoji : ""}
+                </div>
+                <div className={`pot ${isPullAnimating ? "pot-shake" : ""}`}>{BUCKET_EMOJI}</div>
+              </div>
+              <button
+                type="button"
+                className="btn btn-key"
+                onClick={() => runPullAnimationThenContinue()}
+                disabled={busy || !isWaitingOnYou || isPullAnimating || state.pullInProgress}
+              >
+                {busy ? "Loading..." : isPullAnimating ? "Pulling..." : `Pull a ${WORM_EMOJI}?`}
               </button>
             </>
           ) : (
             <>
-            <p></p><p><b><u>Round {state.roundNumber}</u></b></p>
+            <p></p><p><b><u>Round {state.roundNumber}/3</u></b></p>
               <h2>{currentDrawerName} is drawing a worm from the bucket...</h2>
-               <div className="pot">🪣</div>
-              <p className="hint-text nb">Waiting for their 🪱 pull...</p>
+              <div className="wormy-stack">
+                <div className={`wormy wormy-over-pot ${state.pullInProgress ? "wormy-pop wormy-shake" : ""}`}>
+                  {state.pullInProgress ? viewerWormsEmoji : ""}
+                </div>
+                <div className={`pot ${state.pullInProgress ? "pot-shake" : ""}`}>{BUCKET_EMOJI}</div>
+              </div>
+              <p className="hint-text nb">Waiting for their {WORM_EMOJI} pull...</p>
             </>
           )}
         </>
@@ -376,9 +496,9 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
 
       {state.phase === "draw_result" && (
         <><p></p>
-          <p><b><u>Round {state.roundNumber}</u></b></p>
+          <p><b><u>Round {state.roundNumber}/3</u></b></p>
           <h2>{currentDrawerName} pulled: {drawCount} {wormWord}</h2>
-          <div className="wormy">{wormsEmoji || "🪱"}</div>
+          <div className="wormy">{wormsEmoji || WORM_EMOJI}</div>
           <p></p>
           {showPostReveal && (
             <>
@@ -387,7 +507,7 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
               <div className="player-grid teams ww">
                 {sortedByLowest.map((player) => (
                   <div key={player.id} className="player-pill team">
-                    {player.name}: {player.wormsTotal} 🪱
+                    {player.name}: {player.wormsTotal} {WORM_EMOJI}
                   </div>
                 ))}
               </div>
@@ -416,7 +536,7 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
               .sort((a, b) => b.wormsTotal - a.wormsTotal || a.turnOrder - b.turnOrder)
               .map((player) => (
                 <div key={player.id} className="player-pill team">
-                  {player.name}: {player.wormsTotal} 🪱
+                  {player.name}: {player.wormsTotal} {WORM_EMOJI}
                 </div>
               ))}
           </div><p></p>
