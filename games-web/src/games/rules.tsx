@@ -36,7 +36,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <br></br>
         <p>You might <b>find out things about your friends you never knew</b> or didn't want to...</p>
         <br></br>
-        <p>Like which of your friends would definitely <b>have sex on a plane... again.</b></p>
+        <p>Like which of your friends would definitely <b>get back with their ex... again.</b></p>
       </>
     )
   },
