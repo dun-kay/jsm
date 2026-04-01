@@ -40,6 +40,23 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
       </>
     )
   },
+  "wormy-worm": {
+    title: "You are about to play... Wormy Worm 🪱🪱🪱",
+    content: (
+      <>
+        <p>Settle arguments. <b>Let the worms decide.</b></p>
+        <br />
+        <p>To begin, <b>set a game penalty.</b></p>
+        <br />
+        <p>Each round, <b>every player draws a worm from the bucket</b>. Sometimes you get <b>more worms</b>, other times, <b>less worms</b>.</p>
+        <br />
+        <p>Most worms <b>over three rounds wins.</b></p>
+        <p>Least worms, <b>loses.</b></p>
+        <br />
+        <p><b>Loser does the game penalty.</b></p>
+      </>
+    )
+  },
   "secret-category": {
     title: "You are about to play... Secret Categories",
     content: (

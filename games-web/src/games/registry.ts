@@ -1,6 +1,22 @@
 import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
+  {
+    id: "I",
+    slug: "wormy-worm",
+    title: "Wormy Worm",
+    description: "Settle arguments. Let the worms decide.",
+    shortRules: "Set a penalty. Draw worms. Most worms wins. Loser serves the penalty.",
+    heroImage: "/assets/wormy-worm-logo.png",
+    theme: "default",
+    minPlayers: 2,
+    maxPlayers: 18,
+    playTime: "5 - 10 mins",
+    ageGuide: "Ages 12+",
+    joinPrefix: "I",
+    route: "/g/wormy-worm/",
+    enabled: true
+  },
       {
     id: "D",
     slug: "murder-club",

@@ -168,6 +168,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "most-likely": {
       h: "Play Most Likely | Games With Friends",
       b: "Two players vote first, then the group settles who is most likely."
+    },
+    "wormy-worm": {
+      h: "Play Wormy Worm | Games With Friends",
+      b: "Set the penalty, draw worm pulls, and avoid finishing at the bottom."
     }
   };
 
@@ -203,6 +207,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "most-likely": {
       h: "Most Likely Rules | Games With Friends",
       b: "Game Rules: Two players vote first, then the group validates the winner."
+    },
+    "wormy-worm": {
+      h: "Wormy Worm Rules | Games With Friends",
+      b: "Game Rules: Set the penalty, draw three worm pulls each, and avoid the bottom spot."
     }
   };
 
