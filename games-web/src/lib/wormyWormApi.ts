@@ -28,6 +28,7 @@ export type WormyWormState = {
   currentDrawCount: number | null;
   penaltyMode: WormyPenaltyMode | null;
   penaltyText: string | null;
+  pullInProgress: boolean;
   scores: Record<string, number>;
   waitingOn: string[];
   players: WormyWormPlayer[];
@@ -50,6 +51,7 @@ function mapState(data: unknown): WormyWormState {
     currentDrawCount: raw.currentDrawCount == null ? null : Number(raw.currentDrawCount),
     penaltyMode: (raw.penaltyMode as WormyPenaltyMode | null) ?? null,
     penaltyText: (raw.penaltyText as string | null) ?? null,
+    pullInProgress: Boolean(raw.pullInProgress),
     scores: (raw.scores as Record<string, number>) || {},
     waitingOn: ((raw.waitingOn as string[]) || []).map(String),
     players: ((raw.players as Array<Record<string, unknown>>) || []).map((p) => ({
@@ -101,6 +103,13 @@ export function continueWormyWorm(gameCode: string, playerToken: string): Promis
   });
 }
 
+export function startWormyPull(gameCode: string, playerToken: string): Promise<WormyWormState> {
+  return rpcState("ww_start_pull", {
+    p_game_code: gameCode,
+    p_player_token: playerToken
+  });
+}
+
 export function setWormyPenaltyMode(
   gameCode: string,
   playerToken: string,
@@ -139,4 +148,3 @@ export function playAgainWormyWorm(gameCode: string, playerToken: string, penalt
     p_auto_penalties: penaltyPool
   });
 }
-
