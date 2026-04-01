@@ -384,7 +384,6 @@ body {
 
 .pot {
   font-size: 175px;
-  margin-top: -40px;
 }
 
 .wormy {
@@ -399,7 +398,7 @@ body {
 }
 
 .wormy-over-pot {
-  margin-bottom: -18px;
+  margin-bottom: 0px;
   z-index: 2;
 }
 
