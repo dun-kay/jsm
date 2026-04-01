@@ -44,6 +44,7 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
   const [busy, setBusy] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>("");
   const [customPenalty, setCustomPenalty] = useState<string>("");
+  const [showPostReveal, setShowPostReveal] = useState<boolean>(false);
   const [rulesPaywallPrimed, setRulesPaywallPrimed] = useState<boolean>(false);
   const {
     accessState,
@@ -122,6 +123,22 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
     });
   }, [state?.phase, state, rulesPaywallPrimed, primePaywallIfExhausted, setAccessError]);
 
+  useEffect(() => {
+    if (!state || state.phase !== "draw_result") {
+      setShowPostReveal(false);
+      return;
+    }
+
+    setShowPostReveal(false);
+    const timer = window.setTimeout(() => {
+      setShowPostReveal(true);
+    }, 4000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [state?.phase, state?.turnIndex, state?.currentDrawerId, state?.currentDrawCount]);
+
   const myId = state?.you.id || "";
   const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
   const isDrawer = Boolean(state?.currentDrawerId === myId);
@@ -129,8 +146,16 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
   const sortedByLowest = state
     ? state.players.slice().sort((a, b) => a.wormsTotal - b.wormsTotal || a.turnOrder - b.turnOrder)
     : [];
+  const lowestScore = sortedByLowest.length > 0 ? sortedByLowest[0].wormsTotal : 0;
+  const lowestPlayersText = sortedByLowest
+    .filter((player) => player.wormsTotal === lowestScore)
+    .map((player) => player.name)
+    .join(", ");
   const trimmedPenalty = customPenalty.trim();
   const atLimit = customPenalty.length >= 20;
+  const drawCount = state?.currentDrawCount ?? 0;
+  const wormWord = drawCount === 1 ? "worm" : "worms";
+  const wormsEmoji = "🪱".repeat(Math.max(0, drawCount));
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
@@ -229,8 +254,10 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
 
   return (
     <section className="runtime-card runtime-flow">
-      <p className="hint-text nb">
-        <b>Penalty:</b> {state.penaltyText || "Not set yet"}
+      <p>
+        Penalty for loser:
+        <p></p>
+        <b>{state.penaltyText || "Not set yet"}</b>
       </p>
 
       {state.phase === "rules" && (
@@ -245,17 +272,18 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
 
       {state.phase === "penalty_mode" && (
         <>
-          <h2>Set penalties</h2>
+          <h2>Set penalties</h2> <p></p>
           {state.you.isHost ? (
             <div className="runtime-list">
               <button type="button" className="btn btn-key" onClick={() => void doModePick("auto")} disabled={busy}>
-                Auto penalties
+                Auto penalty
               </button>
-              <p className="hint-text nb">E.g. Do a silly dance</p>
+              <p className="hint-text nb">E.g. Do a chicken dance, let someone reply to one message...</p>
+              <p></p>
               <button type="button" className="btn btn-soft" onClick={() => void doModePick("own")} disabled={busy}>
-                Own penalties
+                Own penalty
               </button>
-              <p className="hint-text nb">E.g. Drink, do the dishes</p>
+              <p className="hint-text nb">E.g. Do the dishes, pay for dinner...</p>
             </div>
           ) : (
             <p className="hint-text nb">Waiting for host to choose penalty mode...</p>
@@ -265,11 +293,12 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
 
       {state.phase === "penalty_custom" && (
         <>
-          <h2>Set your penalty</h2>
+          <h2>Set your penalty...</h2>
           {state.you.isHost ? (
             <>
+            <label className="field-wrap">
               <input
-                className="text-input"
+                className="input-pill"
                 value={customPenalty}
                 onChange={(event) => setCustomPenalty(event.target.value.slice(0, 20))}
                 placeholder="Enter penalty"
@@ -281,6 +310,7 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
                   }
                 }}
               />
+              </label><p></p>
               {atLimit && <p className="hint-text">Max 20 characters reached.</p>}
               <button type="button" className="btn btn-key" onClick={() => void doSaveCustomPenalty()} disabled={busy || !trimmedPenalty}>
                 {busy ? "Saving..." : "Save penalty"}
@@ -294,21 +324,26 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
 
       {state.phase === "penalty_ready" && (
         <>
-          <h2>Penalty locked in</h2>
           {state.you.isHost && state.penaltyMode === "auto" && (
-            <button type="button" className="btn btn-soft runtime-reroll-btn" onClick={() => void doRerollPenalty()} disabled={busy}>
-              Re-spin penalty
-            </button>
+            <div>
+              <br></br>
+              <button type="button" className="btn btn-soft runtime-reroll-btn" onClick={() => void doRerollPenalty()} disabled={busy}>
+                Re-spin penalty
+              </button>
+            </div>
           )}
           {!state.you.isHost && state.penaltyMode === "auto" && (
-            <button type="button" className="btn btn-soft runtime-reroll-btn" disabled>
-              Host can re-spin
-            </button>
+            <div>
+              <br></br>
+              <button type="button" className="btn btn-soft runtime-reroll-btn" disabled>
+                Host can re-spin
+              </button>
+            </div>
           )}
-          <p className="body-text">Each player draws 3 worms. Most worms wins.</p>
+          <p></p><p className="body-text">Each player draws a worm over 3 rounds.<p></p><b>Most 🪱 wins.</b></p><p></p>
           {state.you.isHost ? (
             <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-              {busy ? "Loading..." : "Start drawing"}
+              {busy ? "Loading..." : "Start"}
             </button>
           ) : (
             <p className="hint-text nb">Waiting for host to start the game...</p>
@@ -320,56 +355,71 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
         <>
           {isDrawer ? (
             <>
-              <h2>Your draw</h2>
-              <p className="body-text">Swipe up from the bucket.</p>
+              <p></p><p><b><u>Round {state.roundNumber}</u></b></p>
+              <h2>Your draw:</h2>
+              <p className="body-text">Pull a worm from the bucket...</p>
+              <div className="pot">🪣</div>
               <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-                {busy ? "Loading..." : "Swipe up"}
+                {busy ? "Loading..." : "Pull a 🪱?"}
               </button>
             </>
           ) : (
             <>
-              <h2>{currentDrawerName} is drawing...</h2>
-              <p className="hint-text nb">Waiting for their worm pull.</p>
+            <p></p><p><b><u>Round {state.roundNumber}</u></b></p>
+              <h2>{currentDrawerName} is drawing a worm from the bucket...</h2>
+               <div className="pot">🪣</div>
+              <p className="hint-text nb">Waiting for their 🪱 pull...</p>
             </>
           )}
         </>
       )}
 
       {state.phase === "draw_result" && (
-        <>
-          <h2>{currentDrawerName} pulled {state.currentDrawCount ?? 0} worms</h2>
-          <p className="body-text">Current scoreboard (lowest first):</p>
-          <div className="player-grid teams ne">
-            {sortedByLowest.map((player) => (
-              <div key={player.id} className="player-pill team">
-                {player.name}: {player.wormsTotal}
+        <><p></p>
+          <p><b><u>Round {state.roundNumber}</u></b></p>
+          <h2>{currentDrawerName} pulled: {drawCount} {wormWord}</h2>
+          <div className="wormy">{wormsEmoji || "🪱"}</div>
+          <p></p>
+          {showPostReveal && (
+            <>
+           
+              <p className="body-text">Current scores, round {state.roundNumber}/3:</p>
+              <div className="player-grid teams ww">
+                {sortedByLowest.map((player) => (
+                  <div key={player.id} className="player-pill team">
+                    {player.name}: {player.wormsTotal} 🪱
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          {isDrawer ? (
-            <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
-              {busy ? "Loading..." : "Continue"}
-            </button>
-          ) : (
-            <p className="hint-text nb">Waiting for {currentDrawerName} to click continue...</p>
+              <p></p>
+              {isDrawer ? (
+                <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou}>
+                  {busy ? "Loading..." : "Continue"}
+                </button>
+              ) : (
+                <p className="hint-text nb">Waiting for {currentDrawerName} to click continue...</p>
+              )}
+            </>
           )}
         </>
       )}
 
       {state.phase === "result" && (
         <>
-          <h2>Wormy Worm results</h2>
-          <p>Most worms wins:</p>
-          <div className="player-grid teams ne">
+          <h2>Wormy Worm loser: {lowestPlayersText}</h2>
+          <p><u>{lowestPlayersText} must do the penalty...</u></p>
+          <p></p>
+          <p>Final worm scores:</p>
+          <div className="player-grid teams ww">
             {state.players
               .slice()
               .sort((a, b) => b.wormsTotal - a.wormsTotal || a.turnOrder - b.turnOrder)
               .map((player) => (
                 <div key={player.id} className="player-pill team">
-                  {player.name}: {player.wormsTotal}
+                  {player.name}: {player.wormsTotal} 🪱
                 </div>
               ))}
-          </div>
+          </div><p></p>
           {state.you.isHost ? (
             <button type="button" className="btn btn-key" onClick={() => void doPlayAgain()} disabled={busy}>
               Play again
@@ -396,4 +446,3 @@ export default function WormyWormRuntime({ gameCode, playerToken }: WormyWormRun
     </section>
   );
 }
-

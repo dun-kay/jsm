@@ -376,6 +376,21 @@ body {
   background: #9BE03A;
 }
 
+.ww {
+  grid-template-columns: 1fr 1fr;
+  min-height: 250px;
+  background: #5891FF;
+}
+
+.pot {
+  font-size: 175px;
+  margin-top: -40px;
+}
+
+.wormy {
+  font-size:40px;
+}
+
 .player-pill {
   padding: 3px;
   text-align: center;

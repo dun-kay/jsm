@@ -41,17 +41,19 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
     )
   },
   "wormy-worm": {
-    title: "You are about to play... Wormy Worm",
+    title: "You are about to play... Wormy Worm 🪱🪱🪱",
     content: (
       <>
-        <p>This game starts by setting one shared penalty.</p>
-        <p>The host can pick <b>Auto penalties</b> or write an <b>Own penalty</b>.</p>
+        <p>Settle arguments. <b>Let the worms decide.</b></p>
         <br />
-        <p>Then each player takes 3 turns drawing worms from the bucket.</p>
-        <p>Every reveal updates the live scoreboard, lowest score at the top.</p>
+        <p>To begin, <b>set a game penalty.</b></p>
         <br />
-        <p>Worm pulls are from <b>1 to 5</b> each draw.</p>
-        <p><b>Most worms wins.</b></p>
+        <p>Each round, <b>every player draws a worm from the bucket</b>. Sometimes you get <b>more worms</b>, other times, <b>less worms</b>.</p>
+        <br />
+        <p>Most worms <b>over three rounds wins.</b></p>
+        <p>Least worms, <b>loses.</b></p>
+        <br />
+        <p><b>Loser does the game penalty.</b></p>
       </>
     )
   },
