@@ -48,7 +48,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <br />
         <p>To begin, <b>set a game penalty.</b></p>
         <br />
-        <p>Each round, <b>every player draws a worm from the bucket</b>. Sometimes you get <b>more worms</b>, other times, <b>less worms</b>.</p>
+        <p>Each round, <b>every player draws a worm from the bucket 🪣</b>. Sometimes you get <b>more worms</b>, other times, <b>less worms</b>.</p>
         <br />
         <p>Most worms <b>over three rounds wins.</b></p>
         <p>Least worms, <b>loses.</b></p>

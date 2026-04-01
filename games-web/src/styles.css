@@ -391,6 +391,52 @@ body {
   font-size:40px;
 }
 
+.wormy-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.wormy-over-pot {
+  margin-bottom: -18px;
+  z-index: 2;
+}
+
+.pot-shake {
+  animation: pot-shake 0.18s ease-in-out infinite;
+}
+
+.wormy-pop {
+  min-height: 48px;
+  animation: wormy-pop 0.19s ease-out;
+}
+
+.wormy-shake {
+  animation: wormy-shake 0.17s ease-in-out infinite;
+}
+
+@keyframes pot-shake {
+  0% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-3px) rotate(-2deg); }
+  50% { transform: translateX(3px) rotate(2deg); }
+  75% { transform: translateX(-2px) rotate(-1deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+@keyframes wormy-shake {
+  0% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-2px) rotate(-3deg); }
+  50% { transform: translateX(2px) rotate(3deg); }
+  75% { transform: translateX(-1px) rotate(-2deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+@keyframes wormy-pop {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .player-pill {
   padding: 3px;
   text-align: center;
