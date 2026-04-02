@@ -3,16 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Notes</title>
+    <title>Games With Friends | Not Found</title>
+    <meta name="robots" content="noindex,nofollow" />
     <script>
       (function () {
-        var redirectPath =
-          window.location.pathname + window.location.search + window.location.hash;
-        sessionStorage.setItem("notes_redirect_path", redirectPath);
+        var redirectPath = window.location.pathname + window.location.search + window.location.hash;
+        try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
         window.location.replace("/");
       })();
     </script>
   </head>
   <body></body>
 </html>
-
