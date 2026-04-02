@@ -8,6 +8,16 @@
     <meta name="description" content="Game Rules: Guess the prompts your team pulls from the fruit bowl. Describe, act, or use a word." />
     <link rel="canonical" href="https://jumpship.media/g/fruit-bowl/rules/" />
     <script>
+      (function () {
+        var ua = navigator.userAgent || "";
+        var isBot = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegrambot|discordbot|twitterbot|linkedinbot/i.test(ua);
+        if (!isBot) {
+          var redirectPath = window.location.pathname + window.location.search + window.location.hash;
+          try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
+          window.location.replace("/");
+        }
+      })();
+
       function openGameInApp() {
         var redirectPath = window.location.pathname + window.location.search + window.location.hash;
         try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
