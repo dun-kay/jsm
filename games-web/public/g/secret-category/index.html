@@ -8,6 +8,16 @@
     <meta name="description" content="One player is the spy. Use one-word clues to keep the secret hidden from them." />
     <link rel="canonical" href="https://jumpship.media/g/secret-category/" />
     <script>
+      (function () {
+        var ua = navigator.userAgent || "";
+        var isBot = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegrambot|discordbot|twitterbot|linkedinbot/i.test(ua);
+        if (!isBot) {
+          var redirectPath = window.location.pathname + window.location.search + window.location.hash;
+          try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
+          window.location.replace("/");
+        }
+      })();
+
       function openGameInApp() {
         var redirectPath = window.location.pathname + window.location.search + window.location.hash;
         try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
