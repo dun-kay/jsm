@@ -4,21 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Play Most Likely | Games With Friends</title>
+    <meta name="robots" content="index,follow" />
     <meta name="description" content="Two players vote first, then the group settles who is most likely." />
     <link rel="canonical" href="https://jumpship.media/g/most-likely/" />
     <script>
-      (function () {
+      function openGameInApp() {
         var redirectPath = window.location.pathname + window.location.search + window.location.hash;
         try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
-        window.location.replace("/");
-      })();
+        window.location.assign("/");
+      }
     </script>
   </head>
   <body>
     <main>
       <h1>Play Most Likely</h1>
       <p>Two players vote first, then the group settles who is most likely.</p>
-      <p><a href="/">Open Games With Friends</a></p>
+      <p><button onclick="openGameInApp()">Play This Game</button></p>
     </main>
   </body>
 </html>
