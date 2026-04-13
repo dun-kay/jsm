@@ -69,6 +69,11 @@ function parseGameCodeFromInput(value: string): string {
   }
 }
 
+function randomQuickName(prefix: string): string {
+  const suffix = Math.floor(1000 + Math.random() * 9000).toString();
+  return `${prefix}${suffix}`.slice(0, MAX_NAME_LENGTH);
+}
+
 export default function GameOnboardingFlow({
   game,
   onExit,
@@ -76,6 +81,7 @@ export default function GameOnboardingFlow({
   theme,
   onToggleTheme
 }: GameOnboardingFlowProps) {
+  const isDrawWf = game.slug === "draw-wf";
   const sessionKey = `notes_session_${game.slug}`;
 
   const readStoredSession = (): StoredSession | null => {
@@ -146,11 +152,15 @@ export default function GameOnboardingFlow({
     clearStoredSession();
 
     if (urlCode) {
-      setFlow("join");
       setGameId(urlCode);
-      setScreen("nameEntry");
+      if (isDrawWf) {
+        setScreen("home");
+      } else {
+        setFlow("join");
+        setScreen("nameEntry");
+      }
     }
-  }, [game.slug]);
+  }, [game.slug, isDrawWf]);
 
   useEffect(() => {
     if (screen !== "lobby" || !gameId || !playerToken) {
@@ -344,6 +354,10 @@ export default function GameOnboardingFlow({
   }
 
   function startCreateFlow() {
+    if (isDrawWf) {
+      void launchDrawWfHost();
+      return;
+    }
     setFlow("host");
     setScreen("nameEntry");
     setPlayerName("");
@@ -352,6 +366,10 @@ export default function GameOnboardingFlow({
   }
 
   function startJoinFlow() {
+    if (isDrawWf) {
+      void launchDrawWfJoin();
+      return;
+    }
     const idFromUrl = readGameIdFromUrl();
     setFlow("join");
     setPlayerName("");
@@ -365,6 +383,75 @@ export default function GameOnboardingFlow({
     }
 
     setScreen("joinLink");
+  }
+
+  async function launchDrawWfHost() {
+    if (busy) {
+      return;
+    }
+    setBusy(true);
+    setErrorText("");
+    try {
+      const hostName = randomQuickName("P");
+      const created = await createGame(hostName, game.slug);
+      await startGame(created.gameCode, created.hostSecret);
+      setGameId(created.gameCode);
+      setHostSecret(created.hostSecret);
+      setPlayerToken(created.hostPlayerToken);
+      persistSession({
+        flow: "host",
+        gameCode: created.gameCode,
+        gameSlug: game.slug,
+        playerToken: created.hostPlayerToken,
+        hostSecret: created.hostSecret
+      });
+      onLaunchGame({
+        gameCode: created.gameCode,
+        gameSlug: game.slug,
+        hostSecret: created.hostSecret,
+        playerToken: created.hostPlayerToken
+      });
+    } catch (error) {
+      setErrorText((error as Error).message || "Unable to start Draw WF.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function launchDrawWfJoin() {
+    if (busy) {
+      return;
+    }
+    const code = gameId || readGameIdFromUrl();
+    if (!code) {
+      setErrorText("Missing join code.");
+      return;
+    }
+    setBusy(true);
+    setErrorText("");
+    try {
+      const joined = await joinGame(code, randomQuickName("G"));
+      setGameId(code);
+      setPlayerToken(joined.playerToken);
+      setHostSecret("");
+      persistSession({
+        flow: "join",
+        gameCode: code,
+        gameSlug: game.slug,
+        playerToken: joined.playerToken,
+        hostSecret: ""
+      });
+      onLaunchGame({
+        gameCode: code,
+        gameSlug: game.slug,
+        hostSecret: "",
+        playerToken: joined.playerToken
+      });
+    } catch (error) {
+      setErrorText((error as Error).message || "Unable to join Draw WF.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   function goBack() {
@@ -637,12 +724,27 @@ export default function GameOnboardingFlow({
             {errorText && <p className="hint-text error-text">{errorText}</p>}
 
             <div className="bottom-stack">
-              <button className="btn btn-key" type="button" onClick={startCreateFlow}>
-                Create game
-              </button>
-              <button className="btn btn-soft" type="button" onClick={startJoinFlow}>
-                Join game
-              </button>
+              {isDrawWf ? (
+                <>
+                  <button className="btn btn-key" type="button" onClick={startCreateFlow} disabled={busy}>
+                    {busy ? "Loading..." : "Play"}
+                  </button>
+                  {gameId ? (
+                    <button className="btn btn-soft" type="button" onClick={startJoinFlow} disabled={busy}>
+                      {busy ? "Loading..." : "Join game"}
+                    </button>
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <button className="btn btn-key" type="button" onClick={startCreateFlow}>
+                    Create game
+                  </button>
+                  <button className="btn btn-soft" type="button" onClick={startJoinFlow}>
+                    Join game
+                  </button>
+                </>
+              )}
               <button className="btn btn-soft" type="button" onClick={onExit}>
                 Back to games
               </button>
