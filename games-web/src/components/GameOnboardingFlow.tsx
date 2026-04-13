@@ -146,6 +146,14 @@ export default function GameOnboardingFlow({
   const [drawWfPreviewLoading, setDrawWfPreviewLoading] = useState<boolean>(false);
   const [drawWfPreviewStatus, setDrawWfPreviewStatus] = useState<LobbyStatus | null>(null);
   const introRules = useMemo(() => getGameIntroRules(game.slug), [game.slug]);
+  const drawWfHostName = useMemo(
+    () => drawWfPreviewPlayers.find((player) => player.isHost)?.name?.trim() || "",
+    [drawWfPreviewPlayers]
+  );
+  const drawWfInviteCopy = useMemo(() => {
+    const host = drawWfHostName || "A friend";
+    return `${host} has invited you to their game. Try guess their drawing..`;
+  }, [drawWfHostName]);
 
   useEffect(() => {
     const stored = readStoredSession();
@@ -286,6 +294,9 @@ export default function GameOnboardingFlow({
   }, [screen, gameId, playerToken, flow, hostSecret, game.slug, onLaunchGame]);
 
   useEffect(() => {
+    if (isDrawWf) {
+      return;
+    }
     if (screen !== "lobby" || !gameId || !playerToken || gameStarted) {
       return;
     }
@@ -319,7 +330,7 @@ export default function GameOnboardingFlow({
     return () => {
       active = false;
     };
-  }, [screen, gameId, playerToken, gameStarted, primedLobbyCode]);
+  }, [screen, gameId, playerToken, gameStarted, primedLobbyCode, isDrawWf]);
 
   const joinUrl = useMemo(() => {
     if (!gameId) {
@@ -711,13 +722,13 @@ export default function GameOnboardingFlow({
 
   const title = (() => {
     if (isDrawWf && gameId && screen === "home") {
-      return `Join ${game.title} game: ${gameId}`;
+      return `Join ${game.title} game`;
     }
     if (screen === "joinLink") {
       return `Join a game of ${game.title}`;
     }
     if (screen === "nameEntry" && flow === "join") {
-      return `Join ${game.title} game: ${gameId || "------"}`;
+      return isDrawWf ? `Join ${game.title} game` : `Join ${game.title} game: ${gameId || "------"}`;
     }
     if (screen === "nameEntry") {
       return "Enter your name";
@@ -774,13 +785,17 @@ export default function GameOnboardingFlow({
                 />
               </div>
               <div className="play-meta-row">
-                <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
-                <div className="play">{game.playTime}</div>
-                <div className="play">{game.ageGuide}</div>
+                {!isDrawWf ? (
+                  <>
+                    <div className="play">{game.minPlayers} - {game.maxPlayers} players</div>
+                    <div className="play">{game.playTime}</div>
+                    <div className="play">{game.ageGuide}</div>
+                  </>
+                ) : null}
               </div>
               <h1>{title}</h1>
-              <p className="body-text">{game.description}</p>
-              <p className="body-text small">{game.shortRules}</p>
+              <p className="body-text">{isDrawWf ? drawWfInviteCopy : game.description}</p>
+              {!isDrawWf ? <p className="body-text small">{game.shortRules}</p> : null}
               {!isDrawWf ? (
                 <>
                   <button type="button" className="btn btn-key rules" onClick={() => setShowRulesModal(true)}>
@@ -797,7 +812,7 @@ export default function GameOnboardingFlow({
                 <>
                   
                   <div>
-                    <p></p><p className="body-text"><b>Current players:</b></p>
+                    <p></p><p className="body-text small"><b>Players:</b></p>
                     {drawWfPreviewStatus === "started" ? (
                       <p></p>
                     ) : null}
@@ -1052,20 +1067,22 @@ export default function GameOnboardingFlow({
         </div>
       )}
 
-      <AccessPaywallModal
-        open={showPaywall}
-        state={accessState}
-        onClose={() => setShowPaywall(false)}
-        onRefreshState={async () => {
-          const next = await getAccessState();
-          setAccessState(next);
-        }}
-        onUnlocked={async () => {
-          const next = await getAccessState();
-          setAccessState(next);
-          setShowPaywall(false);
-        }}
-      />
+      {!isDrawWf ? (
+        <AccessPaywallModal
+          open={showPaywall}
+          state={accessState}
+          onClose={() => setShowPaywall(false)}
+          onRefreshState={async () => {
+            const next = await getAccessState();
+            setAccessState(next);
+          }}
+          onUnlocked={async () => {
+            const next = await getAccessState();
+            setAccessState(next);
+            setShowPaywall(false);
+          }}
+        />
+      ) : null}
     </div>
   );
 }
