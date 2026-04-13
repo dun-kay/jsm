@@ -85,6 +85,9 @@ export default function GameOnboardingFlow({
   const sessionKey = `notes_session_${game.slug}`;
 
   const readStoredSession = (): StoredSession | null => {
+    if (isDrawWf) {
+      return null;
+    }
     try {
       const raw = window.localStorage.getItem(sessionKey);
       if (!raw) {
@@ -101,10 +104,16 @@ export default function GameOnboardingFlow({
   };
 
   const clearStoredSession = () => {
+    if (isDrawWf) {
+      return;
+    }
     window.localStorage.removeItem(sessionKey);
   };
 
   const persistSession = (data: Omit<StoredSession, "expiresAt">) => {
+    if (isDrawWf) {
+      return;
+    }
     const payload: StoredSession = {
       ...data,
       expiresAt: Date.now() + SESSION_TTL_MS
@@ -132,6 +141,8 @@ export default function GameOnboardingFlow({
   const [accessState, setAccessState] = useState<AccessState | null>(null);
   const [showPaywall, setShowPaywall] = useState<boolean>(false);
   const [primedLobbyCode, setPrimedLobbyCode] = useState<string>("");
+  const [drawWfPreviewPlayers, setDrawWfPreviewPlayers] = useState<LobbyPlayer[]>([]);
+  const [drawWfPreviewLoading, setDrawWfPreviewLoading] = useState<boolean>(false);
   const introRules = useMemo(() => getGameIntroRules(game.slug), [game.slug]);
 
   useEffect(() => {
@@ -154,6 +165,7 @@ export default function GameOnboardingFlow({
     if (urlCode) {
       setGameId(urlCode);
       if (isDrawWf) {
+        setFlow("join");
         setScreen("home");
       } else {
         setFlow("join");
@@ -161,6 +173,45 @@ export default function GameOnboardingFlow({
       }
     }
   }, [game.slug, isDrawWf]);
+
+  useEffect(() => {
+    if (!isDrawWf || !gameId || screen !== "home") {
+      return;
+    }
+
+    let active = true;
+    const loadPreview = async () => {
+      setDrawWfPreviewLoading(true);
+      try {
+        const state = await getLobbyState(gameId);
+        if (!active) {
+          return;
+        }
+        if (state.gameSlug !== "draw-wf") {
+          setErrorText("This link is not for Draw WF.");
+          setDrawWfPreviewPlayers([]);
+          return;
+        }
+        setDrawWfPreviewPlayers(state.players);
+        setErrorText("");
+      } catch (error) {
+        if (!active) {
+          return;
+        }
+        setDrawWfPreviewPlayers([]);
+        setErrorText((error as Error).message || "Could not load game preview.");
+      } finally {
+        if (active) {
+          setDrawWfPreviewLoading(false);
+        }
+      }
+    };
+
+    void loadPreview();
+    return () => {
+      active = false;
+    };
+  }, [isDrawWf, gameId, screen]);
 
   useEffect(() => {
     if (screen !== "lobby" || !gameId || !playerToken) {
@@ -327,6 +378,8 @@ export default function GameOnboardingFlow({
     setShowPaywall(false);
     setAccessState(null);
     setPrimedLobbyCode("");
+    setDrawWfPreviewPlayers([]);
+    setDrawWfPreviewLoading(false);
     window.history.replaceState({}, "", game.route);
   }
 
@@ -350,6 +403,8 @@ export default function GameOnboardingFlow({
     setShowPaywall(false);
     setAccessState(null);
     setPrimedLobbyCode("");
+    setDrawWfPreviewPlayers([]);
+    setDrawWfPreviewLoading(false);
     window.history.replaceState({}, "", game.route);
   }
 
@@ -648,6 +703,9 @@ export default function GameOnboardingFlow({
   }
 
   const title = (() => {
+    if (isDrawWf && gameId && screen === "home") {
+      return `Join ${game.title} game: ${gameId}`;
+    }
     if (screen === "joinLink") {
       return `Join a game of ${game.title}`;
     }
@@ -716,24 +774,48 @@ export default function GameOnboardingFlow({
               <h1>{title}</h1>
               <p className="body-text">{game.description}</p>
               <p className="body-text small">{game.shortRules}</p>
-              <button type="button" className="btn btn-key rules" onClick={() => setShowRulesModal(true)}>
-              Full game rules
-              </button><br></br>
+              {!isDrawWf ? (
+                <>
+                  <button type="button" className="btn btn-key rules" onClick={() => setShowRulesModal(true)}>
+                  Full game rules
+                  </button><br></br>
+                </>
+              ) : null}
             </header>
 
             {errorText && <p className="hint-text error-text">{errorText}</p>}
 
             <div className="bottom-stack">
-              {isDrawWf ? (
+              {isDrawWf && gameId ? (
+                <>
+                  <p className="body-text small">Join game: <b>{gameId}</b></p>
+                  <div className="players-panel">
+                    <p className="body-text left">Current players</p>
+                    <div className="player-grid">
+                      {drawWfPreviewLoading ? <p className="hint-text">Loading...</p> : null}
+                      {!drawWfPreviewLoading && drawWfPreviewPlayers.length === 0 ? <p className="hint-text">No players yet</p> : null}
+                      {!drawWfPreviewLoading
+                        ? drawWfPreviewPlayers.map((player) => (
+                            <div key={player.id} className="player-pill">
+                              {player.name}
+                            </div>
+                          ))
+                        : null}
+                    </div>
+                  </div>
+                  <button className="btn btn-key" type="button" onClick={startJoinFlow} disabled={busy}>
+                    {busy ? "Loading..." : "Join"}
+                  </button>
+                  <p className="hint-text nb">Start guessing</p>
+                </>
+              ) : isDrawWf ? (
                 <>
                   <button className="btn btn-key" type="button" onClick={startCreateFlow} disabled={busy}>
                     {busy ? "Loading..." : "Play"}
                   </button>
-                  {gameId ? (
-                    <button className="btn btn-soft" type="button" onClick={startJoinFlow} disabled={busy}>
-                      {busy ? "Loading..." : "Join game"}
-                    </button>
-                  ) : null}
+                  <p className="hint-text nb">
+                    To join a game use a shared link (ask someone in the game to send it to you)
+                  </p>
                 </>
               ) : (
                 <>
