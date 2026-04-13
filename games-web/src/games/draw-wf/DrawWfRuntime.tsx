@@ -172,6 +172,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const replayRef = useRef<HTMLCanvasElement | null>(null);
   const drawTimerRef = useRef<number | null>(null);
   const guessTimerRef = useRef<number | null>(null);
+  const replayTimerRef = useRef<number | null>(null);
+  const replayStartedRoundRef = useRef<string | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
   const activeStrokeRef = useRef<Stroke | null>(null);
 
@@ -275,13 +277,21 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     if (state.phase === "guess_live") {
       startGuessTimer();
       const parsedReplay = parseReplayPayload(state.replayPayload);
-      if (parsedReplay) {
+      if (parsedReplay && replayStartedRoundRef.current !== state.roundId) {
+        replayStartedRoundRef.current = state.roundId;
         playReplay(parsedReplay);
+      }
+    } else {
+      replayStartedRoundRef.current = null;
+      if (replayTimerRef.current) {
+        window.clearInterval(replayTimerRef.current);
+        replayTimerRef.current = null;
       }
     }
     return () => {
       if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
       if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
+      if (replayTimerRef.current) window.clearInterval(replayTimerRef.current);
     };
   }, [state?.phase, state?.roundId, state?.replayPayload, state?.guessDeadlineAt, isDrawer]);
 
@@ -497,6 +507,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     const canvas = replayRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
+    if (replayTimerRef.current) {
+      window.clearInterval(replayTimerRef.current);
+      replayTimerRef.current = null;
+    }
     const width = canvas.width;
     const height = canvas.height;
     ctx.clearRect(0, 0, width, height);
@@ -509,7 +523,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     const span = Math.max(1, maxT - minT);
 
     const started = Date.now();
-    const timer = window.setInterval(() => {
+    replayTimerRef.current = window.setInterval(() => {
       const elapsed = Math.min(TURN_SECONDS * 1000, Date.now() - started);
       const cutoff = minT + (elapsed / (TURN_SECONDS * 1000)) * span;
       ctx.clearRect(0, 0, width, height);
@@ -531,7 +545,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       });
 
       if (elapsed >= TURN_SECONDS * 1000) {
-        window.clearInterval(timer);
+        if (replayTimerRef.current) {
+          window.clearInterval(replayTimerRef.current);
+          replayTimerRef.current = null;
+        }
       }
     }, 70);
   }
