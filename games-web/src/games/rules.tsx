@@ -7,7 +7,7 @@ type GameIntroRules = {
 
 const RULES_BY_SLUG: Record<string, GameIntroRules> = {
   "draw-wf": {
-    title: "You are about to play... Draw WF",
+    title: "You are about to play... Draw Things",
     content: (
       <>
         <p>One player draws. Everyone else guesses.</p>

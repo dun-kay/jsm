@@ -44,7 +44,7 @@ function parseRoute(pathname: string): RouteState {
   if (path === "/stats/") {
     return { kind: "stats", mode: "default" };
   }
-  if (path === "/stats/draw-wf/") {
+  if (path === "/stats/draw-wf/" || path === "/stats/draw-things/") {
     return { kind: "stats", mode: "draw-wf" };
   }
   if (path === "/terms/") {
@@ -173,7 +173,11 @@ function getMetaForRoute(route: RouteState): MetaConfig {
       b: "Two players vote first, then the group settles who is most likely."
     },
     "draw-wf": {
-      h: "Play Draw WF | Games With Friends",
+      h: "Play Draw Things | Games With Friends",
+      b: "Draw in 7 seconds. Friends watch the replay and guess in 7 seconds."
+    },
+    "draw-things": {
+      h: "Play Draw Things | Games With Friends",
       b: "Draw in 7 seconds. Friends watch the replay and guess in 7 seconds."
     },
     "wormy-worm": {
@@ -216,7 +220,11 @@ function getMetaForRoute(route: RouteState): MetaConfig {
       b: "Game Rules: Two players vote first, then the group validates the winner."
     },
     "draw-wf": {
-      h: "Draw WF Rules | Games With Friends",
+      h: "Draw Things Rules | Games With Friends",
+      b: "Game Rules: One player draws for 7 seconds, everyone else guesses on replay."
+    },
+    "draw-things": {
+      h: "Draw Things Rules | Games With Friends",
       b: "Game Rules: One player draws for 7 seconds, everyone else guesses on replay."
     },
     "wormy-worm": {
@@ -267,8 +275,8 @@ function getMetaForRoute(route: RouteState): MetaConfig {
 
   if (route.kind === "stats") {
     return {
-      title: route.mode === "draw-wf" ? "Draw WF Stats | Games With Friends" : "Session Stats | Games With Friends",
-      description: route.mode === "draw-wf" ? "Draw WF internal stats page." : "Internal stats page.",
+      title: route.mode === "draw-wf" ? "Draw Things Stats | Games With Friends" : "Session Stats | Games With Friends",
+      description: route.mode === "draw-wf" ? "Draw Things internal stats page." : "Internal stats page.",
       robots: "noindex,nofollow"
     };
   }
@@ -385,6 +393,10 @@ export default function App() {
       navigate("/g/murder-club/");
       return null;
     }
+    if (route.slug === "draw-wf") {
+      navigate("/g/draw-things/");
+      return null;
+    }
 
     const game = getGameBySlug(route.slug);
     if (!game) {
@@ -428,6 +440,10 @@ export default function App() {
     }
     if (route.slug === "murder-clubs") {
       navigate("/g/murder-club/rules/");
+      return null;
+    }
+    if (route.slug === "draw-wf") {
+      navigate("/g/draw-things/rules/");
       return null;
     }
 
@@ -479,7 +495,12 @@ export default function App() {
 
   return (
     <>
-      <AccessStatusPill hidden={route.kind === "runtime"} />
+      <AccessStatusPill
+        hidden={
+          route.kind === "runtime" ||
+          (route.kind === "onboarding" && (route.slug === "draw-wf" || route.slug === "draw-things"))
+        }
+      />
       {page}
       <FixedFooterLinks />
       <CookieNotice />

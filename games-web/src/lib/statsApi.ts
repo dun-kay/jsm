@@ -37,7 +37,7 @@ export async function getDrawWfDailyStats(fromDate: string): Promise<DrawWfDaily
   });
 
   if (error) {
-    throw new Error(error.message || "Failed to load Draw WF stats.");
+    throw new Error(error.message || "Failed to load Draw Things stats.");
   }
 
   const rows = (data as Array<Record<string, unknown>> | null) ?? [];
