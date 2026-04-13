@@ -6,6 +6,22 @@ type GameIntroRules = {
 };
 
 const RULES_BY_SLUG: Record<string, GameIntroRules> = {
+  "draw-wf": {
+    title: "You are about to play... Draw WF",
+    content: (
+      <>
+        <p>One player draws. Everyone else guesses.</p>
+        <br />
+        <p><b>Draw time:</b> 7 seconds.</p>
+        <p><b>Guess time:</b> 7 seconds while the replay runs.</p>
+        <br />
+        <p>If everyone gets it right, the room streak goes up.</p>
+        <p>If one person misses, the streak breaks.</p>
+        <br />
+        <p>Fast rounds. Simple words. Keep the streak alive.</p>
+      </>
+    )
+  },
   "most-likely": {
     title: "You are about to play... Most Likely",
     content: (

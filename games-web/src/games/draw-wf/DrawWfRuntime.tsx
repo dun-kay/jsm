@@ -1,0 +1,576 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  continueDrawWf,
+  getDrawWfState,
+  initDrawWf,
+  playAgainDrawWf,
+  submitDrawWfDrawing,
+  submitDrawWfGuess,
+  type DrawWfState
+} from "../../lib/drawWfApi";
+import wordPool from "./wordPool.json";
+
+type DrawWfRuntimeProps = {
+  gameCode: string;
+  playerToken: string;
+};
+
+type StrokePoint = { x: number; y: number; t: number };
+type Stroke = { points: StrokePoint[] };
+type ReplayPayload = { width: number; height: number; strokes: Stroke[] };
+
+type TurnWallet = {
+  freeTurns: number;
+  paidTurns: number;
+  paidExpiresAt: number;
+  lastRegenAt: number;
+};
+
+const TURN_WALLET_KEY = "drawwf_turn_wallet_v1";
+const TURN_MARK_PREFIX = "drawwf_turn_mark_";
+const FREE_START = 10;
+const FREE_REGEN = 5;
+const REGEN_MS = 4 * 60 * 60 * 1000;
+const FREE_CAP = 20;
+const PAID_TURNS = 100;
+const PAID_MS = 7 * 24 * 60 * 60 * 1000;
+
+function flattenWords(pool: unknown): string[] {
+  if (!pool || typeof pool !== "object") return [];
+  const words = (pool as { words?: unknown[] }).words;
+  if (!Array.isArray(words)) return [];
+  return words.map((w) => String(w).trim().toUpperCase()).filter((w) => w.length >= 3 && w.length <= 6);
+}
+
+function nowMs() {
+  return Date.now();
+}
+
+function readWallet(): TurnWallet {
+  try {
+    const raw = localStorage.getItem(TURN_WALLET_KEY);
+    if (!raw) {
+      return { freeTurns: FREE_START, paidTurns: 0, paidExpiresAt: 0, lastRegenAt: nowMs() };
+    }
+    const parsed = JSON.parse(raw) as TurnWallet;
+    return {
+      freeTurns: Number(parsed.freeTurns ?? FREE_START),
+      paidTurns: Number(parsed.paidTurns ?? 0),
+      paidExpiresAt: Number(parsed.paidExpiresAt ?? 0),
+      lastRegenAt: Number(parsed.lastRegenAt ?? nowMs())
+    };
+  } catch {
+    return { freeTurns: FREE_START, paidTurns: 0, paidExpiresAt: 0, lastRegenAt: nowMs() };
+  }
+}
+
+function saveWallet(wallet: TurnWallet) {
+  localStorage.setItem(TURN_WALLET_KEY, JSON.stringify(wallet));
+}
+
+function normalizeWallet(wallet: TurnWallet): TurnWallet {
+  const now = nowMs();
+  let next = { ...wallet };
+  if (next.paidExpiresAt > 0 && now > next.paidExpiresAt) {
+    next.paidTurns = 0;
+    next.paidExpiresAt = 0;
+  }
+  const elapsed = Math.max(0, now - next.lastRegenAt);
+  const steps = Math.floor(elapsed / REGEN_MS);
+  if (steps > 0) {
+    next.freeTurns = Math.min(FREE_CAP, next.freeTurns + steps * FREE_REGEN);
+    next.lastRegenAt = next.lastRegenAt + steps * REGEN_MS;
+  }
+  return next;
+}
+
+function consumeTurn(turnKey: string): { ok: boolean; wallet: TurnWallet; reason?: string } {
+  if (sessionStorage.getItem(TURN_MARK_PREFIX + turnKey) === "1") {
+    return { ok: true, wallet: normalizeWallet(readWallet()) };
+  }
+
+  let wallet = normalizeWallet(readWallet());
+
+  if (wallet.freeTurns > 0) {
+    wallet.freeTurns -= 1;
+  } else if (wallet.paidTurns > 0 && wallet.paidExpiresAt > nowMs()) {
+    wallet.paidTurns -= 1;
+  } else {
+    saveWallet(wallet);
+    return { ok: false, wallet, reason: "No turns left." };
+  }
+
+  saveWallet(wallet);
+  sessionStorage.setItem(TURN_MARK_PREFIX + turnKey, "1");
+  return { ok: true, wallet };
+}
+
+function topUpPaidTurns(): TurnWallet {
+  const now = nowMs();
+  let wallet = normalizeWallet(readWallet());
+  if (wallet.paidExpiresAt < now) {
+    wallet.paidTurns = 0;
+  }
+  wallet.paidTurns += PAID_TURNS;
+  wallet.paidExpiresAt = Math.max(wallet.paidExpiresAt, now) + PAID_MS;
+  saveWallet(wallet);
+  return wallet;
+}
+
+function formatMs(ms: number): string {
+  if (ms <= 0) return "0s";
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${sec}s`;
+  return `${sec}s`;
+}
+
+function playerName(state: DrawWfState, id: string | null): string {
+  if (!id) return "";
+  return state.players.find((p) => p.id === id)?.name || "";
+}
+
+export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimeProps) {
+  const words = useMemo(() => flattenWords(wordPool), []);
+  const [state, setState] = useState<DrawWfState | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const [countdownText, setCountdownText] = useState<string>("");
+  const [timeLeft, setTimeLeft] = useState(7);
+  const [guess, setGuess] = useState("");
+  const [wallet, setWallet] = useState<TurnWallet>(() => normalizeWallet(readWallet()));
+  const [showPaywall, setShowPaywall] = useState(false);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const replayRef = useRef<HTMLCanvasElement | null>(null);
+  const drawTimerRef = useRef<number | null>(null);
+  const guessTimerRef = useRef<number | null>(null);
+  const strokesRef = useRef<Stroke[]>([]);
+  const activeStrokeRef = useRef<Stroke | null>(null);
+
+  const myId = state?.you.id || "";
+  const isDrawer = Boolean(state?.drawerPlayerId && state.drawerPlayerId === myId);
+  const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
+
+  useEffect(() => {
+    let active = true;
+    const boot = async () => {
+      try {
+        const next = await initDrawWf(gameCode, playerToken, words);
+        if (!active) return;
+        setState(next);
+      } catch (e) {
+        if (!active) return;
+        setErrorText((e as Error).message || "Failed to load Draw WF.");
+      }
+    };
+    void boot();
+
+    const interval = window.setInterval(async () => {
+      try {
+        const next = await getDrawWfState(gameCode, playerToken);
+        if (!active) return;
+        setState(next);
+      } catch {
+        // ignore transient poll failures
+      }
+    }, 1400);
+
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+    };
+  }, [gameCode, playerToken, words]);
+
+  useEffect(() => {
+    setWallet(normalizeWallet(readWallet()));
+  }, [state?.roundId, state?.phase]);
+
+  useEffect(() => {
+    if (!state) return;
+    if (state.phase === "draw_intro") {
+      void runCountdown(isDrawer ? `Set? Draw: ${state.revealWord || "WORD"}` : `Set? ${playerName(state, state.drawerPlayerId)} is drawing`);
+    }
+    if (state.phase === "guess_intro") {
+      void runCountdown("Set? Guess: " + state.wordMask);
+    }
+    if (state.phase === "guess_live") {
+      setGuess(state.yourGuess || "");
+    }
+  }, [state?.phase, state?.roundId]);
+
+  useEffect(() => {
+    if (!state) return;
+    if (state.phase === "draw_live" && isDrawer && state.revealWord) {
+      startDrawTimer();
+    }
+    if (state.phase === "guess_live") {
+      startGuessTimer();
+      if (state.replayPayload) {
+        playReplay(state.replayPayload as ReplayPayload);
+      }
+    }
+    return () => {
+      if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
+      if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
+    };
+  }, [state?.phase, state?.roundId, isDrawer]);
+
+  async function runCountdown(setLabel: string) {
+    setCountdownText("Ready?");
+    await new Promise((r) => setTimeout(r, 1000));
+    setCountdownText(setLabel);
+    await new Promise((r) => setTimeout(r, 1000));
+    setCountdownText("Go!");
+    await new Promise((r) => setTimeout(r, 350));
+    setCountdownText("");
+    if (state?.phase === "draw_intro" && isWaitingOnYou && isDrawer) {
+      await doContinue();
+    }
+    if (state?.phase === "guess_intro" && isWaitingOnYou) {
+      await doContinue();
+    }
+  }
+
+  function startDrawTimer() {
+    if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
+    setTimeLeft(7);
+    const started = Date.now();
+    drawTimerRef.current = window.setInterval(() => {
+      const elapsed = Math.floor((Date.now() - started) / 1000);
+      const left = Math.max(0, 7 - elapsed);
+      setTimeLeft(left);
+      if (left <= 0) {
+        if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
+        void finalizeDrawing();
+      }
+    }, 120);
+  }
+
+  function startGuessTimer() {
+    if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
+    setTimeLeft(7);
+    const started = Date.now();
+    guessTimerRef.current = window.setInterval(() => {
+      const elapsed = Math.floor((Date.now() - started) / 1000);
+      const left = Math.max(0, 7 - elapsed);
+      setTimeLeft(left);
+      if (left <= 0) {
+        if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
+      }
+    }, 120);
+  }
+
+  function beginStroke(ev: React.PointerEvent<HTMLCanvasElement>) {
+    if (!state || state.phase !== "draw_live" || !isDrawer) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ev.clientX - rect.left;
+    const y = ev.clientY - rect.top;
+    const stroke: Stroke = { points: [{ x, y, t: Date.now() }] };
+    activeStrokeRef.current = stroke;
+    strokesRef.current.push(stroke);
+  }
+
+  function moveStroke(ev: React.PointerEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    const stroke = activeStrokeRef.current;
+    if (!canvas || !ctx || !stroke) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ev.clientX - rect.left;
+    const y = ev.clientY - rect.top;
+    const prev = stroke.points[stroke.points.length - 1];
+    stroke.points.push({ x, y, t: Date.now() });
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#111";
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(prev.x, prev.y);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
+
+  function endStroke() {
+    activeStrokeRef.current = null;
+  }
+
+  async function finalizeDrawing() {
+    if (!state || state.phase !== "draw_live" || !isDrawer) return;
+    const turnKey = `${gameCode}:${state.roundId}:draw:${myId}`;
+    const consumed = consumeTurn(turnKey);
+    setWallet(consumed.wallet);
+    if (!consumed.ok) {
+      setShowPaywall(true);
+      return;
+    }
+
+    const canvas = canvasRef.current;
+    const payload: ReplayPayload = {
+      width: canvas?.width || 320,
+      height: canvas?.height || 320,
+      strokes: strokesRef.current
+    };
+
+    setBusy(true);
+    setErrorText("");
+    try {
+      const next = await submitDrawWfDrawing(gameCode, playerToken, payload);
+      setState(next);
+      strokesRef.current = [];
+      activeStrokeRef.current = null;
+      const ctx = canvas?.getContext("2d");
+      if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    } catch (e) {
+      setErrorText((e as Error).message || "Failed to submit drawing.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function doContinue() {
+    if (!state || busy || !isWaitingOnYou) return;
+    setBusy(true);
+    setErrorText("");
+    try {
+      const next = await continueDrawWf(gameCode, playerToken);
+      setState(next);
+    } catch (e) {
+      setErrorText((e as Error).message || "Unable to continue.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function submitGuess() {
+    if (!state || busy || state.phase !== "guess_live") return;
+
+    const turnKey = `${gameCode}:${state.roundId}:guess:${myId}`;
+    const consumed = consumeTurn(turnKey);
+    setWallet(consumed.wallet);
+    if (!consumed.ok) {
+      setShowPaywall(true);
+      return;
+    }
+
+    setBusy(true);
+    setErrorText("");
+    try {
+      const next = await submitDrawWfGuess(gameCode, playerToken, guess.toUpperCase());
+      setState(next);
+    } catch (e) {
+      setErrorText((e as Error).message || "Unable to submit guess.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function pickLetter(letter: string) {
+    if (!state || state.phase !== "guess_live") return;
+    if (guess.length >= state.wordLength) return;
+    setGuess((old) => (old + letter).slice(0, state.wordLength));
+  }
+
+  function clearGuess() {
+    setGuess("");
+  }
+
+  function playReplay(payload: ReplayPayload) {
+    const canvas = replayRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.clearRect(0, 0, width, height);
+
+    const allPoints = payload.strokes.flatMap((s) => s.points);
+    if (allPoints.length < 2) return;
+
+    const minT = allPoints[0].t;
+    const maxT = allPoints[allPoints.length - 1].t;
+    const span = Math.max(1, maxT - minT);
+
+    const started = Date.now();
+    const timer = window.setInterval(() => {
+      const elapsed = Math.min(7000, Date.now() - started);
+      const cutoff = minT + (elapsed / 7000) * span;
+      ctx.clearRect(0, 0, width, height);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#111";
+      ctx.lineCap = "round";
+
+      payload.strokes.forEach((stroke) => {
+        if (stroke.points.length < 2) return;
+        for (let i = 1; i < stroke.points.length; i += 1) {
+          const p1 = stroke.points[i - 1];
+          const p2 = stroke.points[i];
+          if (p2.t > cutoff) break;
+          ctx.beginPath();
+          ctx.moveTo((p1.x / payload.width) * width, (p1.y / payload.height) * height);
+          ctx.lineTo((p2.x / payload.width) * width, (p2.y / payload.height) * height);
+          ctx.stroke();
+        }
+      });
+
+      if (elapsed >= 7000) {
+        window.clearInterval(timer);
+      }
+    }, 70);
+  }
+
+  async function doPlayAgain() {
+    if (!state || busy || !state.you.isHost) return;
+    setBusy(true);
+    try {
+      const next = await playAgainDrawWf(gameCode, playerToken, words);
+      setState(next);
+    } catch (e) {
+      setErrorText((e as Error).message || "Unable to restart.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!state) {
+    return (
+      <section className="runtime-card runtime-flow">
+        <h2>Draw WF</h2>
+        <p>Loading game...</p>
+      </section>
+    );
+  }
+
+  const drawer = playerName(state, state.drawerPlayerId);
+  const paidLeft = wallet.paidExpiresAt > nowMs() ? formatMs(wallet.paidExpiresAt - nowMs()) : "0s";
+
+  return (
+    <section className="runtime-card runtime-flow drawwf-runtime">
+      <h2>Draw WF</h2>
+      <p className="body-text small">Room streak: <b>{state.streak}</b> | Longest: <b>{state.longestStreak}</b></p>
+      <p className="hint-text">Turns left: {wallet.freeTurns} free, {wallet.paidTurns} paid</p>
+
+      {countdownText ? <h2>{countdownText}</h2> : null}
+
+      {state.phase === "rules" && (
+        <>
+          <p>Draw fast. Guess faster. Keep the streak alive.</p>
+          <p>1 draw = 1 turn. 1 guess = 1 turn.</p>
+          <button className="btn btn-key" type="button" onClick={() => void doContinue()} disabled={!isWaitingOnYou || busy}>
+            {isWaitingOnYou ? "Begin" : "Waiting for others"}
+          </button>
+        </>
+      )}
+
+      {state.phase === "draw_intro" && (
+        <>
+          <p>Current drawer: <b>{drawer}</b></p>
+          {!isDrawer ? <p className="hint-text">Waiting for {drawer} to draw...</p> : null}
+        </>
+      )}
+
+      {state.phase === "draw_live" && (
+        <>
+          <p><b>Draw: {state.revealWord || state.wordMask}</b></p>
+          <p className="hint-text">Timer: {timeLeft}s</p>
+          <canvas
+            ref={canvasRef}
+            width={330}
+            height={330}
+            className="drawwf-canvas"
+            onPointerDown={beginStroke}
+            onPointerMove={moveStroke}
+            onPointerUp={endStroke}
+            onPointerLeave={endStroke}
+          />
+          {!isDrawer ? <p className="hint-text">{drawer} is drawing now...</p> : null}
+          {isDrawer && <p className="hint-text">Draw until timer ends.</p>}
+        </>
+      )}
+
+      {state.phase === "guess_intro" && (
+        <>
+          <p>Guesser prep...</p>
+          <p>Word: <b>{state.wordMask}</b></p>
+          {!isWaitingOnYou ? <p className="hint-text">Waiting for active guessers...</p> : null}
+        </>
+      )}
+
+      {state.phase === "guess_live" && (
+        <>
+          <p><b>Guess: {state.wordMask}</b></p>
+          <p className="hint-text">Timer: {timeLeft}s</p>
+          <canvas ref={replayRef} width={330} height={330} className="drawwf-canvas" />
+          <div className="drawwf-guess-word">{guess || "_".repeat(state.wordLength)}</div>
+          <div className="drawwf-letter-bank">
+            {state.letterBank.map((letter, idx) => (
+              <button key={`${letter}-${idx}`} type="button" className="player-pill" onClick={() => pickLetter(letter)} disabled={busy || guess.length >= state.wordLength}>
+                {letter}
+              </button>
+            ))}
+          </div>
+          <div className="bottom-row">
+            <button type="button" className="btn btn-soft" onClick={clearGuess}>Clear</button>
+            <button type="button" className="btn btn-key" onClick={() => void submitGuess()} disabled={busy || guess.length !== state.wordLength}>Submit guess</button>
+          </div>
+          {state.yourGuess ? <p className="hint-text">You guessed: {state.yourGuess}</p> : null}
+        </>
+      )}
+
+      {state.phase === "round_result" && (
+        <>
+          <h2>{state.allCorrect ? "All correct!" : "Streak broken"}</h2>
+          <p>Word: <b>{state.revealWord || "-"}</b></p>
+          <p>Next drawer: <b>{drawer}</b></p>
+          {isWaitingOnYou ? (
+            <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy}>
+              {busy ? "Loading..." : "Continue"}
+            </button>
+          ) : (
+            <p className="hint-text">Waiting for {drawer} to continue...</p>
+          )}
+          <div className="bottom-stack">
+            <button type="button" className="btn btn-soft" onClick={() => setShowPaywall(true)}>Add more friends</button>
+            {state.you.isHost ? (
+              <button type="button" className="btn btn-soft" onClick={() => void doPlayAgain()}>
+                Start a new game
+              </button>
+            ) : null}
+          </div>
+        </>
+      )}
+
+      {showPaywall && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <h2>Need more turns?</h2>
+            <p className="body-text small">10 free turns included. +5 free turns every 4h.</p>
+            <p className="body-text small">Get 100 extra turns for $6 (valid 7 days).</p>
+            <p className="hint-text">Paid time left: {paidLeft}</p>
+            <div className="bottom-row">
+              <button
+                type="button"
+                className="btn btn-key"
+                onClick={() => {
+                  const next = topUpPaidTurns();
+                  setWallet(next);
+                  setShowPaywall(false);
+                }}
+              >
+                Add 100 turns
+              </button>
+              <button type="button" className="btn btn-soft" onClick={() => setShowPaywall(false)}>
+                Maybe later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(errorText || state.lastError) && <p className="hint-text error-text">{errorText || state.lastError}</p>}
+    </section>
+  );
+}

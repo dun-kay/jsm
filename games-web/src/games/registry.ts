@@ -1,6 +1,22 @@
 import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
+      {
+    id: "J",
+    slug: "draw-wf",
+    title: "Draw WF",
+    description: "Draw fast, guess faster, and keep your room streak alive.",
+    shortRules: "One player draws for 7 seconds. Everyone else watches the replay and guesses the word in 7 seconds.",
+    heroImage: "/assets/draw-wf-logo.png",
+    theme: "default",
+    minPlayers: 1,
+    maxPlayers: 24,
+    playTime: "5 - 15 mins",
+    ageGuide: "Ages 4+",
+    joinPrefix: "J",
+    route: "/g/draw-wf/",
+    enabled: true
+  },
         {
     id: "A",
     slug: "secret-category",
