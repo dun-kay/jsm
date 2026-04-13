@@ -1,5 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import { getDailySessionStats, getDrawWfStats, type DailySessionStat, type DrawWfStats } from "../lib/statsApi";
+import { useEffect, useState } from "react";
+import {
+  getDailySessionStats,
+  getDrawWfDailyStats,
+  type DailySessionStat,
+  type DrawWfDailyStat
+} from "../lib/statsApi";
 
 type ThemeMode = "light" | "dark";
 
@@ -26,7 +31,7 @@ function formatDate(value: string): string {
 
 export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsPageProps) {
   const [rows, setRows] = useState<DailySessionStat[]>([]);
-  const [drawWf, setDrawWf] = useState<DrawWfStats | null>(null);
+  const [drawWfRows, setDrawWfRows] = useState<DrawWfDailyStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,9 +43,9 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
         setLoading(true);
         setError(null);
         if (mode === "draw-wf") {
-          const data = await getDrawWfStats(FROM_DATE);
+          const data = await getDrawWfDailyStats(FROM_DATE);
           if (!canceled) {
-            setDrawWf(data);
+            setDrawWfRows(data);
             setRows([]);
           }
           return;
@@ -49,7 +54,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
         const data = await getDailySessionStats(FROM_DATE);
         if (!canceled) {
           setRows(data);
-          setDrawWf(null);
+          setDrawWfRows([]);
         }
       } catch (err) {
         if (!canceled) {
@@ -69,24 +74,6 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
     };
   }, [mode]);
 
-  const drawWfRows = useMemo(
-    () =>
-      drawWf
-        ? [
-            ["Sessions", String(drawWf.sessions)],
-            ["Avg players / session", drawWf.avgPlayersPerSession.toFixed(2)],
-            ["Total rounds", String(drawWf.totalRounds)],
-            ["Total guesses", String(drawWf.totalGuesses)],
-            ["Guess success rate", `${(drawWf.guessSuccessRate * 100).toFixed(1)}%`],
-            ["Avg room streak", drawWf.avgRoomStreak.toFixed(2)],
-            ["Longest room streak", String(drawWf.longestRoomStreak)],
-            ["Rounds / session", drawWf.roundsPerSession.toFixed(2)],
-            ["Paid purchases", String(drawWf.paidRoundPurchases)]
-          ]
-        : [],
-    [drawWf]
-  );
-
   return (
     <div className="site-shell">
       <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
@@ -96,15 +83,15 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
       <section className="screen screen-basic">
         <header className="screen-header">
           <h1>Session Stats</h1>
-          <p className="body-text small">{mode === "draw-wf" ? "Draw WF metrics." : "Daily totals (LA time)."}</p>
+          <p className="body-text small">Daily totals (LA time).</p>
         </header>
 
         <div className="stats-list" aria-live="polite">
-          {mode === "default" ? (
+          {!loading && !error ? (
             <div className="stats-row stats-head">
               <span>Date (LA)</span>
               <span>Sessions</span>
-              <span>Av us./se.</span>
+              <span>{mode === "draw-wf" ? "Av drawings/se." : "Av us./se."}</span>
             </div>
           ) : null}
 
@@ -122,10 +109,11 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
             : null}
 
           {mode === "draw-wf" && !loading && !error
-            ? drawWfRows.map(([label, value]) => (
-                <div className="stats-row stats-row-dwf" key={label}>
-                  <span>{label}</span>
-                  <span>{value}</span>
+            ? drawWfRows.map((row) => (
+                <div className="stats-row" key={row.statDate}>
+                  <span>{formatDate(row.statDate)}</span>
+                  <span>{row.sessions}</span>
+                  <span>{row.avgDrawingsPerSession.toFixed(2)}</span>
                 </div>
               ))
             : null}
