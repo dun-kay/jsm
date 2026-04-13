@@ -18,6 +18,8 @@ type DrawWfRuntimeProps = {
 type StrokePoint = { x: number; y: number; t: number };
 type Stroke = { points: StrokePoint[] };
 type ReplayPayload = { width: number; height: number; strokes: Stroke[] };
+const CANVAS_WIDTH = 320;
+const CANVAS_HEIGHT = 350;
 
 type TurnWallet = {
   freeTurns: number;
@@ -338,6 +340,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   useEffect(() => {
     if (!state) return;
     const showFinalReplay =
+      (state.phase === "guess_live" && isDrawer) ||
       (state.phase === "guess_live" && !isDrawer && !isActiveGuesser && Boolean(state.yourGuess)) ||
       state.phase === "round_result";
     if (!showFinalReplay) return;
@@ -730,12 +733,12 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         <>
           {isDrawer ? (
             <>
-              <p><b>Draw: {state.revealWord || state.wordMask}</b></p>
-              <p className="hint-text">Draw:<h2></h2>{timeLeft}s</p>
+              <h2>Draw:<h2></h2>{state.revealWord || state.wordMask}</h2>
+              <p className="hint-text">{timeLeft}s</p>
               <canvas
                 ref={canvasRef}
-                width={330}
-                height={330}
+                width={CANVAS_WIDTH}
+                height={CANVAS_HEIGHT}
                 className="drawwf-canvas"
                 onPointerDown={beginStroke}
                 onPointerMove={moveStroke}
@@ -779,10 +782,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         <>
           {isDrawer ? (
             <>
-              <h2>Waiting for friends to guess...</h2><p></p>
-              
+              <h2>{state.roundNumber <= 1 ? "Send your drawing to a friend, see if they can guess it..." : "Waiting for friends to guess..."}</h2><p></p>
+              <div><canvas ref={finalReplayRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} className="drawwf-canvas lob" /></div><p></p>
               <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Send to friends"}
+                {shareBusy ? "Sharing..." : "Send to more friends"}
               </button>
             </>
           ) : !isGuessUiReady ? (
@@ -795,7 +798,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
           ) : isActiveGuesser ? (
             <>
             <h2>Guess:<h2></h2>{timeLeft}s</h2>
-              <canvas ref={replayRef} width={330} height={330} className="drawwf-canvas" />
+              <canvas ref={replayRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} className="drawwf-canvas" />
               <p></p>
               {state.wordLength > 0 ? (
                 <>
@@ -820,7 +823,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
             <>
               {state.yourGuess ? (
                 <>
-                  <div><br></br><canvas ref={finalReplayRef} width={330} height={330} className="drawwf-canvas lob" /></div>
+                  <div><br></br><canvas ref={finalReplayRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} className="drawwf-canvas lob" /></div>
                   <p className="hint-text">You guessed {state.yourGuess}, witing for all players...</p>
                 </>
               ) : (
@@ -833,10 +836,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
       {state.phase === "round_result" && (
         <>
-        <p className="body-text small"><u>Group streak: +{state.streak}</u></p><p></p>
+        <p className="body-text smallish"><u>Group streak: +{state.streak}</u></p><p></p>
           <p><b>{state.allCorrect ? "Everyone got it right!" : "Oops, someone missed the mark..."}</b></p>
           <p>PREVIOUS DRAWING: {state.revealWord || "-"}</p>
-          <div><canvas ref={finalReplayRef} width={330} height={330} className="drawwf-canvas lob" /></div>
+          <div><canvas ref={finalReplayRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} className="drawwf-canvas lob" /></div>
           
           {isSinglePlayer ? (
             <>
@@ -869,8 +872,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         <div className="modal-backdrop" role="dialog" aria-modal="true">
           <div className="modal-card">
             <h2>Need more turns?</h2>
-            <p className="body-text small">10 free turns included. +5 free turns every 4h.</p>
-            <p className="body-text small">Get 100 extra turns for $6 (valid 7 days).</p>
+            <p className="body-text smallish">10 free turns included. +5 free turns every 4h.</p>
+            <p className="body-text smallish">Get 100 extra turns for $6 (valid 7 days).</p>
             <p className="hint-text">Paid time left: {paidLeft}</p>
             <div className="bottom-row">
               <button

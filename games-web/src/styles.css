@@ -152,6 +152,10 @@ body {
   font-size: 17px;
 }
 
+.smallish {
+  font-size: 18px;
+}
+
 .left {
   text-transform: none;
   letter-spacing: 0.02em;
@@ -638,7 +642,7 @@ body {
   display: grid;
   gap: 0px;
   text-align: center;
-  margin-top: 40px;
+  margin-top: 15px;
   margin-left: 5px;
   margin-right: 5px;
   margin-bottom: 0px;
@@ -940,8 +944,9 @@ body {
 
 .drawwf-canvas {
   width: 100%;
-  max-width: 330px;
-  aspect-ratio: 1 / 1;
+  max-width: 400px;
+  max-height: 450px;
+  aspect-ratio: 32 / 35;
   margin: 0 auto;
   border: 2px solid var(--line);
   border-radius: 18px;
@@ -950,7 +955,7 @@ body {
 }
 
 .lob {
-  max-width: 200px;
+  max-width: 225px;
 }
 
 .drawwf-guess-word {
