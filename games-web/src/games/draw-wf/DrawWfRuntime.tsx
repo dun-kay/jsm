@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   continueDrawWf,
   getDrawWfState,
+  initDrawWf,
   setDrawWfDisplayName,
   submitDrawWfDrawing,
   submitDrawWfGuess,
@@ -213,7 +214,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     let active = true;
     const boot = async () => {
       try {
-        const next = await getDrawWfState(gameCode, playerToken);
+        const next = await initDrawWf(gameCode, playerToken, words);
         if (!active) return;
         setState(next);
         setErrorText("");
@@ -700,17 +701,23 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
       {state.phase === "guess_live" && (
         <>
-          <canvas ref={replayRef} width={330} height={330} className="drawwf-canvas" />
-          {isDrawer ? (
+          {(isDrawer || !isWaitingOnYou) ? (
             <>
-              <p><b>Players are guessing your drawing.</b></p>
-              <p className="hint-text">Timer: {timeLeft}s</p>
-              <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Send to a friend"}
-              </button>
+              {isDrawer ? (
+                <>
+                  <p><b>Players are guessing your drawing.</b></p>
+                  <p className="hint-text">Waiting for active guessers to finish.</p>
+                  <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
+                    {shareBusy ? "Sharing..." : "Send to a friend"}
+                  </button>
+                </>
+              ) : (
+                <p className="hint-text">Waiting for your turn...</p>
+              )}
             </>
           ) : (
             <>
+              <canvas ref={replayRef} width={330} height={330} className="drawwf-canvas" />
               <p><b>Guess: {state.wordMask}</b></p>
               <p className="hint-text">Timer: {timeLeft}s</p>
               {state.wordLength > 0 ? (
