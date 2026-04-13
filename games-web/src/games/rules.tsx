@@ -12,13 +12,14 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
       <>
         <p>One player draws. Everyone else guesses.</p>
         <br />
-        <p><b>Draw time:</b> 7 seconds.</p>
-        <p><b>Guess time:</b> 7 seconds while the replay runs.</p>
+        <p><b>Draw time:</b> 10 seconds.</p>
+        <p><b>Guess time:</b> 10 seconds.</p>
+        <br />
+        <p>Guessers can start replay when they press <b>Guess</b>.</p>
+        <p>Wrong attempts do not submit. Correct guesses auto-submit.</p>
         <br />
         <p>If everyone gets it right, the room streak goes up.</p>
-        <p>If one person misses, the streak breaks.</p>
-        <br />
-        <p>Fast rounds. Simple words. Keep the streak alive.</p>
+        <p>If one person misses or times out, the streak breaks.</p>
       </>
     )
   },

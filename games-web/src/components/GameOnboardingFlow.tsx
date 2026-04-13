@@ -792,14 +792,14 @@ export default function GameOnboardingFlow({
 
             {errorText && <p className="hint-text error-text">{errorText}</p>}
 
-            <div className="bottom-stack">
+            <div>
               {isDrawWf && gameId ? (
                 <>
-                  <p className="body-text small">Join game: <b>{gameId}</b></p>
-                  <div className="players-panel">
-                    <p className="body-text left">Current players</p>
+                  
+                  <div>
+                    <p></p><p className="body-text"><b>Current players:</b></p>
                     {drawWfPreviewStatus === "started" ? (
-                      <p className="hint-text">Game in progress, jump in now.</p>
+                      <p></p>
                     ) : null}
                     <div className="player-grid">
                       {drawWfPreviewLoading ? <p className="hint-text">Loading...</p> : null}
@@ -812,20 +812,20 @@ export default function GameOnboardingFlow({
                           ))
                         : null}
                     </div>
-                  </div>
+                  </div><p></p>
                   <button className="btn btn-key" type="button" onClick={startJoinFlow} disabled={busy}>
                     {busy ? "Loading..." : "Join"}
-                  </button>
-                  <p className="hint-text nb">Start guessing</p>
+                  </button><p></p>
+                  
                 </>
               ) : isDrawWf ? (
                 <>
-                  <button className="btn btn-key" type="button" onClick={startCreateFlow} disabled={busy}>
+                  <br></br><button className="btn btn-key" type="button" onClick={startCreateFlow} disabled={busy}>
                     {busy ? "Loading..." : "Play"}
                   </button>
-                  <p className="hint-text nb">
-                    To join a game use a shared link (ask someone in the game to send it to you)
-                  </p>
+                  <p></p><p className="hint-text nb">
+                    Join via share link (ask a player to send it to you)
+                  </p><p></p>
                 </>
               ) : (
                 <>
