@@ -3,7 +3,7 @@ import {
   continueDrawWf,
   getDrawWfState,
   initDrawWf,
-  playAgainDrawWf,
+  setDrawWfDisplayName,
   submitDrawWfDrawing,
   submitDrawWfGuess,
   type DrawWfState
@@ -34,6 +34,9 @@ const REGEN_MS = 4 * 60 * 60 * 1000;
 const FREE_CAP = 20;
 const PAID_TURNS = 100;
 const PAID_MS = 7 * 24 * 60 * 60 * 1000;
+const TURN_SECONDS = 10;
+const NAME_SET_PREFIX = "dwf_name_set_";
+const MAX_NAME_LENGTH = 10;
 
 function flattenWords(pool: unknown): string[] {
   if (!pool || typeof pool !== "object") return [];
@@ -128,6 +131,10 @@ function formatMs(ms: number): string {
   return `${sec}s`;
 }
 
+function sanitizeName(value: string): string {
+  return value.replace(/\s+/g, "").slice(0, MAX_NAME_LENGTH);
+}
+
 function playerName(state: DrawWfState, id: string | null): string {
   if (!id) return "";
   return state.players.find((p) => p.id === id)?.name || "";
@@ -143,6 +150,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const [guess, setGuess] = useState("");
   const [wallet, setWallet] = useState<TurnWallet>(() => normalizeWallet(readWallet()));
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [nameDraft, setNameDraft] = useState("");
+  const [savingName, setSavingName] = useState(false);
+  const [shareBusy, setShareBusy] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const replayRef = useRef<HTMLCanvasElement | null>(null);
@@ -154,6 +165,35 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const myId = state?.you.id || "";
   const isDrawer = Boolean(state?.drawerPlayerId && state.drawerPlayerId === myId);
   const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
+  const isSinglePlayer = (state?.players.length ?? 0) <= 1;
+  const joinUrl = `${window.location.origin}/g/draw-wf/?g=${gameCode}`;
+
+  function nameSetKey() {
+    return `${NAME_SET_PREFIX}${gameCode}_${playerToken}`;
+  }
+
+  function isNameConfirmed() {
+    try {
+      return window.localStorage.getItem(nameSetKey()) === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function markNameConfirmed() {
+    try {
+      window.localStorage.setItem(nameSetKey(), "1");
+    } catch {
+      // ignore storage failures
+    }
+  }
+
+  function maybePromptNameCapture() {
+    if (!isNameConfirmed()) {
+      setNameDraft(state?.you.name ?? "");
+      setShowNameModal(true);
+    }
+  }
 
   useEffect(() => {
     let active = true;
@@ -220,12 +260,16 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   }, [state?.phase, state?.roundId, isDrawer]);
 
   async function runCountdown(setLabel: string) {
-    setCountdownText("Ready?");
-    await new Promise((r) => setTimeout(r, 1000));
-    setCountdownText(setLabel);
-    await new Promise((r) => setTimeout(r, 1000));
-    setCountdownText("Go!");
-    await new Promise((r) => setTimeout(r, 350));
+    const isNewGameLeadIn = state?.phase === "draw_intro" && (state?.roundNumber ?? 0) <= 1;
+    const steps = isNewGameLeadIn
+      ? ["Ready to draw?", "Get set...", "Ready?", setLabel, "Go!"]
+      : ["Ready?", setLabel, "Go!"];
+
+    for (const step of steps) {
+      setCountdownText(step);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+
     setCountdownText("");
     if (state?.phase === "draw_intro" && isWaitingOnYou && isDrawer) {
       await doContinue();
@@ -237,11 +281,11 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   function startDrawTimer() {
     if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
-    setTimeLeft(7);
+    setTimeLeft(TURN_SECONDS);
     const started = Date.now();
     drawTimerRef.current = window.setInterval(() => {
       const elapsed = Math.floor((Date.now() - started) / 1000);
-      const left = Math.max(0, 7 - elapsed);
+      const left = Math.max(0, TURN_SECONDS - elapsed);
       setTimeLeft(left);
       if (left <= 0) {
         if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
@@ -252,11 +296,11 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   function startGuessTimer() {
     if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
-    setTimeLeft(7);
+    setTimeLeft(TURN_SECONDS);
     const started = Date.now();
     guessTimerRef.current = window.setInterval(() => {
       const elapsed = Math.floor((Date.now() - started) / 1000);
-      const left = Math.max(0, 7 - elapsed);
+      const left = Math.max(0, TURN_SECONDS - elapsed);
       setTimeLeft(left);
       if (left <= 0) {
         if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
@@ -321,6 +365,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     try {
       const next = await submitDrawWfDrawing(gameCode, playerToken, payload);
       setState(next);
+      maybePromptNameCapture();
       strokesRef.current = [];
       activeStrokeRef.current = null;
       const ctx = canvas?.getContext("2d");
@@ -334,6 +379,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
+    if ((state.phase === "rules" || state.phase === "round_result") && isSinglePlayer) return;
     setBusy(true);
     setErrorText("");
     try {
@@ -362,6 +408,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     try {
       const next = await submitDrawWfGuess(gameCode, playerToken, guess.toUpperCase());
       setState(next);
+      maybePromptNameCapture();
     } catch (e) {
       setErrorText((e as Error).message || "Unable to submit guess.");
     } finally {
@@ -377,6 +424,25 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   function clearGuess() {
     setGuess("");
+  }
+
+  async function sendToFriend() {
+    if (shareBusy) return;
+    setShareBusy(true);
+    const shareData = {
+      title: "Draw WF",
+      text: "Join my Draw WF game",
+      url: joinUrl
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(joinUrl);
+      }
+    } finally {
+      setShareBusy(false);
+    }
   }
 
   function playReplay(payload: ReplayPayload) {
@@ -396,8 +462,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
     const started = Date.now();
     const timer = window.setInterval(() => {
-      const elapsed = Math.min(7000, Date.now() - started);
-      const cutoff = minT + (elapsed / 7000) * span;
+      const elapsed = Math.min(TURN_SECONDS * 1000, Date.now() - started);
+      const cutoff = minT + (elapsed / (TURN_SECONDS * 1000)) * span;
       ctx.clearRect(0, 0, width, height);
       ctx.lineWidth = 4;
       ctx.strokeStyle = "#111";
@@ -416,22 +482,29 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         }
       });
 
-      if (elapsed >= 7000) {
+      if (elapsed >= TURN_SECONDS * 1000) {
         window.clearInterval(timer);
       }
     }, 70);
   }
 
-  async function doPlayAgain() {
-    if (!state || busy || !state.you.isHost) return;
-    setBusy(true);
+  async function saveDisplayName() {
+    const cleaned = sanitizeName(nameDraft);
+    if (!cleaned || savingName) {
+      return;
+    }
+    setSavingName(true);
+    setErrorText("");
     try {
-      const next = await playAgainDrawWf(gameCode, playerToken, words);
+      await setDrawWfDisplayName(gameCode, playerToken, cleaned);
+      markNameConfirmed();
+      setShowNameModal(false);
+      const next = await getDrawWfState(gameCode, playerToken);
       setState(next);
     } catch (e) {
-      setErrorText((e as Error).message || "Unable to restart.");
+      setErrorText((e as Error).message || "Unable to save name.");
     } finally {
-      setBusy(false);
+      setSavingName(false);
     }
   }
 
@@ -459,9 +532,28 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         <>
           <p>Draw fast. Guess faster. Keep the streak alive.</p>
           <p>1 draw = 1 turn. 1 guess = 1 turn.</p>
-          <button className="btn btn-key" type="button" onClick={() => void doContinue()} disabled={!isWaitingOnYou || busy}>
-            {isWaitingOnYou ? "Begin" : "Waiting for others"}
-          </button>
+          <div className="players-panel">
+            <p className="body-text left">Players in room</p>
+            <div className="player-grid">
+              {state.players.map((player) => (
+                <div key={player.id} className="player-pill">
+                  {player.name}
+                </div>
+              ))}
+            </div>
+          </div>
+          {isSinglePlayer ? (
+            <>
+              <p className="hint-text">Add at least one friend to start guessing.</p>
+              <button className="btn btn-key" type="button" onClick={() => void sendToFriend()} disabled={shareBusy}>
+                {shareBusy ? "Sharing..." : "Send to a friend"}
+              </button>
+            </>
+          ) : (
+            <button className="btn btn-key" type="button" onClick={() => void doContinue()} disabled={!isWaitingOnYou || busy}>
+              {isWaitingOnYou ? "Begin" : "Waiting for others"}
+            </button>
+          )}
         </>
       )}
 
@@ -525,7 +617,14 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
           <h2>{state.allCorrect ? "All correct!" : "Streak broken"}</h2>
           <p>Word: <b>{state.revealWord || "-"}</b></p>
           <p>Next drawer: <b>{drawer}</b></p>
-          {isWaitingOnYou ? (
+          {isSinglePlayer ? (
+            <>
+              <p className="hint-text">You need at least 2 players to keep going.</p>
+              <button type="button" className="btn btn-key" onClick={() => void sendToFriend()} disabled={shareBusy}>
+                {shareBusy ? "Sharing..." : "Send to a friend"}
+              </button>
+            </>
+          ) : isWaitingOnYou ? (
             <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy}>
               {busy ? "Loading..." : "Continue"}
             </button>
@@ -534,11 +633,9 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
           )}
           <div className="bottom-stack">
             <button type="button" className="btn btn-soft" onClick={() => setShowPaywall(true)}>Add more friends</button>
-            {state.you.isHost ? (
-              <button type="button" className="btn btn-soft" onClick={() => void doPlayAgain()}>
-                Start a new game
-              </button>
-            ) : null}
+            <button type="button" className="btn btn-soft" onClick={() => window.open("/g/draw-wf/", "_blank", "noopener,noreferrer")}>
+              Start a new game
+            </button>
           </div>
         </>
       )}
@@ -564,6 +661,31 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               </button>
               <button type="button" className="btn btn-soft" onClick={() => setShowPaywall(false)}>
                 Maybe later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showNameModal && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <h2>Enter your name</h2>
+            <p className="body-text small">Enter your name to save your spot.</p>
+            <input
+              className="input-pill"
+              type="text"
+              value={nameDraft}
+              onChange={(event) => setNameDraft(sanitizeName(event.target.value))}
+              maxLength={MAX_NAME_LENGTH}
+              placeholder="Name"
+            />
+            <div className="bottom-row">
+              <button type="button" className="btn btn-key" onClick={() => void saveDisplayName()} disabled={savingName || sanitizeName(nameDraft).length === 0}>
+                {savingName ? "Saving..." : "Save"}
+              </button>
+              <button type="button" className="btn btn-soft" onClick={() => setShowNameModal(false)} disabled={savingName}>
+                Later
               </button>
             </div>
           </div>

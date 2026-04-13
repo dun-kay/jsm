@@ -131,3 +131,15 @@ export function playAgainDrawWf(gameCode: string, playerToken: string, wordPool:
     p_word_pool: wordPool
   });
 }
+
+export async function setDrawWfDisplayName(gameCode: string, playerToken: string, name: string): Promise<void> {
+  const supabase = getSupabaseClient();
+  const { error } = await supabase.rpc("dwf_set_display_name", {
+    p_game_code: gameCode,
+    p_player_token: playerToken,
+    p_display_name: name
+  });
+  if (error) {
+    throw new Error(error.message || "Failed to update display name.");
+  }
+}
