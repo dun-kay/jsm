@@ -158,30 +158,49 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const [state, setState] = useState<DrawWfState | null>(null);
   const [busy, setBusy] = useState(false);
   const [errorText, setErrorText] = useState("");
-  const [countdownText, setCountdownText] = useState<string>("");
   const [timeLeft, setTimeLeft] = useState(7);
   const [guess, setGuess] = useState("");
   const [wallet, setWallet] = useState<TurnWallet>(() => normalizeWallet(readWallet()));
   const [showPaywall, setShowPaywall] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
+  const [showNameHint, setShowNameHint] = useState(false);
   const [savingName, setSavingName] = useState(false);
   const [shareBusy, setShareBusy] = useState(false);
   const [pendingDrawingPayload, setPendingDrawingPayload] = useState<ReplayPayload | null>(null);
+  const [guessStartedRoundId, setGuessStartedRoundId] = useState<string | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const replayRef = useRef<HTMLCanvasElement | null>(null);
+  const finalReplayRef = useRef<HTMLCanvasElement | null>(null);
   const drawTimerRef = useRef<number | null>(null);
   const guessTimerRef = useRef<number | null>(null);
   const replayTimerRef = useRef<number | null>(null);
   const replayStartedRoundRef = useRef<string | null>(null);
   const guessTimerRoundRef = useRef<string | null>(null);
+  const guessAttemptRef = useRef<string | null>(null);
+  const timeoutSubmittedRoundRef = useRef<string | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
   const activeStrokeRef = useRef<Stroke | null>(null);
 
   const myId = state?.you.id || "";
   const isDrawer = Boolean(state?.drawerPlayerId && state.drawerPlayerId === myId);
   const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
+  const isGuesserForRound = Boolean(state?.guesserIds.includes(myId));
+  const hasStartedGuessForRound = Boolean(state && guessStartedRoundId === state.roundId);
+  const isGuessUiReady = Boolean(
+    state &&
+    state.phase === "guess_live" &&
+    !isDrawer &&
+    (hasStartedGuessForRound || Boolean(state.yourGuess))
+  );
+  const isActiveGuesser = Boolean(
+    state &&
+    state.phase === "guess_live" &&
+    !isDrawer &&
+    (state.activeGuesserIds.includes(myId) || (isGuesserForRound && isWaitingOnYou)) &&
+    hasStartedGuessForRound
+  );
   const isSinglePlayer = (state?.roomPlayerCount ?? state?.players.length ?? 0) <= 1;
   const joinUrl = `${window.location.origin}/g/draw-wf/?g=${gameCode}`;
 
@@ -206,7 +225,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   }
 
   function openNameModal() {
-    setNameDraft(state?.you.name ?? "");
+    setNameDraft("");
+    setShowNameHint(false);
     setShowNameModal(true);
   }
 
@@ -260,11 +280,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     if (state.phase === "rules" && isWaitingOnYou && !busy) {
       void doContinue();
     }
-    if (state.phase === "draw_intro") {
-      void runCountdown(isDrawer ? `Set? Draw: ${state.revealWord || "WORD"}` : `Set? ${playerName(state, state.drawerPlayerId)} is drawing`);
-    }
-    if (state.phase === "guess_intro") {
-      void runCountdown("Set? Guess: " + state.wordMask);
+    if (state.phase !== "guess_live") {
+      setGuessStartedRoundId(null);
+      guessAttemptRef.current = null;
+      timeoutSubmittedRoundRef.current = null;
     }
     if (state.phase === "guess_live") {
       setGuess(state.yourGuess || "");
@@ -275,51 +294,76 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     if (!state) return;
     if (state.phase === "draw_live" && isDrawer && state.revealWord) {
       startDrawTimer();
+      return;
     }
-    if (state.phase === "guess_live") {
+    if (drawTimerRef.current) {
+      window.clearInterval(drawTimerRef.current);
+      drawTimerRef.current = null;
+    }
+  }, [state?.phase, state?.roundId, isDrawer, state?.revealWord]);
+
+  useEffect(() => {
+    if (!state) return;
+    if (state.phase === "guess_live" && isActiveGuesser) {
       if (guessTimerRoundRef.current !== state.roundId) {
         guessTimerRoundRef.current = state.roundId;
         startGuessTimer(state.guessDeadlineAt);
       }
+      return;
+    }
+    guessTimerRoundRef.current = null;
+    if (guessTimerRef.current) {
+      window.clearInterval(guessTimerRef.current);
+      guessTimerRef.current = null;
+    }
+  }, [state?.phase, state?.roundId, state?.guessDeadlineAt, isActiveGuesser]);
+
+  useEffect(() => {
+    if (!state) return;
+    if (state.phase === "guess_live" && isActiveGuesser) {
       const parsedReplay = parseReplayPayload(state.replayPayload);
       if (parsedReplay && replayStartedRoundRef.current !== state.roundId) {
         replayStartedRoundRef.current = state.roundId;
         playReplay(parsedReplay);
       }
-    } else {
-      guessTimerRoundRef.current = null;
-      replayStartedRoundRef.current = null;
-      if (replayTimerRef.current) {
-        window.clearInterval(replayTimerRef.current);
-        replayTimerRef.current = null;
-      }
+      return;
     }
+    replayStartedRoundRef.current = null;
+    if (replayTimerRef.current) {
+      window.clearInterval(replayTimerRef.current);
+      replayTimerRef.current = null;
+    }
+  }, [state?.phase, state?.roundId, isActiveGuesser, state?.replayPayload]);
+
+  useEffect(() => {
+    if (!state) return;
+    const showFinalReplay =
+      (state.phase === "guess_live" && !isDrawer && !isActiveGuesser && Boolean(state.yourGuess)) ||
+      state.phase === "round_result";
+    if (!showFinalReplay) return;
+    const payload = parseReplayPayload(state.replayPayload);
+    if (!payload) return;
+    drawReplayStatic(finalReplayRef.current, payload);
+  }, [state?.phase, state?.roundId, state?.replayPayload, state?.yourGuess, isDrawer, isActiveGuesser]);
+
+  useEffect(() => {
+    if (!state || busy) return;
+    if (state.phase !== "guess_live" || !isActiveGuesser) return;
+    if (state.yourGuess) return;
+    if (guess.length !== state.wordLength || state.wordLength <= 0) return;
+    const attemptKey = `${state.roundId}:${guess.toUpperCase()}`;
+    if (guessAttemptRef.current === attemptKey) return;
+    guessAttemptRef.current = attemptKey;
+    void submitGuess(guess.toUpperCase());
+  }, [guess, state?.phase, state?.roundId, state?.wordLength, state?.yourGuess, isActiveGuesser, busy]);
+
+  useEffect(() => {
     return () => {
       if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
       if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
       if (replayTimerRef.current) window.clearInterval(replayTimerRef.current);
     };
-  }, [state?.phase, state?.roundId, state?.replayPayload, state?.guessDeadlineAt, isDrawer]);
-
-  async function runCountdown(setLabel: string) {
-    const isNewGameLeadIn = state?.phase === "draw_intro" && (state?.roundNumber ?? 0) <= 1;
-    const steps = isNewGameLeadIn
-      ? ["Ready to draw?", "Get set...", "Ready?", setLabel, "Go!"]
-      : ["Ready?", setLabel, "Go!"];
-
-    for (const step of steps) {
-      setCountdownText(step);
-      await new Promise((r) => setTimeout(r, 1000));
-    }
-
-    setCountdownText("");
-    if (state?.phase === "draw_intro" && isWaitingOnYou && isDrawer) {
-      await doContinue();
-    }
-    if (state?.phase === "guess_intro" && !isDrawer) {
-      await doContinue();
-    }
-  }
+  }, []);
 
   function startDrawTimer() {
     if (drawTimerRef.current) window.clearInterval(drawTimerRef.current);
@@ -354,6 +398,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       setTimeLeft(left);
       if (left <= 0) {
         if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
+        if (!useDeadline && state && isActiveGuesser && !state.yourGuess && timeoutSubmittedRoundRef.current !== state.roundId) {
+          timeoutSubmittedRoundRef.current = state.roundId;
+          void submitGuess("", { timeout: true });
+        }
       }
     }, 120);
   }
@@ -440,18 +488,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   async function doContinue() {
     if (!state || busy) return;
-    const canForceGuessIntroContinue = state.phase === "guess_intro" && !isDrawer;
-    if (!isWaitingOnYou && !canForceGuessIntroContinue) return;
+    if (!isWaitingOnYou) return;
     if (state.phase === "round_result" && isSinglePlayer) return;
-    if (
-      state.phase === "draw_intro" &&
-      isDrawer &&
-      state.roundNumber > 1 &&
-      !isNameConfirmed()
-    ) {
-      openNameModal();
-      return;
-    }
     setBusy(true);
     setErrorText("");
     try {
@@ -464,25 +502,33 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     }
   }
 
-  async function submitGuess() {
+  async function submitGuess(nextGuess?: string, opts?: { timeout?: boolean }) {
     if (!state || busy || state.phase !== "guess_live") return;
-    if (isDrawer) return;
-
-    const turnKey = `${gameCode}:${state.roundId}:guess:${myId}`;
-    const consumed = consumeTurn(turnKey);
-    setWallet(consumed.wallet);
-    if (!consumed.ok) {
-      setShowPaywall(true);
-      return;
-    }
+    if (isDrawer || !isActiveGuesser) return;
+    const finalGuess = (nextGuess ?? guess).toUpperCase();
 
     setBusy(true);
     setErrorText("");
     try {
-      const next = await submitDrawWfGuess(gameCode, playerToken, guess.toUpperCase());
+      const next = await submitDrawWfGuess(gameCode, playerToken, finalGuess);
       setState(next);
+
+      if (next.yourGuess) {
+        const turnKey = `${gameCode}:${next.roundId}:guess:${myId}`;
+        const consumed = consumeTurn(turnKey);
+        setWallet(consumed.wallet);
+        if (!consumed.ok) {
+          setShowPaywall(true);
+        }
+      }
+
+      if (next.yourGuess && !isNameConfirmed()) {
+        openNameModal();
+      }
     } catch (e) {
-      setErrorText((e as Error).message || "Unable to submit guess.");
+      if (opts?.timeout) {
+        setErrorText((e as Error).message || "Unable to submit timeout.");
+      }
     } finally {
       setBusy(false);
     }
@@ -496,6 +542,11 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   function clearGuess() {
     setGuess("");
+  }
+
+  function startGuessing() {
+    if (!state || state.phase !== "guess_live" || isDrawer) return;
+    setGuessStartedRoundId(state.roundId);
   }
 
   async function sendToFriend() {
@@ -571,6 +622,32 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     }, 70);
   }
 
+  function drawReplayStatic(canvas: HTMLCanvasElement | null, payload: ReplayPayload) {
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const width = canvas.width;
+    const height = canvas.height;
+    ctx.clearRect(0, 0, width, height);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#111";
+    ctx.lineCap = "round";
+    payload.strokes.forEach((stroke) => {
+      if (!Array.isArray(stroke.points) || stroke.points.length < 2) return;
+      for (let i = 1; i < stroke.points.length; i += 1) {
+        const p1 = stroke.points[i - 1];
+        const p2 = stroke.points[i];
+        const x1 = (p1.x / payload.width) * width;
+        const y1 = (p1.y / payload.height) * height;
+        const x2 = (p2.x / payload.width) * width;
+        const y2 = (p2.y / payload.height) * height;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      }
+    });
+  }
+
   async function saveDisplayName() {
     const cleaned = sanitizeName(nameDraft);
     if (!cleaned || savingName) {
@@ -590,19 +667,19 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       }
       const next = await getDrawWfState(gameCode, playerToken);
       setState(next);
-      if (
-        next.phase === "draw_intro" &&
-        next.drawerPlayerId === next.you.id &&
-        next.roundNumber > 1 &&
-        next.waitingOn.includes(next.you.id)
-      ) {
-        await doContinue();
-      }
     } catch (e) {
       setErrorText((e as Error).message || "Unable to save name.");
     } finally {
       setSavingName(false);
     }
+  }
+
+  function handleNameDraftInput(rawValue: string) {
+    const hasSpace = /\s/.test(rawValue);
+    const compact = rawValue.replace(/\s+/g, "");
+    const overLimit = compact.length > MAX_NAME_LENGTH;
+    setShowNameHint(hasSpace || overLimit);
+    setNameDraft(compact.slice(0, MAX_NAME_LENGTH));
   }
 
   if (!state) {
@@ -623,23 +700,18 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     );
   }
 
-  const drawer = playerName(state, state.drawerPlayerId);
+  const roundResultDrawerId = state.phase === "round_result" ? (state.waitingOn[0] ?? null) : state.drawerPlayerId;
+  const drawer = playerName(state, roundResultDrawerId);
   const paidLeft = wallet.paidExpiresAt > nowMs() ? formatMs(wallet.paidExpiresAt - nowMs()) : "0s";
 
   return (
     <section className="runtime-card runtime-flow drawwf-runtime">
-      <h2>Draw WF</h2>
-      <p className="body-text small">Room streak: <b>{state.streak}</b> | Longest: <b>{state.longestStreak}</b></p>
-      <p className="hint-text">Turns left: {wallet.freeTurns} free, {wallet.paidTurns} paid</p>
-
-      {countdownText ? <h2>{countdownText}</h2> : null}
+        <p></p>
 
       {state.phase === "rules" && (
         <>
-          <p>Draw fast. Guess faster. Keep the streak alive.</p>
-          <p>1 draw = 1 turn. 1 guess = 1 turn.</p>
           <div className="players-panel">
-            <p className="body-text left">Players in room</p>
+            <p className="body-text left">Players:</p>
             <div className="player-grid">
               {state.players.map((player) => (
                 <div key={player.id} className="player-pill">
@@ -654,29 +726,30 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         </>
       )}
 
-      {state.phase === "draw_intro" && (
-        <>
-          <p>Current drawer: <b>{drawer}</b></p>
-          {!isDrawer ? <p className="hint-text">Waiting for {drawer} to draw...</p> : null}
-        </>
-      )}
-
       {state.phase === "draw_live" && (
         <>
-          <p><b>Draw: {state.revealWord || state.wordMask}</b></p>
-          <p className="hint-text">Timer: {timeLeft}s</p>
-          <canvas
-            ref={canvasRef}
-            width={330}
-            height={330}
-            className="drawwf-canvas"
-            onPointerDown={beginStroke}
-            onPointerMove={moveStroke}
-            onPointerUp={endStroke}
-            onPointerLeave={endStroke}
-          />
-          {!isDrawer ? <p className="hint-text">{drawer} is drawing now...</p> : null}
-          {isDrawer && <p className="hint-text">Draw until timer ends.</p>}
+          {isDrawer ? (
+            <>
+              <p><b>Draw: {state.revealWord || state.wordMask}</b></p>
+              <p className="hint-text">Draw:<h2></h2>{timeLeft}s</p>
+              <canvas
+                ref={canvasRef}
+                width={330}
+                height={330}
+                className="drawwf-canvas"
+                onPointerDown={beginStroke}
+                onPointerMove={moveStroke}
+                onPointerUp={endStroke}
+                onPointerLeave={endStroke}
+              />
+              
+            </>
+          ) : (
+            <>
+              <p><b>{drawer} is drawing now.</b></p>
+              <p className="hint-text">Waiting for drawing replay to start.</p>
+            </>
+          )}
         </>
       )}
 
@@ -685,15 +758,18 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
           {isDrawer ? (
             <>
               <p><b>Your drawing is live.</b></p>
-              <p className="hint-text">Share the link so more players can join and guess.</p>
-              <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Send to a friend"}
+              <p className="hint-text">Waiting for all active guessers to press Guess.</p>
+              <button type="button" className="btn btn-key" onClick={() => void sendToFriend()} disabled={shareBusy}>
+                {shareBusy ? "Sharing..." : "Send to friends"}
               </button>
             </>
           ) : (
             <>
               <p><b>Guess: {state.wordMask}</b></p>
-              {!isWaitingOnYou ? <p className="hint-text">Waiting for active guessers...</p> : null}
+              <button className="btn btn-key " type="button" onClick={() => void doContinue()} disabled={busy}>
+                {busy ? "Loading..." : "Guess"}
+              </button>
+              {!isWaitingOnYou ? <p className="hint-text">Press Guess to join this round.</p> : null}
             </>
           )}
         </>
@@ -701,38 +777,38 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
       {state.phase === "guess_live" && (
         <>
-          {(isDrawer || !isWaitingOnYou) ? (
+          {isDrawer ? (
             <>
-              {isDrawer ? (
-                <>
-                  <p><b>Players are guessing your drawing.</b></p>
-                  <p className="hint-text">Waiting for active guessers to finish.</p>
-                  <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                    {shareBusy ? "Sharing..." : "Send to a friend"}
-                  </button>
-                </>
-              ) : (
-                <p className="hint-text">Waiting for your turn...</p>
-              )}
+              <h2>Waiting for friends to guess...</h2><p></p>
+              
+              <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
+                {shareBusy ? "Sharing..." : "Send to friends"}
+              </button>
             </>
-          ) : (
+          ) : !isGuessUiReady ? (
             <>
+              <h2>Ready to guess<h2></h2>{state.drawerName}'s drawing?</h2><p></p>
+              <button className="btn btn-key" type="button" onClick={startGuessing} disabled={busy}>
+                Guess
+              </button>
+            </>
+          ) : isActiveGuesser ? (
+            <>
+            <h2>Guess:<h2></h2>{timeLeft}s</h2>
               <canvas ref={replayRef} width={330} height={330} className="drawwf-canvas" />
-              <p><b>Guess: {state.wordMask}</b></p>
-              <p className="hint-text">Timer: {timeLeft}s</p>
+              <p></p>
               {state.wordLength > 0 ? (
                 <>
                   <div className="drawwf-guess-word">{guess || "_".repeat(state.wordLength)}</div>
                   <div className="drawwf-letter-bank">
                     {state.letterBank.map((letter, idx) => (
-                      <button key={`${letter}-${idx}`} type="button" className="player-pill" onClick={() => pickLetter(letter)} disabled={busy || guess.length >= state.wordLength}>
+                      <button key={`${letter}-${idx}`} type="button" className="wf" onClick={() => pickLetter(letter)} disabled={busy || guess.length >= state.wordLength}>
                         {letter}
                       </button>
                     ))}
                   </div>
-                  <div className="bottom-row">
+                  <div>
                     <button type="button" className="btn btn-soft" onClick={clearGuess}>Clear</button>
-                    <button type="button" className="btn btn-key" onClick={() => void submitGuess()} disabled={busy || guess.length !== state.wordLength}>Submit guess</button>
                   </div>
                 </>
               ) : (
@@ -740,35 +816,52 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               )}
               {state.yourGuess ? <p className="hint-text">You guessed: {state.yourGuess}</p> : null}
             </>
+          ) : (
+            <>
+              {state.yourGuess ? (
+                <>
+                  <div><br></br><canvas ref={finalReplayRef} width={330} height={330} className="drawwf-canvas lob" /></div>
+                  <p className="hint-text">You guessed {state.yourGuess}, witing for all players...</p>
+                </>
+              ) : (
+                <p className="hint-text">Waiting for your turn...</p>
+              )}
+            </>
           )}
         </>
       )}
 
       {state.phase === "round_result" && (
         <>
-          <h2>{state.allCorrect ? "All correct!" : "Streak broken"}</h2>
-          <p>Word: <b>{state.revealWord || "-"}</b></p>
-          <p>Next drawer: <b>{drawer}</b></p>
+        <p className="body-text small"><u>Group streak: +{state.streak}</u></p><p></p>
+          <p><b>{state.allCorrect ? "Everyone got it right!" : "Oops, someone missed the mark..."}</b></p>
+          <p>PREVIOUS DRAWING: {state.revealWord || "-"}</p>
+          <div><canvas ref={finalReplayRef} width={330} height={330} className="drawwf-canvas lob" /></div>
+          
           {isSinglePlayer ? (
             <>
-              <p className="hint-text">You need at least 2 players to keep going.</p>
-              <button type="button" className="btn btn-key" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Send to a friend"}
-              </button>
+
             </>
           ) : isWaitingOnYou ? (
             <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy}>
-              {busy ? "Loading..." : "Continue"}
+              {busy ? "Loading..." : "Your turn to draw..."}
             </button>
           ) : (
-            <p className="hint-text">Waiting for {drawer} to continue...</p>
+            <p className="hint-text">Waiting for next drawing...</p>
           )}
-          <div className="bottom-stack">
-            <button type="button" className="btn btn-soft" onClick={() => setShowPaywall(true)}>Add more friends</button>
-            <button type="button" className="btn btn-soft" onClick={() => window.open("/g/draw-wf/", "_blank", "noopener,noreferrer")}>
+          <p></p><button type="button" className="btn btn-key" onClick={() => void sendToFriend()} disabled={shareBusy}>
+                {shareBusy ? "Sharing..." : "Send to more friends"}
+              </button>
+          <div className="player-grid">
+              {state.players.map((player) => (
+                <div key={player.id} className="player-pill">
+                  {player.name}
+                </div>
+              ))}
+            </div>
+            <p></p><button type="button" className="btn btn-soft" onClick={() => window.open("/g/draw-wf/", "_blank", "noopener,noreferrer")}>
               Start a new game
             </button>
-          </div>
         </>
       )}
 
@@ -802,23 +895,28 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       {showNameModal && (
         <div className="modal-backdrop" role="dialog" aria-modal="true">
           <div className="modal-card">
-            <h2>Enter your name</h2>
-            <p className="body-text small">Enter your name to save your spot.</p>
+            <h2>Enter your name<h2></h2>to join the game...</h2>
+            <p></p>
             <input
               className="input-pill"
               type="text"
               value={nameDraft}
-              onChange={(event) => setNameDraft(sanitizeName(event.target.value))}
+              onChange={(event) => handleNameDraftInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === " ") {
+                  setShowNameHint(true);
+                }
+                if (nameDraft.length >= MAX_NAME_LENGTH && event.key.length === 1 && event.key !== " ") {
+                  setShowNameHint(true);
+                }
+              }}
               maxLength={MAX_NAME_LENGTH}
-              placeholder="Name"
-            />
-            <p className="hint-text">10 characters max, no spaces</p>
-            <div className="bottom-row">
+              placeholder="Your name..."
+            /><p></p>
+            {showNameHint ? <p className="hint-text">10 characters max, no spaces</p> : null}
+            <div>
               <button type="button" className="btn btn-key" onClick={() => void saveDisplayName()} disabled={savingName || sanitizeName(nameDraft).length === 0}>
                 {savingName ? "Saving..." : "Save"}
-              </button>
-              <button type="button" className="btn btn-soft" onClick={() => setShowNameModal(false)} disabled={savingName}>
-                Later
               </button>
             </div>
           </div>

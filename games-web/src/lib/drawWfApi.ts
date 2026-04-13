@@ -17,6 +17,8 @@ export type DrawWfState = {
   roundId: string;
   drawerPlayerId: string | null;
   drawerName: string | null;
+  guesserIds: string[];
+  activeGuesserIds: string[];
   wordLength: number;
   wordMask: string;
   drawDeadlineAt: string | null;
@@ -48,6 +50,8 @@ function mapState(data: unknown): DrawWfState {
     roundId: String(raw.roundId ?? ""),
     drawerPlayerId: (raw.drawerPlayerId as string | null) ?? null,
     drawerName: (raw.drawerName as string | null) ?? null,
+    guesserIds: Array.isArray(raw.guesserIds) ? raw.guesserIds.map(String) : [],
+    activeGuesserIds: Array.isArray(raw.activeGuesserIds) ? raw.activeGuesserIds.map(String) : [],
     wordLength: Number(raw.wordLength ?? 0),
     wordMask: String(raw.wordMask ?? ""),
     drawDeadlineAt: (raw.drawDeadlineAt as string | null) ?? null,
