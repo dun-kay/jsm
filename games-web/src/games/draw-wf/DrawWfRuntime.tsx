@@ -204,7 +204,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     hasStartedGuessForRound
   );
   const isSinglePlayer = (state?.roomPlayerCount ?? state?.players.length ?? 0) <= 1;
-  const joinUrl = `${window.location.origin}/g/draw-wf/?g=${gameCode}`;
+  const joinUrl = `${window.location.origin}/g/draw-things/?g=${gameCode}`;
 
   function nameSetKey() {
     return `${NAME_SET_PREFIX}${gameCode}_${playerToken}`;
@@ -242,7 +242,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         setErrorText("");
       } catch (e) {
         if (!active) return;
-        setErrorText((e as Error).message || "Failed to load Draw WF.");
+        setErrorText((e as Error).message || "Failed to load Draw Things.");
       }
     };
     void boot();
@@ -269,7 +269,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       const next = await getDrawWfState(gameCode, playerToken);
       setState(next);
     } catch (e) {
-      setErrorText((e as Error).message || "Failed to load Draw WF.");
+      setErrorText((e as Error).message || "Failed to load Draw Things.");
     }
   }
 
@@ -556,8 +556,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     if (shareBusy) return;
     setShareBusy(true);
     const shareData = {
-      title: "Draw WF",
-      text: "Join my Draw WF game",
+      title: "Draw Things",
+      text: "Join my Draw Things game",
       url: joinUrl
     };
     try {
@@ -688,7 +688,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   if (!state) {
     return (
       <section className="runtime-card runtime-flow">
-        <h2>Draw WF</h2>
+        <h2>Draw Things</h2>
         {errorText ? (
           <>
             <p className="hint-text error-text">{errorText}</p>
@@ -862,7 +862,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
                 </div>
               ))}
             </div>
-            <p></p><button type="button" className="btn btn-soft" onClick={() => window.open("/g/draw-wf/", "_blank", "noopener,noreferrer")}>
+            <p></p><button type="button" className="btn btn-soft" onClick={() => window.open("/g/draw-things/", "_blank", "noopener,noreferrer")}>
               Start a new game
             </button>
         </>

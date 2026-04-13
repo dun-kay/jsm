@@ -198,7 +198,7 @@ export default function GameOnboardingFlow({
           return;
         }
         if (state.gameSlug !== "draw-wf") {
-          setErrorText("This link is not for Draw WF.");
+          setErrorText("This link is not for Draw Things.");
           setDrawWfPreviewPlayers([]);
           setDrawWfPreviewStatus(null);
           return;
@@ -485,7 +485,7 @@ export default function GameOnboardingFlow({
         playerToken: created.hostPlayerToken
       });
     } catch (error) {
-      setErrorText((error as Error).message || "Unable to start Draw WF.");
+      setErrorText((error as Error).message || "Unable to start Draw Things.");
     } finally {
       setBusy(false);
     }
@@ -521,7 +521,7 @@ export default function GameOnboardingFlow({
         playerToken: joined.playerToken
       });
     } catch (error) {
-      setErrorText((error as Error).message || "Unable to join Draw WF.");
+      setErrorText((error as Error).message || "Unable to join Draw Things.");
     } finally {
       setBusy(false);
     }

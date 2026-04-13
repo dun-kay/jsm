@@ -87,7 +87,7 @@ async function rpcState(fn: string, params: Record<string, unknown>): Promise<Dr
   const supabase = getSupabaseClient();
   const { data, error } = await supabase.rpc(fn, params);
   if (error || !data) {
-    throw new Error(error?.message || "Draw WF request failed.");
+    throw new Error(error?.message || "Draw Things request failed.");
   }
   return mapState(data);
 }

@@ -1,10 +1,10 @@
 import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
-      {
+  {
     id: "J",
     slug: "draw-wf",
-    title: "Draw WF",
+    title: "Draw Things",
     description: "Draw & guess. You have 10 secs.",
     shortRules: "",
     heroImage: "/assets/draw-wf-logo.png",
@@ -14,7 +14,7 @@ export const GAMES: GameConfig[] = [
     playTime: "5 - 15 mins",
     ageGuide: "Ages 4+",
     joinPrefix: "J",
-    route: "/g/draw-wf/",
+    route: "/g/draw-things/",
     enabled: true
   },
         {
@@ -165,6 +165,13 @@ export const GAMES: GameConfig[] = [
 ];
 
 export function getGameBySlug(slug: string): GameConfig | undefined {
-  const normalized = slug === "celebrities" ? "popular-people" : slug === "fruit-bowel" ? "fruit-bowl" : slug;
+  const normalized =
+    slug === "celebrities"
+      ? "popular-people"
+      : slug === "fruit-bowel"
+        ? "fruit-bowl"
+        : slug === "draw-things"
+          ? "draw-wf"
+          : slug;
   return GAMES.find((game) => game.slug === normalized && game.enabled);
 }
