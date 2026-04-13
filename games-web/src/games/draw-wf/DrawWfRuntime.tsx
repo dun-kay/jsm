@@ -154,6 +154,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const [nameDraft, setNameDraft] = useState("");
   const [savingName, setSavingName] = useState(false);
   const [shareBusy, setShareBusy] = useState(false);
+  const [pendingDrawingPayload, setPendingDrawingPayload] = useState<ReplayPayload | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const replayRef = useRef<HTMLCanvasElement | null>(null);
@@ -188,11 +189,9 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     }
   }
 
-  function maybePromptNameCapture() {
-    if (!isNameConfirmed()) {
-      setNameDraft(state?.you.name ?? "");
-      setShowNameModal(true);
-    }
+  function openNameModal() {
+    setNameDraft(state?.you.name ?? "");
+    setShowNameModal(true);
   }
 
   useEffect(() => {
@@ -360,12 +359,23 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       strokes: strokesRef.current
     };
 
+    if (!isNameConfirmed()) {
+      setPendingDrawingPayload(payload);
+      openNameModal();
+      return;
+    }
+
+    await submitDrawingPayload(payload);
+  }
+
+  async function submitDrawingPayload(payload: ReplayPayload) {
+    const canvas = canvasRef.current;
+
     setBusy(true);
     setErrorText("");
     try {
       const next = await submitDrawWfDrawing(gameCode, playerToken, payload);
       setState(next);
-      maybePromptNameCapture();
       strokesRef.current = [];
       activeStrokeRef.current = null;
       const ctx = canvas?.getContext("2d");
@@ -380,6 +390,15 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
     if ((state.phase === "rules" || state.phase === "round_result") && isSinglePlayer) return;
+    if (
+      state.phase === "draw_intro" &&
+      isDrawer &&
+      state.roundNumber > 1 &&
+      !isNameConfirmed()
+    ) {
+      openNameModal();
+      return;
+    }
     setBusy(true);
     setErrorText("");
     try {
@@ -408,7 +427,6 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     try {
       const next = await submitDrawWfGuess(gameCode, playerToken, guess.toUpperCase());
       setState(next);
-      maybePromptNameCapture();
     } catch (e) {
       setErrorText((e as Error).message || "Unable to submit guess.");
     } finally {
@@ -499,8 +517,22 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       await setDrawWfDisplayName(gameCode, playerToken, cleaned);
       markNameConfirmed();
       setShowNameModal(false);
+      if (pendingDrawingPayload) {
+        const payload = pendingDrawingPayload;
+        setPendingDrawingPayload(null);
+        await submitDrawingPayload(payload);
+        return;
+      }
       const next = await getDrawWfState(gameCode, playerToken);
       setState(next);
+      if (
+        next.phase === "draw_intro" &&
+        next.drawerPlayerId === next.you.id &&
+        next.roundNumber > 1 &&
+        next.waitingOn.includes(next.you.id)
+      ) {
+        await doContinue();
+      }
     } catch (e) {
       setErrorText((e as Error).message || "Unable to save name.");
     } finally {
@@ -680,6 +712,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               maxLength={MAX_NAME_LENGTH}
               placeholder="Name"
             />
+            <p className="hint-text">10 characters max, no spaces</p>
             <div className="bottom-row">
               <button type="button" className="btn btn-key" onClick={() => void saveDisplayName()} disabled={savingName || sanitizeName(nameDraft).length === 0}>
                 {savingName ? "Saving..." : "Save"}
