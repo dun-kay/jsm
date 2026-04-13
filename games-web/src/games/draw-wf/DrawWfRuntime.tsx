@@ -230,6 +230,9 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   useEffect(() => {
     if (!state) return;
+    if (state.phase === "rules" && isWaitingOnYou && !busy) {
+      void doContinue();
+    }
     if (state.phase === "draw_intro") {
       void runCountdown(isDrawer ? `Set? Draw: ${state.revealWord || "WORD"}` : `Set? ${playerName(state, state.drawerPlayerId)} is drawing`);
     }
@@ -239,7 +242,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     if (state.phase === "guess_live") {
       setGuess(state.yourGuess || "");
     }
-  }, [state?.phase, state?.roundId]);
+  }, [state?.phase, state?.roundId, isWaitingOnYou, busy]);
 
   useEffect(() => {
     if (!state) return;
@@ -389,7 +392,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   async function doContinue() {
     if (!state || busy || !isWaitingOnYou) return;
-    if ((state.phase === "rules" || state.phase === "round_result") && isSinglePlayer) return;
+    if (state.phase === "round_result" && isSinglePlayer) return;
     if (
       state.phase === "draw_intro" &&
       isDrawer &&
@@ -574,18 +577,9 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               ))}
             </div>
           </div>
-          {isSinglePlayer ? (
-            <>
-              <p className="hint-text">Add at least one friend to start guessing.</p>
-              <button className="btn btn-key" type="button" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Send to a friend"}
-              </button>
-            </>
-          ) : (
-            <button className="btn btn-key" type="button" onClick={() => void doContinue()} disabled={!isWaitingOnYou || busy}>
-              {isWaitingOnYou ? "Begin" : "Waiting for others"}
-            </button>
-          )}
+          <button className="btn btn-key" type="button" onClick={() => void doContinue()} disabled={!isWaitingOnYou || busy}>
+            {isWaitingOnYou ? "Begin" : "Waiting for others"}
+          </button>
         </>
       )}
 
