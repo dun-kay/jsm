@@ -166,7 +166,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const myId = state?.you.id || "";
   const isDrawer = Boolean(state?.drawerPlayerId && state.drawerPlayerId === myId);
   const isWaitingOnYou = Boolean(state?.waitingOn.includes(myId));
-  const isSinglePlayer = (state?.players.length ?? 0) <= 1;
+  const isSinglePlayer = (state?.roomPlayerCount ?? state?.players.length ?? 0) <= 1;
   const joinUrl = `${window.location.origin}/g/draw-wf/?g=${gameCode}`;
 
   function nameSetKey() {

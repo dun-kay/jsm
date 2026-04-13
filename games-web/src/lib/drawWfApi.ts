@@ -25,6 +25,7 @@ export type DrawWfState = {
   letterBank: string[];
   replayPayload: unknown;
   waitingOn: string[];
+  roomPlayerCount?: number;
   streak: number;
   longestStreak: number;
   allCorrect: boolean | null;
@@ -55,6 +56,7 @@ function mapState(data: unknown): DrawWfState {
     letterBank: Array.isArray(raw.letterBank) ? raw.letterBank.map(String) : [],
     replayPayload: raw.replayPayload,
     waitingOn: Array.isArray(raw.waitingOn) ? raw.waitingOn.map(String) : [],
+    roomPlayerCount: raw.roomPlayerCount == null ? undefined : Number(raw.roomPlayerCount),
     streak: Number(raw.streak ?? 0),
     longestStreak: Number(raw.longestStreak ?? 0),
     allCorrect: raw.allCorrect == null ? null : Boolean(raw.allCorrect),
