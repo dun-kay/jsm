@@ -174,6 +174,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const guessTimerRef = useRef<number | null>(null);
   const replayTimerRef = useRef<number | null>(null);
   const replayStartedRoundRef = useRef<string | null>(null);
+  const guessTimerRoundRef = useRef<string | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
   const activeStrokeRef = useRef<Stroke | null>(null);
 
@@ -275,13 +276,17 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       startDrawTimer();
     }
     if (state.phase === "guess_live") {
-      startGuessTimer();
+      if (guessTimerRoundRef.current !== state.roundId) {
+        guessTimerRoundRef.current = state.roundId;
+        startGuessTimer(state.guessDeadlineAt);
+      }
       const parsedReplay = parseReplayPayload(state.replayPayload);
       if (parsedReplay && replayStartedRoundRef.current !== state.roundId) {
         replayStartedRoundRef.current = state.roundId;
         playReplay(parsedReplay);
       }
     } else {
+      guessTimerRoundRef.current = null;
       replayStartedRoundRef.current = null;
       if (replayTimerRef.current) {
         window.clearInterval(replayTimerRef.current);
@@ -330,13 +335,21 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     }, 120);
   }
 
-  function startGuessTimer() {
+  function startGuessTimer(deadlineAt?: string | null) {
     if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
-    setTimeLeft(TURN_SECONDS);
+    const deadlineMs = deadlineAt ? Date.parse(deadlineAt) : NaN;
+    const useDeadline = Number.isFinite(deadlineMs);
+    if (useDeadline) {
+      const initial = Math.max(0, Math.ceil((deadlineMs - Date.now()) / 1000));
+      setTimeLeft(initial);
+    } else {
+      setTimeLeft(TURN_SECONDS);
+    }
     const started = Date.now();
     guessTimerRef.current = window.setInterval(() => {
-      const elapsed = Math.floor((Date.now() - started) / 1000);
-      const left = Math.max(0, TURN_SECONDS - elapsed);
+      const left = useDeadline
+        ? Math.max(0, Math.ceil((deadlineMs - Date.now()) / 1000))
+        : Math.max(0, TURN_SECONDS - Math.floor((Date.now() - started) / 1000));
       setTimeLeft(left);
       if (left <= 0) {
         if (guessTimerRef.current) window.clearInterval(guessTimerRef.current);
@@ -515,34 +528,38 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     const height = canvas.height;
     ctx.clearRect(0, 0, width, height);
 
-    const allPoints = payload.strokes.flatMap((s) => s.points);
-    if (allPoints.length < 2) return;
-
-    const minT = allPoints[0].t;
-    const maxT = allPoints[allPoints.length - 1].t;
-    const span = Math.max(1, maxT - minT);
+    const segments: Array<{ x1: number; y1: number; x2: number; y2: number }> = [];
+    payload.strokes.forEach((stroke) => {
+      if (!Array.isArray(stroke.points) || stroke.points.length < 2) return;
+      for (let i = 1; i < stroke.points.length; i += 1) {
+        const p1 = stroke.points[i - 1];
+        const p2 = stroke.points[i];
+        segments.push({
+          x1: (p1.x / payload.width) * width,
+          y1: (p1.y / payload.height) * height,
+          x2: (p2.x / payload.width) * width,
+          y2: (p2.y / payload.height) * height
+        });
+      }
+    });
+    if (segments.length === 0) return;
 
     const started = Date.now();
     replayTimerRef.current = window.setInterval(() => {
       const elapsed = Math.min(TURN_SECONDS * 1000, Date.now() - started);
-      const cutoff = minT + (elapsed / (TURN_SECONDS * 1000)) * span;
+      const progress = elapsed / (TURN_SECONDS * 1000);
+      const visibleSegments = Math.floor(progress * segments.length);
       ctx.clearRect(0, 0, width, height);
       ctx.lineWidth = 4;
       ctx.strokeStyle = "#111";
       ctx.lineCap = "round";
-
-      payload.strokes.forEach((stroke) => {
-        if (stroke.points.length < 2) return;
-        for (let i = 1; i < stroke.points.length; i += 1) {
-          const p1 = stroke.points[i - 1];
-          const p2 = stroke.points[i];
-          if (p2.t > cutoff) break;
-          ctx.beginPath();
-          ctx.moveTo((p1.x / payload.width) * width, (p1.y / payload.height) * height);
-          ctx.lineTo((p2.x / payload.width) * width, (p2.y / payload.height) * height);
-          ctx.stroke();
-        }
-      });
+      for (let i = 0; i < visibleSegments; i += 1) {
+        const seg = segments[i];
+        ctx.beginPath();
+        ctx.moveTo(seg.x1, seg.y1);
+        ctx.lineTo(seg.x2, seg.y2);
+        ctx.stroke();
+      }
 
       if (elapsed >= TURN_SECONDS * 1000) {
         if (replayTimerRef.current) {
