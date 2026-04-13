@@ -9,6 +9,7 @@ import FakeFamousRuntime from "../games/fake-famous/FakeFamousRuntime";
 import NeverEverRuntime from "../games/never-ever/NeverEverRuntime";
 import MostLikelyRuntime from "../games/most-likely/MostLikelyRuntime";
 import WormyWormRuntime from "../games/wormy-worm/WormyWormRuntime";
+import DrawWfRuntime from "../games/draw-wf/DrawWfRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState, quitGame, touchPlayer } from "../lib/lobbyApi";
 
@@ -136,7 +137,8 @@ export default function GameRuntimeHost({
       game?.slug === "fake-famous" ||
       game?.slug === "never-ever" ||
       game?.slug === "most-likely" ||
-      game?.slug === "wormy-worm") &&
+      game?.slug === "wormy-worm" ||
+      game?.slug === "draw-wf") &&
     initialSession?.playerToken
   ) {
     return (
@@ -175,6 +177,9 @@ export default function GameRuntimeHost({
         )}
         {game.slug === "wormy-worm" && (
           <WormyWormRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
+        )}
+        {game.slug === "draw-wf" && (
+          <DrawWfRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
         {showQuitConfirm && (
           <div className="modal-backdrop" role="dialog" aria-modal="true">

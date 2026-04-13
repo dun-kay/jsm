@@ -13,7 +13,7 @@ import type { GameSessionContext } from "./games/types";
 
 type RouteState =
   | { kind: "home" }
-  | { kind: "stats" }
+  | { kind: "stats"; mode: "default" | "draw-wf" }
   | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
   | { kind: "game-rules"; slug: string }
   | { kind: "onboarding"; slug: string }
@@ -42,7 +42,10 @@ function parseRoute(pathname: string): RouteState {
     return { kind: "home" };
   }
   if (path === "/stats/") {
-    return { kind: "stats" };
+    return { kind: "stats", mode: "default" };
+  }
+  if (path === "/stats/draw-wf/") {
+    return { kind: "stats", mode: "draw-wf" };
   }
   if (path === "/terms/") {
     return { kind: "legal", page: "terms" };
@@ -169,6 +172,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
       h: "Play Most Likely | Games With Friends",
       b: "Two players vote first, then the group settles who is most likely."
     },
+    "draw-wf": {
+      h: "Play Draw WF | Games With Friends",
+      b: "Draw in 7 seconds. Friends watch the replay and guess in 7 seconds."
+    },
     "wormy-worm": {
       h: "Play Wormy Worm | Games With Friends",
       b: "Set the penalty, draw worm pulls, and avoid finishing at the bottom."
@@ -207,6 +214,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "most-likely": {
       h: "Most Likely Rules | Games With Friends",
       b: "Game Rules: Two players vote first, then the group validates the winner."
+    },
+    "draw-wf": {
+      h: "Draw WF Rules | Games With Friends",
+      b: "Game Rules: One player draws for 7 seconds, everyone else guesses on replay."
     },
     "wormy-worm": {
       h: "Wormy Worm Rules | Games With Friends",
@@ -256,8 +267,8 @@ function getMetaForRoute(route: RouteState): MetaConfig {
 
   if (route.kind === "stats") {
     return {
-      title: "Session Stats | Games With Friends",
-      description: "Internal stats page.",
+      title: route.mode === "draw-wf" ? "Draw WF Stats | Games With Friends" : "Session Stats | Games With Friends",
+      description: route.mode === "draw-wf" ? "Draw WF internal stats page." : "Internal stats page.",
       robots: "noindex,nofollow"
     };
   }
@@ -349,6 +360,7 @@ export default function App() {
   if (route.kind === "stats") {
     page = (
       <StatsPage
+        mode={route.mode}
         theme={theme}
         onToggleTheme={toggleTheme}
         onBack={() => navigate("/")}
