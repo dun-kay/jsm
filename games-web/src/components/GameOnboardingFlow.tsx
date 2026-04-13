@@ -9,7 +9,8 @@ import {
   rejoinGame,
   startGame,
   touchPlayer,
-  type LobbyPlayer
+  type LobbyPlayer,
+  type LobbyStatus
 } from "../lib/lobbyApi";
 import AccessPaywallModal from "./AccessPaywallModal";
 import { getAccessState, type AccessState } from "../lib/accessApi";
@@ -143,6 +144,7 @@ export default function GameOnboardingFlow({
   const [primedLobbyCode, setPrimedLobbyCode] = useState<string>("");
   const [drawWfPreviewPlayers, setDrawWfPreviewPlayers] = useState<LobbyPlayer[]>([]);
   const [drawWfPreviewLoading, setDrawWfPreviewLoading] = useState<boolean>(false);
+  const [drawWfPreviewStatus, setDrawWfPreviewStatus] = useState<LobbyStatus | null>(null);
   const introRules = useMemo(() => getGameIntroRules(game.slug), [game.slug]);
 
   useEffect(() => {
@@ -190,15 +192,18 @@ export default function GameOnboardingFlow({
         if (state.gameSlug !== "draw-wf") {
           setErrorText("This link is not for Draw WF.");
           setDrawWfPreviewPlayers([]);
+          setDrawWfPreviewStatus(null);
           return;
         }
         setDrawWfPreviewPlayers(state.players);
+        setDrawWfPreviewStatus(state.status);
         setErrorText("");
       } catch (error) {
         if (!active) {
           return;
         }
         setDrawWfPreviewPlayers([]);
+        setDrawWfPreviewStatus(null);
         setErrorText((error as Error).message || "Could not load game preview.");
       } finally {
         if (active) {
@@ -380,6 +385,7 @@ export default function GameOnboardingFlow({
     setPrimedLobbyCode("");
     setDrawWfPreviewPlayers([]);
     setDrawWfPreviewLoading(false);
+    setDrawWfPreviewStatus(null);
     window.history.replaceState({}, "", game.route);
   }
 
@@ -405,6 +411,7 @@ export default function GameOnboardingFlow({
     setPrimedLobbyCode("");
     setDrawWfPreviewPlayers([]);
     setDrawWfPreviewLoading(false);
+    setDrawWfPreviewStatus(null);
     window.history.replaceState({}, "", game.route);
   }
 
@@ -791,6 +798,9 @@ export default function GameOnboardingFlow({
                   <p className="body-text small">Join game: <b>{gameId}</b></p>
                   <div className="players-panel">
                     <p className="body-text left">Current players</p>
+                    {drawWfPreviewStatus === "started" ? (
+                      <p className="hint-text">Game in progress, jump in now.</p>
+                    ) : null}
                     <div className="player-grid">
                       {drawWfPreviewLoading ? <p className="hint-text">Loading...</p> : null}
                       {!drawWfPreviewLoading && drawWfPreviewPlayers.length === 0 ? <p className="hint-text">No players yet</p> : null}
