@@ -53,7 +53,6 @@ declare
   v_game public.draw_wf_games%rowtype;
   v_round public.draw_wf_rounds%rowtype;
   v_waiting jsonb;
-  v_active_count integer;
 begin
   perform public.cleanup_lobby_presence(p_game_code);
   select * into v_ctx from public.dwf_player_context(p_game_code, p_player_token);
@@ -63,17 +62,6 @@ begin
   if not found then raise exception 'Game runtime not initialized.'; end if;
 
   if v_game.phase = 'rules' then
-    v_active_count := public.rd_player_count(public.rd_player_order(v_ctx.lobby_id));
-
-    if v_active_count < 2 then
-      update public.draw_wf_games
-      set waiting_on = public.dwf_active_player_ids(v_ctx.lobby_id),
-          last_activity_at = now(),
-          last_error = 'Add at least one friend to start.'
-      where lobby_id = v_ctx.lobby_id;
-      return public.dwf_get_state(p_game_code, p_player_token);
-    end if;
-
     if not (coalesce(v_game.waiting_on,'[]'::jsonb) @> jsonb_build_array(v_ctx.player_id::text)) then
       return public.dwf_get_state(p_game_code, p_player_token);
     end if;
