@@ -646,6 +646,13 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   function startGuessing() {
     if (!state || state.phase !== "guess_live" || isDrawer) return;
+    const turnKey = `${gameCode}:${state.roundId || "r0"}:guess:${myId}`;
+    const consumed = consumeDrawThingsPlay(turnKey);
+    setWallet(consumed.summary);
+    if (!consumed.ok) {
+      setShowPaywall(true);
+      return;
+    }
     setGuessStartedRoundId(state.roundId);
   }
 
@@ -1068,7 +1075,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         <div className="modal-backdrop" role="dialog" aria-modal="true">
           <div className="modal-card">
             <h2>Draw Things Plays</h2>
-            <p className="body-text smallish">Plays remaining: +{wallet.freePlays}...<p></p>Plays refill (+5) in {refillIn}.</p><p></p>
+            <p className="body-text smallish">Plays remaining: +{wallet.freePlays}.<p></p>Refill (+5 plays) in {refillIn}.</p><p></p>
             <p className="body-text smallish"><b>Unlock more plays 🔓...</b></p>
             {wallet.canBuyPack ? (
               <button type="button" className="btn btn-key" onClick={() => void beginDrawThingsCheckout()} disabled={checkoutBusy}>
