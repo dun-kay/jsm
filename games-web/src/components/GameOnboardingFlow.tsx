@@ -847,9 +847,10 @@ export default function GameOnboardingFlow({
                   <button className="btn btn-key" type="button" onClick={startCreateFlow}>
                     Create game
                   </button>
+                  <p></p>
                   <button className="btn btn-soft" type="button" onClick={startJoinFlow}>
                     Join game
-                  </button>
+                  </button><p></p>
                 </>
               )}
               <button className="btn btn-soft" type="button" onClick={onExit}>
