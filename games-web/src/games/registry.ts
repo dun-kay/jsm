@@ -9,10 +9,10 @@ export const GAMES: GameConfig[] = [
     shortRules: "",
     heroImage: "/assets/draw-wf-logo.png",
     theme: "default",
-    minPlayers: 1,
+    minPlayers: 2,
     maxPlayers: 24,
-    playTime: "5 - 15 mins",
-    ageGuide: "Ages 4+",
+    playTime: "2 - 10 mins",
+    ageGuide: "Ages 6+",
     joinPrefix: "J",
     route: "/g/draw-things/",
     enabled: true

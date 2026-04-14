@@ -280,6 +280,13 @@ body {
   justify-content: center;
   align-items: center;
   margin: auto;
+  transition: transform 90ms ease;
+  will-change: transform;
+}
+
+.wf:active:not(:disabled),
+.wf-backspace:active:not(:disabled) {
+  transform: scale(1.12);
 }
 
 .btn-soft {
@@ -734,7 +741,7 @@ body {
 .btn-left{
   background: var(--bg);
   color: var(--text);
-  max-width: 250px;
+  max-width: 300px;
   display: block;
 }
 
@@ -980,7 +987,8 @@ body {
 }
 
 .drawwf-runtime {
-  --dwf-key-size: 35px;
+  --dwf-key-sizeh: 44px;
+  --dwf-key-sizew: 34px;
 }
 
 .drawwf-guess-wrap {
@@ -1092,7 +1100,7 @@ body {
 .drawwf-letter-bank {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   align-items: center;
   justify-content: center;
   width: fit-content;
@@ -1108,14 +1116,14 @@ body {
 }
 
 .drawwf-runtime .drawwf-letter-bank .wf {
-  width: var(--dwf-key-size);
-  height: var(--dwf-key-size);
-  font-size: 20px;
+  width: var(--dwf-key-sizew);
+  height: var(--dwf-key-sizeh);
+  font-size: 24px;
   border-radius: 7px;
   margin: 0;
 }
 
 .drawwf-runtime .drawwf-letter-bank .wf-backspace {
-  width: 50px;
+  width: 44px;
   font-size: 20px;
 }

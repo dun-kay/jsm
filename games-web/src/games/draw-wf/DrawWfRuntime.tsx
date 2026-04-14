@@ -218,8 +218,10 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const timeoutSubmittedRoundRef = useRef<string | null>(null);
   const wrongFlashTimerRef = useRef<number | null>(null);
   const wrongFlashRafRef = useRef<number | null>(null);
+  const wrongGuessClearTimerRef = useRef<number | null>(null);
   const postGuessHoldTimerRef = useRef<number | null>(null);
   const prevPhaseRef = useRef<string | null>(null);
+  const lastGuessRoundRef = useRef<string | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
   const activeStrokeRef = useRef<Stroke | null>(null);
 
@@ -337,12 +339,19 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       void doContinue();
     }
     if (state.phase !== "guess_live") {
+      lastGuessRoundRef.current = null;
       setGuessStartedRoundId(null);
       guessAttemptRef.current = null;
       timeoutSubmittedRoundRef.current = null;
     }
     if (state.phase === "guess_live") {
-      setGuess(state.yourGuess || "");
+      if (lastGuessRoundRef.current !== state.roundId) {
+        lastGuessRoundRef.current = state.roundId;
+        setGuess(state.yourGuess ?? "");
+      } else if (state.yourGuess !== null) {
+        // Only sync server guess after a submitted value exists.
+        setGuess(state.yourGuess);
+      }
     } else {
       setShowQuick(false);
     }
@@ -423,6 +432,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       if (replayTimerRef.current) window.clearInterval(replayTimerRef.current);
       if (wrongFlashTimerRef.current) window.clearTimeout(wrongFlashTimerRef.current);
       if (wrongFlashRafRef.current) window.cancelAnimationFrame(wrongFlashRafRef.current);
+      if (wrongGuessClearTimerRef.current) window.clearTimeout(wrongGuessClearTimerRef.current);
       if (postGuessHoldTimerRef.current) window.clearTimeout(postGuessHoldTimerRef.current);
     };
   }, []);
@@ -621,8 +631,14 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
       if (isWrongFullAttempt) {
         triggerWrongGuessFlash();
-        setGuess("");
-        guessAttemptRef.current = null;
+        if (wrongGuessClearTimerRef.current) {
+          window.clearTimeout(wrongGuessClearTimerRef.current);
+        }
+        wrongGuessClearTimerRef.current = window.setTimeout(() => {
+          setGuess("");
+          guessAttemptRef.current = null;
+          wrongGuessClearTimerRef.current = null;
+        }, 300);
       }
 
       setState(next);
@@ -636,7 +652,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         }
       }
 
-      if (next.yourGuess && !isNameConfirmed()) {
+      if (next.yourGuess !== null && !isNameConfirmed()) {
         openNameModal();
       }
 
