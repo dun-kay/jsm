@@ -138,6 +138,14 @@ export function playAgainDrawWf(gameCode: string, playerToken: string, wordPool:
   });
 }
 
+export function removeDrawWfPlayer(gameCode: string, playerToken: string, targetPlayerId: string): Promise<DrawWfState> {
+  return rpcState("dwf_remove_player", {
+    p_game_code: gameCode,
+    p_player_token: playerToken,
+    p_target_player_id: targetPlayerId
+  });
+}
+
 export async function setDrawWfDisplayName(gameCode: string, playerToken: string, name: string): Promise<void> {
   const supabase = getSupabaseClient();
   const { error } = await supabase.rpc("dwf_set_display_name", {

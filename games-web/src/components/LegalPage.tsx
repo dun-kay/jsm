@@ -8,7 +8,7 @@ type LegalPageProps = {
   onBack: () => void;
 };
 
-const LAST_UPDATED = "March 20, 2026";
+const LAST_UPDATED = "April 14, 2026";
 const COMPANY = "Jump Ship Media";
 const CONTACT_URL = "https://tally.so/r/XxqNzP";
 const CURRENT_YEAR = new Date().getFullYear();
@@ -40,6 +40,9 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Free access:</b> You receive 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> You may claim up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
             <p><b>Paid access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser type/device only. $6.00 USD unlocks unlimited sessions for 30 days on that browser type/device only. Refreshing the page or closing the tab and coming back to the same browser type is possible (provided your access time has not lapsed); unless you purchase in private mode (not recommended), clear cookies/local storage, or change your browser type.</p>
+            <p><b>Draw Things access:</b> Draw Things uses a play-pack model. You get up to 10 free plays plus +5 free-play refill every 4 hours. A play is consumed when you start a Draw or Guess action.</p>
+            <p><b>Draw Things paid pack:</b> A single purchase grants 100 Draw Things plays for that browser type/device. While paid plays are active, total stored plays are capped at 105 (paid + free refill pool). The buy button is hidden while paid plays remain.</p>
+            <p><b>Draw Things inactivity and service changes:</b> If Draw Things plays are not used for an extended period, we may expire unused Draw Things plays after 90 days of inactivity on that browser/device. We may also pause, change, or sunset Draw Things or related services at any time, including for maintenance, commercial, or product reasons, and are not required to keep the service running indefinitely solely to preserve unused plays.</p>
             <p><b>Billing:</b> Payments are processed by Stripe. By purchasing, you authorize the applicable charge shown at checkout.</p>
             <p><b>Session counting:</b> A session is counted when gameplay starts (not just browsing, lobby, or reading rules).</p>
             <p><b>Storage and continuity:</b> Clearing cookies/local storage, using incognito/private mode, or switching browser types/devices may reset or break access continuity.</p>
@@ -67,6 +70,10 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Free access:</b> 1 free session to use every 4 hours. Free sessions do not roll over.</p>
             <p><b>Share bonus:</b> Up to +2 extra free sessions in that same 4-hour window via the share flow.</p>
             <p><b>Unlimited access:</b> $1 USD unlocks unlimited sessions for 4 hours on that browser type/device. $6.00 USD unlocks unlimited sessions for 30 days on that browser type/device. Refreshing the page or closing the tab and coming back to the same browser type is possible (provided your access time has not lapsed); unless you purchase in private mode (not recommended), clear cookies/local storage, or change your browser type.</p>
+            <p><b>Draw Things plays:</b> Draw Things is priced separately. You can use free plays (up to 10, +5 refill every 4 hours) or buy a 100-play pack. One play = one Draw start or one Guess start.</p>
+            <p><b>Draw Things play cap:</b> If paid plays are active, stored plays are capped at 105 total (paid + free refill pool).</p>
+            <p><b>Draw Things inactivity policy:</b> Unused Draw Things plays may expire after 90 days of inactivity on that browser/device.</p>
+            <p><b>Service continuity:</b> We may pause, modify, or discontinue Draw Things (or related features) at any time. Purchases do not guarantee indefinite service availability.</p>
             <p><b>Disclaimer:</b> Paid access and free sessions are tied to this browser type/device via local storage and cookies. If you clear cookies/local storage, use private mode, or switch browser types/devices, access may be lost. By continuing or purchasing, you accept this setup and understand this is not grounds for a refund. Issues, contact support.</p>
             <p><b>Per-player access:</b> Sessions are per user/browser. In a group of 8, all 8 players must each have at least 1 free session (or active unlimited). Sessions cannot be shared.</p>
             <p><b>When sessions count:</b> A session counts when gameplay starts, not while browsing or waiting in lobby.</p>

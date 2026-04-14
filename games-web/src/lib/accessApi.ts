@@ -34,6 +34,7 @@ export type ShareBonusResult = {
 
 export type CheckoutPlan = "4h" | "30d";
 type NoncePurpose = "start_checkout" | "confirm_checkout";
+const DRAW_THINGS_PRODUCT_ID = "prod_UKgE1EdSy1jEPm";
 
 export type PaymentHelpReason =
   | "i_paid_but_didnt_unlock"
@@ -216,6 +217,55 @@ export async function confirmCheckoutSession(sessionId: string): Promise<{ confi
   return {
     confirmed: Boolean(result?.confirmed),
     applied: Boolean(result?.applied),
+    reason: result?.reason
+  };
+}
+
+export async function startDrawThingsCheckout(returnTo?: string): Promise<{ checkoutUrl: string }> {
+  const supabase = getSupabaseClient();
+  const browserToken = ensureBrowserToken();
+  const requestNonce = await issueRequestNonce("start_checkout");
+  const { data, error } = await supabase.functions.invoke("start-draw-things-checkout", {
+    body: {
+      browserToken,
+      returnTo: returnTo || window.location.href,
+      requestNonce,
+      productId: DRAW_THINGS_PRODUCT_ID
+    }
+  });
+
+  if (error) {
+    throw new Error(error.message || "Unable to start Draw Things checkout.");
+  }
+
+  const url = String((data as { checkoutUrl?: string } | null)?.checkoutUrl || "");
+  if (!url) {
+    throw new Error("Missing checkout URL.");
+  }
+  return { checkoutUrl: url };
+}
+
+export async function confirmDrawThingsCheckout(sessionId: string): Promise<{ confirmed: boolean; applied: boolean; playsGranted: number; reason?: string }> {
+  const supabase = getSupabaseClient();
+  const browserToken = ensureBrowserToken();
+  const requestNonce = await issueRequestNonce("confirm_checkout");
+  const { data, error } = await supabase.functions.invoke("confirm-draw-things-checkout", {
+    body: {
+      browserToken,
+      sessionId,
+      requestNonce
+    }
+  });
+
+  if (error) {
+    throw new Error(error.message || "Unable to confirm Draw Things checkout.");
+  }
+
+  const result = data as { confirmed?: boolean; applied?: boolean; playsGranted?: number; reason?: string } | null;
+  return {
+    confirmed: Boolean(result?.confirmed),
+    applied: Boolean(result?.applied),
+    playsGranted: Number(result?.playsGranted ?? 0),
     reason: result?.reason
   };
 }

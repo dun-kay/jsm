@@ -152,7 +152,7 @@ export default function GameOnboardingFlow({
   );
   const drawWfInviteCopy = useMemo(() => {
     const host = drawWfHostName || "friends";
-    return `Play with ${host}. Draw things & guess things... you only have 10s.`;
+    return `Play with ${host}. Draw things & guess things... you have 10s.`;
   }, [drawWfHostName]);
 
   useEffect(() => {

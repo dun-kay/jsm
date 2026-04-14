@@ -268,8 +268,8 @@ function getMetaForRoute(route: RouteState): MetaConfig {
       };
     }
     return {
-      title: "How Unlimited PlayWorks | Games With Friends by Jump Ship Media",
-      description: "Unlocking unlimited gives you unlimited game sessions/play for 4h or 30 days."
+      title: "How Play Access Works | Games With Friends by Jump Ship Media",
+      description: "Learn how unlimited and Draw Things play-pack access works across sessions and devices."
     };
   }
 
@@ -497,6 +497,7 @@ export default function App() {
     <>
       <AccessStatusPill
         hidden={
+          route.kind === "home" ||
           route.kind === "runtime" ||
           (route.kind === "onboarding" && (route.slug === "draw-wf" || route.slug === "draw-things"))
         }
