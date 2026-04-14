@@ -36,6 +36,7 @@ const DRAW_QUICK_SECONDS = 3;
 const GUESS_QUICK_SECONDS = 5;
 const GUESS_REPLAY_SECONDS = 10;
 const NAME_SET_PREFIX = "dwf_name_set_";
+const DRAW_THINGS_SESSION_CREDIT_PREFIX = "drawthings_checkout_credit_";
 const MAX_NAME_LENGTH = 10;
 const POST_GUESS_HOLD_MS = 5000;
 
@@ -176,6 +177,28 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     return `${NAME_SET_PREFIX}${gameCode}_${playerToken}`;
   }
 
+  function checkoutCreditKey(sessionId: string) {
+    return `${DRAW_THINGS_SESSION_CREDIT_PREFIX}${sessionId}`;
+  }
+
+  function isCheckoutCredited(sessionId: string) {
+    if (!sessionId) return false;
+    try {
+      return window.localStorage.getItem(checkoutCreditKey(sessionId)) === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  function markCheckoutCredited(sessionId: string) {
+    if (!sessionId) return;
+    try {
+      window.localStorage.setItem(checkoutCreditKey(sessionId), "1");
+    } catch {
+      // ignore storage failures
+    }
+  }
+
   function isNameConfirmed() {
     try {
       return window.localStorage.getItem(nameSetKey()) === "1";
@@ -275,25 +298,45 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
     const sessionId = url.searchParams.get("draw_session_id") || "";
     let active = true;
+    const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
     const settleCheckout = async () => {
-      if (!sessionId) {
-        return;
-      }
-      try {
-        const result = await confirmDrawThingsCheckout(sessionId);
+      let settled = false;
+      for (let i = 0; i < 10; i += 1) {
         if (!active) {
           return;
         }
-        if (result.applied && result.playsGranted > 0) {
-          setWallet(applyDrawThingsPurchasePlays());
-        } else {
-          setWallet(getDrawThingsWalletSummary());
+        try {
+          const result = await confirmDrawThingsCheckout(sessionId);
+          if (!active) {
+            return;
+          }
+
+          if (result.confirmed) {
+            if (!isCheckoutCredited(sessionId) && (result.playsGranted > 0 || result.reason === "already_applied")) {
+              setWallet(applyDrawThingsPurchasePlays());
+              markCheckoutCredited(sessionId);
+            } else {
+              setWallet(getDrawThingsWalletSummary());
+            }
+            settled = true;
+            break;
+          }
+        } catch (error) {
+          if (!active) {
+            return;
+          }
+          if (i === 9) {
+            setErrorText((error as Error).message || "Unable to confirm payment.");
+          }
         }
-      } catch (error) {
-        if (active) {
-          setErrorText((error as Error).message || "Unable to confirm payment.");
-        }
-      } finally {
+        await wait(1200);
+      }
+
+      if (!settled && active) {
+        setWallet(getDrawThingsWalletSummary());
+      }
+
+      if (active) {
         const cleaned = new URL(window.location.href);
         cleaned.searchParams.delete("draw_payment");
         cleaned.searchParams.delete("draw_session_id");
