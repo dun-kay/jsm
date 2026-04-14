@@ -262,14 +262,15 @@ export default function FakeFamousRuntime({ gameCode, playerToken }: FakeFamousR
       {state.phase === "round_intro" && (
         <>
           <h2>Round {state.roundNumber}</h2>
-          <p>Category: <b>{state.selectedCategory || "Loading..."}</b></p>
           {state.you.isHost && state.turnIndex === 0 ? (
-            <button type="button" className="btn btn-soft" onClick={() => void doRerollCategory()} disabled={busy || !isWaitingOnYou(state)}>
+            <button type="button" className="btn btn-soft runtime-reroll-btn" onClick={() => void doRerollCategory()} disabled={busy || !isWaitingOnYou(state)}>
               {busy ? "Loading..." : "Re-spin category"}
             </button>
           ) : state.turnIndex === 0 ? (
-            <p className="hint-text nb">Ask the host to re-spin the category.</p>
+            <button type="button" className="btn btn-soft runtime-reroll-btn">Host can re-spin</button>
           ) : null}
+          <p>Category: <b>{state.selectedCategory || "Loading..."}</b></p>
+          <p></p>
           <p>Everyone reads out a quote.<p></p>You guess if it's fake or not & who said it (impressions may be involved).</p>
           <br></br>
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
