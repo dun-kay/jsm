@@ -689,7 +689,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     setShareBusy(true);
     const shareData = {
       title: "Draw Things",
-      text: "Join my Draw Things game",
+      text: "Can you guess what I drew? Join my Draw Things game:",
       url: joinUrl
     };
     try {
