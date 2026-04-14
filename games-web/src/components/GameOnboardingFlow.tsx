@@ -151,8 +151,8 @@ export default function GameOnboardingFlow({
     [drawWfPreviewPlayers]
   );
   const drawWfInviteCopy = useMemo(() => {
-    const host = drawWfHostName || "A friend";
-    return `${host} has invited you to their game. Try guess their drawing..`;
+    const host = drawWfHostName || "friends";
+    return `Play with ${host}. Draw things & guess things... you only have 10s.`;
   }, [drawWfHostName]);
 
   useEffect(() => {
@@ -812,7 +812,7 @@ export default function GameOnboardingFlow({
                 <>
                   
                   <div>
-                    <p></p><p className="body-text small"><b>Players:</b></p>
+                    <p></p><p className="body-text small"><b>Current players:</b></p>
                     {drawWfPreviewStatus === "started" ? (
                       <p></p>
                     ) : null}

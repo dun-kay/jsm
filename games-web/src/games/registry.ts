@@ -5,7 +5,7 @@ export const GAMES: GameConfig[] = [
     id: "J",
     slug: "draw-wf",
     title: "Draw Things",
-    description: "Draw & guess. You have 10 secs.",
+    description: "Draw things. Guess things. You have 10s.",
     shortRules: "",
     heroImage: "/assets/draw-wf-logo.png",
     theme: "default",
