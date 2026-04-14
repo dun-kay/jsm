@@ -43,6 +43,49 @@ export type PaymentHelpReason =
   | "checkout_closed"
   | "something_else";
 
+async function resolveInvokeErrorMessage(error: unknown, fallback: string): Promise<string> {
+  const generic = "Edge Function returned a non-2xx status code";
+  const base = error instanceof Error ? error.message : String(error || "");
+  const maybe = error as { context?: { clone?: () => { json?: () => Promise<unknown>; text?: () => Promise<string> }; json?: () => Promise<unknown>; text?: () => Promise<string> } };
+  const ctx = maybe?.context;
+
+  let parsed = "";
+  if (ctx) {
+    try {
+      const jsonSource = ctx.clone ? ctx.clone() : ctx;
+      const jsonBody = await jsonSource.json?.();
+      if (jsonBody && typeof jsonBody === "object") {
+        const err = (jsonBody as { error?: unknown }).error;
+        if (typeof err === "string" && err.trim()) {
+          parsed = err.trim();
+        }
+      }
+    } catch {
+      // ignore json parse failures
+    }
+
+    if (!parsed) {
+      try {
+        const textSource = ctx.clone ? ctx.clone() : ctx;
+        const textBody = (await textSource.text?.()) || "";
+        if (textBody.trim()) {
+          parsed = textBody.trim();
+        }
+      } catch {
+        // ignore text parse failures
+      }
+    }
+  }
+
+  if (parsed) {
+    return parsed;
+  }
+  if (base && base !== generic) {
+    return base;
+  }
+  return fallback;
+}
+
 function isUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
@@ -235,7 +278,8 @@ export async function startDrawThingsCheckout(returnTo?: string): Promise<{ chec
   });
 
   if (error) {
-    throw new Error(error.message || "Unable to start Draw Things checkout.");
+    const message = await resolveInvokeErrorMessage(error, "Unable to start Draw Things checkout.");
+    throw new Error(message);
   }
 
   const url = String((data as { checkoutUrl?: string } | null)?.checkoutUrl || "");
@@ -258,7 +302,8 @@ export async function confirmDrawThingsCheckout(sessionId: string): Promise<{ co
   });
 
   if (error) {
-    throw new Error(error.message || "Unable to confirm Draw Things checkout.");
+    const message = await resolveInvokeErrorMessage(error, "Unable to confirm Draw Things checkout.");
+    throw new Error(message);
   }
 
   const result = data as { confirmed?: boolean; applied?: boolean; playsGranted?: number; reason?: string } | null;
