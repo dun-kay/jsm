@@ -100,6 +100,42 @@ body {
   width: 100%;
 }
 
+.drawthings-runtime-accessbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 1;
+  max-width: 250px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 3px 3px 10px;
+  background: var(--surface);
+}
+
+.drawthings-runtime-accessbar-text {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.drawthings-mini-btn {
+  border-radius: 999px;
+  border: 2px solid var(--line);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  min-height: 24px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.drawthings-mini-btn-key {
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
+}
+
 .quit-toggle {
   width: 70px;
   background: transparent;
@@ -979,6 +1015,11 @@ body {
 
 .tiny {
   font-size: 14px;
+  text-align: center;
+}
+
+.tinyy {
+  font-size: 12px;
   text-align: center;
 }
 

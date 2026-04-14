@@ -12,6 +12,12 @@ import WormyWormRuntime from "../games/wormy-worm/WormyWormRuntime";
 import DrawWfRuntime from "../games/draw-wf/DrawWfRuntime";
 import type { GameSessionContext } from "../games/types";
 import { getLobbyState, quitGame, touchPlayer } from "../lib/lobbyApi";
+import {
+  DRAW_THINGS_OPEN_PAYWALL_EVENT,
+  DRAW_THINGS_WALLET_EVENT,
+  getDrawThingsWalletSummary,
+  type DrawThingsWalletSummary
+} from "../lib/drawThingsWallet";
 
 type GameRuntimeHostProps = {
   gameCode: string;
@@ -33,6 +39,7 @@ export default function GameRuntimeHost({
   const [showQuitConfirm, setShowQuitConfirm] = useState<boolean>(false);
   const [sessionExpired, setSessionExpired] = useState<boolean>(false);
   const [quitting, setQuitting] = useState<boolean>(false);
+  const [drawWallet, setDrawWallet] = useState<DrawThingsWalletSummary | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -96,6 +103,26 @@ export default function GameRuntimeHost({
     };
   }, [gameCode, initialSession?.playerToken, sessionExpired]);
 
+  useEffect(() => {
+    if (gameSlug !== "draw-wf") {
+      setDrawWallet(null);
+      return;
+    }
+    setDrawWallet(getDrawThingsWalletSummary());
+    const onWalletChanged = (event: Event) => {
+      const payload = (event as CustomEvent<DrawThingsWalletSummary>).detail;
+      if (payload) {
+        setDrawWallet(payload);
+      } else {
+        setDrawWallet(getDrawThingsWalletSummary());
+      }
+    };
+    window.addEventListener(DRAW_THINGS_WALLET_EVENT, onWalletChanged as EventListener);
+    return () => {
+      window.removeEventListener(DRAW_THINGS_WALLET_EVENT, onWalletChanged as EventListener);
+    };
+  }, [gameSlug]);
+
   async function returnHomeAfterSessionExpiry() {
     if (!initialSession || quitting) {
       return;
@@ -127,6 +154,11 @@ export default function GameRuntimeHost({
   }
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined;
+  const isDrawThingsRuntime = game?.slug === "draw-wf";
+
+  const openDrawThingsPaywall = () => {
+    window.dispatchEvent(new Event(DRAW_THINGS_OPEN_PAYWALL_EVENT));
+  };
 
   if (
     (game?.slug === "secret-category" ||
@@ -147,6 +179,14 @@ export default function GameRuntimeHost({
           <button type="button" className="theme-toggle quit-toggle" onClick={() => setShowQuitConfirm(true)}>
             Quit
           </button>
+          {isDrawThingsRuntime && drawWallet ? (
+            <div className="drawthings-runtime-accessbar">
+              <p className="drawthings-runtime-accessbar-text">Plays +{drawWallet.totalPlays}</p>
+              <button type="button" className="drawthings-mini-btn drawthings-mini-btn-key" onClick={openDrawThingsPaywall}>
+                Unlock 🔓
+              </button>
+            </div>
+          ) : null}
           <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
             {theme === "light" ? "Dark mode" : "Light mode"}
           </button>

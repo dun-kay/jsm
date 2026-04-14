@@ -8,6 +8,14 @@ import {
   submitDrawWfGuess,
   type DrawWfState
 } from "../../lib/drawWfApi";
+import { confirmDrawThingsCheckout, startDrawThingsCheckout } from "../../lib/accessApi";
+import {
+  applyDrawThingsPurchasePlays,
+  consumeDrawThingsPlay,
+  DRAW_THINGS_OPEN_PAYWALL_EVENT,
+  getDrawThingsWalletSummary,
+  type DrawThingsWalletSummary
+} from "../../lib/drawThingsWallet";
 import wordPool from "./wordPool.json";
 
 type DrawWfRuntimeProps = {
@@ -21,22 +29,6 @@ type ReplayPayload = { width: number; height: number; strokes: Stroke[] };
 const CANVAS_WIDTH = 320;
 const CANVAS_HEIGHT = 350;
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"] as const;
-
-type TurnWallet = {
-  freeTurns: number;
-  paidTurns: number;
-  paidExpiresAt: number;
-  lastRegenAt: number;
-};
-
-const TURN_WALLET_KEY = "drawwf_turn_wallet_v1";
-const TURN_MARK_PREFIX = "drawwf_turn_mark_";
-const FREE_START = 10;
-const FREE_REGEN = 5;
-const REGEN_MS = 4 * 60 * 60 * 1000;
-const FREE_CAP = 20;
-const PAID_TURNS = 100;
-const PAID_MS = 7 * 24 * 60 * 60 * 1000;
 const DRAW_SECONDS = 10;
 const GUESS_SECONDS = 10;
 const DRAW_QUICK_SECONDS = 3;
@@ -51,81 +43,6 @@ function flattenWords(pool: unknown): string[] {
   const words = (pool as { words?: unknown[] }).words;
   if (!Array.isArray(words)) return [];
   return words.map((w) => String(w).trim().toUpperCase()).filter((w) => w.length >= 3 && w.length <= 6);
-}
-
-function nowMs() {
-  return Date.now();
-}
-
-function readWallet(): TurnWallet {
-  try {
-    const raw = localStorage.getItem(TURN_WALLET_KEY);
-    if (!raw) {
-      return { freeTurns: FREE_START, paidTurns: 0, paidExpiresAt: 0, lastRegenAt: nowMs() };
-    }
-    const parsed = JSON.parse(raw) as TurnWallet;
-    return {
-      freeTurns: Number(parsed.freeTurns ?? FREE_START),
-      paidTurns: Number(parsed.paidTurns ?? 0),
-      paidExpiresAt: Number(parsed.paidExpiresAt ?? 0),
-      lastRegenAt: Number(parsed.lastRegenAt ?? nowMs())
-    };
-  } catch {
-    return { freeTurns: FREE_START, paidTurns: 0, paidExpiresAt: 0, lastRegenAt: nowMs() };
-  }
-}
-
-function saveWallet(wallet: TurnWallet) {
-  localStorage.setItem(TURN_WALLET_KEY, JSON.stringify(wallet));
-}
-
-function normalizeWallet(wallet: TurnWallet): TurnWallet {
-  const now = nowMs();
-  let next = { ...wallet };
-  if (next.paidExpiresAt > 0 && now > next.paidExpiresAt) {
-    next.paidTurns = 0;
-    next.paidExpiresAt = 0;
-  }
-  const elapsed = Math.max(0, now - next.lastRegenAt);
-  const steps = Math.floor(elapsed / REGEN_MS);
-  if (steps > 0) {
-    next.freeTurns = Math.min(FREE_CAP, next.freeTurns + steps * FREE_REGEN);
-    next.lastRegenAt = next.lastRegenAt + steps * REGEN_MS;
-  }
-  return next;
-}
-
-function consumeTurn(turnKey: string): { ok: boolean; wallet: TurnWallet; reason?: string } {
-  if (sessionStorage.getItem(TURN_MARK_PREFIX + turnKey) === "1") {
-    return { ok: true, wallet: normalizeWallet(readWallet()) };
-  }
-
-  let wallet = normalizeWallet(readWallet());
-
-  if (wallet.freeTurns > 0) {
-    wallet.freeTurns -= 1;
-  } else if (wallet.paidTurns > 0 && wallet.paidExpiresAt > nowMs()) {
-    wallet.paidTurns -= 1;
-  } else {
-    saveWallet(wallet);
-    return { ok: false, wallet, reason: "No turns left." };
-  }
-
-  saveWallet(wallet);
-  sessionStorage.setItem(TURN_MARK_PREFIX + turnKey, "1");
-  return { ok: true, wallet };
-}
-
-function topUpPaidTurns(): TurnWallet {
-  const now = nowMs();
-  let wallet = normalizeWallet(readWallet());
-  if (wallet.paidExpiresAt < now) {
-    wallet.paidTurns = 0;
-  }
-  wallet.paidTurns += PAID_TURNS;
-  wallet.paidExpiresAt = Math.max(wallet.paidExpiresAt, now) + PAID_MS;
-  saveWallet(wallet);
-  return wallet;
 }
 
 function formatMs(ms: number): string {
@@ -190,8 +107,9 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const [errorText, setErrorText] = useState("");
   const [timeLeft, setTimeLeft] = useState(7);
   const [guess, setGuess] = useState("");
-  const [wallet, setWallet] = useState<TurnWallet>(() => normalizeWallet(readWallet()));
+  const [wallet, setWallet] = useState<DrawThingsWalletSummary>(() => getDrawThingsWalletSummary());
   const [showPaywall, setShowPaywall] = useState(false);
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [showNameHint, setShowNameHint] = useState(false);
@@ -330,8 +248,60 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   }
 
   useEffect(() => {
-    setWallet(normalizeWallet(readWallet()));
+    setWallet(getDrawThingsWalletSummary());
   }, [state?.roundId, state?.phase]);
+
+  useEffect(() => {
+    const openModal = () => setShowPaywall(true);
+    window.addEventListener(DRAW_THINGS_OPEN_PAYWALL_EVENT, openModal);
+    return () => window.removeEventListener(DRAW_THINGS_OPEN_PAYWALL_EVENT, openModal);
+  }, []);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const paymentStatus = url.searchParams.get("draw_payment");
+    if (paymentStatus !== "success") {
+      if (paymentStatus) {
+        url.searchParams.delete("draw_payment");
+        url.searchParams.delete("draw_session_id");
+        window.history.replaceState({}, "", url.toString());
+      }
+      return;
+    }
+
+    const sessionId = url.searchParams.get("draw_session_id") || "";
+    let active = true;
+    const settleCheckout = async () => {
+      if (!sessionId) {
+        return;
+      }
+      try {
+        const result = await confirmDrawThingsCheckout(sessionId);
+        if (!active) {
+          return;
+        }
+        if (result.applied && result.playsGranted > 0) {
+          setWallet(applyDrawThingsPurchasePlays());
+        } else {
+          setWallet(getDrawThingsWalletSummary());
+        }
+      } catch (error) {
+        if (active) {
+          setErrorText((error as Error).message || "Unable to confirm payment.");
+        }
+      } finally {
+        const cleaned = new URL(window.location.href);
+        cleaned.searchParams.delete("draw_payment");
+        cleaned.searchParams.delete("draw_session_id");
+        window.history.replaceState({}, "", cleaned.toString());
+      }
+    };
+
+    void settleCheckout();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!state) return;
@@ -559,13 +529,6 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
   async function finalizeDrawing() {
     if (!state || state.phase !== "draw_live" || !isDrawer) return;
-    const turnKey = `${gameCode}:${state.roundId}:draw:${myId}`;
-    const consumed = consumeTurn(turnKey);
-    setWallet(consumed.wallet);
-    if (!consumed.ok) {
-      setShowPaywall(true);
-      return;
-    }
 
     const canvas = canvasRef.current;
     const payload: ReplayPayload = {
@@ -606,6 +569,21 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     if (!state || busy) return;
     if (!isWaitingOnYou) return;
     if (state.phase === "round_result" && isSinglePlayer) return;
+
+    const isInitialDrawStart = state.phase === "rules";
+    const isGuessJoinClick = state.phase === "guess_intro" && !isDrawer;
+    const isDrawStartClick = state.phase === "round_result" && !isSinglePlayer;
+    if (isInitialDrawStart || isGuessJoinClick || isDrawStartClick) {
+      const action = isGuessJoinClick ? "guess" : "draw";
+      const turnKey = `${gameCode}:${state.roundId || "r0"}:${action}:${myId}`;
+      const consumed = consumeDrawThingsPlay(turnKey);
+      setWallet(consumed.summary);
+      if (!consumed.ok) {
+        setShowPaywall(true);
+        return;
+      }
+    }
+
     setBusy(true);
     setErrorText("");
     try {
@@ -642,15 +620,6 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       }
 
       setState(next);
-
-      if (next.yourGuess) {
-        const turnKey = `${gameCode}:${next.roundId}:guess:${myId}`;
-        const consumed = consumeTurn(turnKey);
-        setWallet(consumed.wallet);
-        if (!consumed.ok) {
-          setShowPaywall(true);
-        }
-      }
 
       if (next.yourGuess !== null && !isNameConfirmed()) {
         openNameModal();
@@ -716,6 +685,24 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       }
     } finally {
       setShareBusy(false);
+    }
+  }
+
+  async function beginDrawThingsCheckout() {
+    if (checkoutBusy) {
+      return;
+    }
+    setCheckoutBusy(true);
+    setErrorText("");
+    try {
+      const returnTo = new URL(window.location.href);
+      returnTo.searchParams.delete("draw_payment");
+      returnTo.searchParams.delete("draw_session_id");
+      const { checkoutUrl } = await startDrawThingsCheckout(returnTo.toString());
+      window.location.assign(checkoutUrl);
+    } catch (error) {
+      setErrorText((error as Error).message || "Unable to open checkout.");
+      setCheckoutBusy(false);
     }
   }
 
@@ -856,7 +843,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const roundWordLower = state.revealWord
     ? state.revealWord.charAt(0).toUpperCase() + state.revealWord.slice(1).toLowerCase()
     : "";
-  const paidLeft = wallet.paidExpiresAt > nowMs() ? formatMs(wallet.paidExpiresAt - nowMs()) : "0s";
+  const refillIn = formatMs(wallet.refillInMs);
 
   return (
     <section className="runtime-card runtime-flow drawwf-runtime">
@@ -1080,25 +1067,32 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       {showPaywall && (
         <div className="modal-backdrop" role="dialog" aria-modal="true">
           <div className="modal-card">
-            <h2>Need more turns?</h2>
-            <p className="body-text smallish">10 free turns included. +5 free turns every 4h.</p>
-            <p className="body-text smallish">Get 100 extra turns for $6 (valid 7 days).</p>
-            <p className="hint-text">Paid time left: {paidLeft}</p>
-            <div className="bottom-row">
-              <button
-                type="button"
-                className="btn btn-key"
-                onClick={() => {
-                  const next = topUpPaidTurns();
-                  setWallet(next);
-                  setShowPaywall(false);
-                }}
-              >
-                Add 100 turns
+            <h2>Draw Things Plays</h2>
+            <p className="body-text smallish">Plays remaining: +{wallet.freePlays}...<p></p>Plays refill (+5) in {refillIn}.</p><p></p>
+            <p className="body-text smallish"><b>Unlock more plays 🔓...</b></p>
+            {wallet.canBuyPack ? (
+              <button type="button" className="btn btn-key" onClick={() => void beginDrawThingsCheckout()} disabled={checkoutBusy}>
+                {checkoutBusy ? "Loading..." : "+100 plays for $6.00 🔓"}
               </button>
-              <button type="button" className="btn btn-soft" onClick={() => setShowPaywall(false)}>
-                Maybe later
-              </button>
+            ) : (
+              <p className="hint-text">100-play pack active: {wallet.paidPlays} plays left.</p>
+            )}
+            <button type="button" className="btn btn-soft" onClick={() => setShowPaywall(false)} disabled={checkoutBusy}>
+              Back
+            </button><p></p>
+            <p className="tinyy">
+              <i>
+                Disclaimer: Access is tied to this browser type/device via local storage. If you clear cookies/local
+                storage, use private mode, or switch browser types/devices, access may be lost. By continuing you
+                accept this, have read the terms, and understand it is not grounds for a refund. Issues, contact support.
+              </i>
+            </p><p></p>
+            <div className="footer-links-inline">
+              <a href="https://tally.so/r/XxqNzP" target="_blank" rel="noreferrer">
+                Support
+              </a>
+              <a href="/terms/">Terms</a>
+              <a href="/how-unlimited-works/">How unlimited works</a>
             </div>
           </div>
         </div>
