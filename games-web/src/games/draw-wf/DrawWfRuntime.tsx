@@ -636,7 +636,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         }
       }
 
-      if (next.yourGuess && !isNameConfirmed()) {
+      if (next.yourGuess !== null && !isNameConfirmed()) {
         openNameModal();
       }
 
