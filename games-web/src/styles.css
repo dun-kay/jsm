@@ -734,7 +734,7 @@ body {
 .btn-left{
   background: var(--bg);
   color: var(--text);
-  max-width: 250px;
+  max-width: 275px;
   display: block;
 }
 
