@@ -5,6 +5,14 @@ import { getCorsHeaders, getRequestOrigin, isOriginAllowed, jsonResponse } from 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const DRAW_THINGS_PRODUCT_ID = "prod_UKgE1EdSy1jEPm";
 
+function addRawSessionPlaceholder(urlString: string): string {
+  const hashIndex = urlString.indexOf("#");
+  const beforeHash = hashIndex >= 0 ? urlString.slice(0, hashIndex) : urlString;
+  const hashPart = hashIndex >= 0 ? urlString.slice(hashIndex) : "";
+  const separator = beforeHash.includes("?") ? "&" : "?";
+  return `${beforeHash}${separator}draw_session_id={CHECKOUT_SESSION_ID}${hashPart}`;
+}
+
 Deno.serve(async (req) => {
   const origin = getRequestOrigin(req);
 
@@ -59,8 +67,7 @@ Deno.serve(async (req) => {
           const base = `${parsed.pathname}${parsed.search}${parsed.hash}`;
           const successParsed = new URL(base, canonicalOrigin);
           successParsed.searchParams.set("draw_payment", "success");
-          successParsed.searchParams.set("draw_session_id", "{CHECKOUT_SESSION_ID}");
-          successUrl = successParsed.toString();
+          successUrl = addRawSessionPlaceholder(successParsed.toString());
 
           const cancelParsed = new URL(base, canonicalOrigin);
           cancelParsed.searchParams.set("draw_payment", "cancelled");
