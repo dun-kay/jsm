@@ -34,14 +34,11 @@ Deno.serve(async (req) => {
 
     const body = (await req.json()) as { browserToken?: string; sessionId?: string; requestNonce?: string };
     const browserToken = String(body.browserToken || "");
-    const sessionId = String(body.sessionId || "");
+    const requestedSessionId = String(body.sessionId || "");
     const requestNonce = String(body.requestNonce || "");
 
     if (!UUID_REGEX.test(browserToken)) {
       return jsonResponse({ error: "Invalid browser token." }, 400, origin);
-    }
-    if (!sessionId.startsWith("cs_")) {
-      return jsonResponse({ error: "Invalid checkout session id." }, 400, origin);
     }
     if (requestNonce.length < 16) {
       return jsonResponse({ error: "Invalid request signature." }, 403, origin);
@@ -58,6 +55,35 @@ Deno.serve(async (req) => {
     });
     if (nonceError || nonceAllowed !== true) {
       return jsonResponse({ error: "Request signature rejected." }, 403, origin);
+    }
+
+    let sessionId = requestedSessionId;
+    if (!sessionId.startsWith("cs_")) {
+      const { data: pendingPayment } = await supabase
+        .from("access_payments")
+        .select("stripe_checkout_session_id, created_at")
+        .eq("browser_token", browserToken)
+        .eq("status", "pending")
+        .not("stripe_checkout_session_id", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle<{ stripe_checkout_session_id: string; created_at: string }>();
+
+      const fallbackSessionId = String(pendingPayment?.stripe_checkout_session_id || "");
+      if (fallbackSessionId.startsWith("cs_")) {
+        sessionId = fallbackSessionId;
+      } else {
+        return jsonResponse(
+          {
+            confirmed: false,
+            applied: false,
+            playsGranted: 0,
+            reason: "invalid_checkout_session_id"
+          },
+          200,
+          origin
+        );
+      }
     }
 
     const { data: existingPayment } = await supabase
