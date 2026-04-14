@@ -79,9 +79,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["line_items.data.price.product"]
-    });
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
     const isComplete = session.status === "complete";
     const isPaid = session.payment_status === "paid" || session.payment_status === "no_payment_required";
     if (!isComplete || !isPaid) {
@@ -97,17 +95,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    const lineItems = session.line_items?.data || [];
-    const hasDrawThingsProduct = lineItems.some((item) => {
-      const product = item.price?.product;
-      if (!product) {
-        return false;
-      }
-      if (typeof product === "string") {
-        return product === DRAW_THINGS_PRODUCT_ID;
-      }
-      return product.id === DRAW_THINGS_PRODUCT_ID;
-    });
+    const metadataProductId = String(session.metadata?.product_id || "");
+    const metadataType = String(session.metadata?.checkout_type || "");
+    const hasDrawThingsProduct =
+      metadataType === "draw_things_plays" &&
+      metadataProductId === DRAW_THINGS_PRODUCT_ID;
     if (!hasDrawThingsProduct) {
       return jsonResponse({ error: "Checkout session product mismatch." }, 403, origin);
     }

@@ -368,7 +368,7 @@ export default function PopularPeopleRuntime({ gameCode, playerToken }: PopularP
 
       {state.phase === "reveal" && (
         <>
-          <h2>30s to study the popular people list!</h2>
+          <h2>30s to study the list!</h2>
           <p>It might help you to remember the list if one player reads it aloud.</p>
           <br></br><p>{revealSecondsLeft}s remaining</p>
           <div className="player-grid cele">

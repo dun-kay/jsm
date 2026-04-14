@@ -105,11 +105,20 @@ Deno.serve(async (req) => {
       );
     }
 
-    const product = await stripe.products.retrieve(DRAW_THINGS_PRODUCT_ID, { expand: ["default_price"] });
-    const defaultPrice = product.default_price;
-    const priceId = typeof defaultPrice === "string" ? defaultPrice : defaultPrice?.id || "";
+    const prices = await stripe.prices.list({
+      product: DRAW_THINGS_PRODUCT_ID,
+      active: true,
+      limit: 1
+    });
+    const priceId = prices.data[0]?.id || "";
     if (!priceId) {
-      return jsonResponse({ error: "Draw Things product has no default price." }, 500, origin);
+      return jsonResponse(
+        {
+          error: `No active Stripe price found for ${DRAW_THINGS_PRODUCT_ID}. Ensure the product exists in the same Stripe mode as STRIPE_SECRET_KEY.`
+        },
+        500,
+        origin
+      );
     }
 
     const checkout = await stripe.checkout.sessions.create({
@@ -119,7 +128,8 @@ Deno.serve(async (req) => {
       metadata: {
         browser_token: browserToken,
         checkout_type: "draw_things_plays",
-        plays_granted: "100"
+        plays_granted: "100",
+        product_id: DRAW_THINGS_PRODUCT_ID
       },
       success_url: successUrl,
       cancel_url: cancelUrl
