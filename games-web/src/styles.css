@@ -152,8 +152,38 @@ body {
   font-size: 17px;
 }
 
-.smallish {
+.streak {
   font-size: 18px;
+  font-weight: 900;
+  color: var(--inverse-text);
+   text-shadow:
+    2px 0 #5891FF, -2px 0 #5891FF,
+    0 2px #5891FF, 0 -2px #5891FF,
+    2px 2px #5891FF, -2px -2px #5891FF,
+    2px -2px #5891FF, -2px 2px #5891FF;
+}
+
+.correctstreak {
+    text-shadow:
+    2px 0 #00C958, -2px 0 #00C958,
+    0 2px #00C958, 0 -2px #00C958,
+    2px 2px #00C958, -2px -2px #00C958,
+    2px -2px #00C958, -2px 2px #00C958;
+}
+
+.answer {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--inverse-text);
+   text-shadow:
+    2px 0 #AB9DFF, -2px 0 #AB9DFF,
+    0 2px #AB9DFF, 0 -2px #AB9DFF,
+    2px 2px #AB9DFF, -2px -2px #AB9DFF,
+    2px -2px #AB9DFF, -2px 2px #AB9DFF;
+}
+
+.lowercase {
+  text-transform:lowercase;
 }
 
 .left {
@@ -235,11 +265,11 @@ body {
 }
 
 .wf {
-  width: 40px;
-  height: 40px;
-  font-size: 30px;
-  background: #5891FF;
-  color: #ffffff;
+  width: 10px;
+  height: 10px;
+  font-size: 20px;
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
   border: 0;
   border-radius: 10px;
   padding: 0px;
@@ -344,10 +374,10 @@ body {
   border-radius: 18px;
   padding: var(--pad-sm);
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: var(--gap-col);
   overflow: auto;
-  min-height: 140px;
+  min-height: 150px;
   align-content: start;
 }
 
@@ -701,6 +731,13 @@ body {
   color: var(--text);
 }
 
+.btn-left{
+  background: var(--bg);
+  color: var(--text);
+  max-width: 250px;
+  display: block;
+}
+
 .fixed-footer-links {
   position: relative;
   left: 50%;
@@ -942,6 +979,35 @@ body {
   font-size: 14px;
 }
 
+.drawwf-runtime {
+  --dwf-key-size: 35px;
+}
+
+.drawwf-guess-wrap {
+  width: min(100%, 390px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawwf-hurry-blink {
+  display: inline-block;
+  animation: drawwf-hurry-blink 0.55s steps(1, end) infinite;
+}
+
+@keyframes drawwf-hurry-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 .drawwf-canvas {
   width: 100%;
   max-width: 400px;
@@ -955,35 +1021,101 @@ body {
 }
 
 .lob {
-  max-width: 225px;
+  max-width: 200px;
 }
 
 .drawwf-guess-word {
-  border: 2px solid var(--line);
-  max-width: 225px;
-  width: 100%;
-  margin: 0 auto;
-  min-height: 42px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  color: var(--text);
-  border-width: 3px;
-  border-color: #5891FF;
-  border-radius: 10px;
+  gap: 4px;
+  min-height: 42px;
+}
+
+.drawwf-guess-word.is-wrong {
+  animation: drawwf-guess-wrong-shake 0.5s cubic-bezier(.36,.07,.19,.97);
+}
+
+@keyframes drawwf-guess-wrong-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10% {
+    transform: translateX(-3px);
+  }
+  20% {
+    transform: translateX(3px);
+  }
+  30% {
+    transform: translateX(-2.5px);
+  }
+  40% {
+    transform: translateX(2.5px);
+  }
+  50% {
+    transform: translateX(-2.5px);
+  }
+  60% {
+    transform: translateX(2.5px);
+  }
+  70% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  90% {
+    transform: translateX(-1.5px);
+  }
+}
+
+.drawwf-guess-slot {
+  width: 34px;
+  height: 40px;
+  font-size: 22px;
+  background: transparent;
+  color: var(--inverse-bg);
+  border: 2px solid var(--inverse-bg);
+  border-radius: 8px;
+  padding: 0;
+  font-family: "Inter", "Segoe UI", sans-serif;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .drawwf-letter-bank {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(44px, 44px));
-  gap: 1px;
-  justify-content: center;
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   align-items: center;
-  width: 100%;
-  max-width: 380px;
-  margin: 0 auto;
+  justify-content: center;
+  width: fit-content;
+  max-width: 360px;
+  margin: 0;
+}
+
+.drawwf-keyboard-row {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  align-items: center;
+}
+
+.drawwf-runtime .drawwf-letter-bank .wf {
+  width: var(--dwf-key-size);
+  height: var(--dwf-key-size);
+  font-size: 20px;
+  border-radius: 7px;
+  margin: 0;
+}
+
+.drawwf-runtime .drawwf-letter-bank .wf-backspace {
+  width: 50px;
+  font-size: 20px;
 }
