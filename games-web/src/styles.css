@@ -1032,6 +1032,47 @@ body {
   --dwf-key-sizew: 34px;
 }
 
+.drawwf-players-head {
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawwf-edit-btn {
+  margin: 0;
+  min-height: 20px;
+  max-width: 60px;
+  font-size: 12px;
+  padding: 1px 5px;
+  justify-self: end;
+}
+
+.drawwf-players-head .body-text.left {
+  text-align: center;
+}
+
+.drawwf-edit-spacer {
+  width: 60px;
+  height: 1px;
+}
+
+.drawwf-player-pill-edit {
+  gap: 6px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.drawwf-player-pill-edit:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.drawwf-pill-pen {
+  font-size: 11px;
+  line-height: 1;
+}
+
 .drawwf-guess-wrap {
   width: min(100%, 390px);
   margin: 0 auto;

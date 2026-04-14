@@ -4,6 +4,7 @@ import {
   getDrawWfState,
   initDrawWf,
   setDrawWfDisplayName,
+  removeDrawWfPlayer,
   submitDrawWfDrawing,
   submitDrawWfGuess,
   type DrawWfState
@@ -120,6 +121,9 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const [showQuick, setShowQuick] = useState(false);
   const [guessWrongFlash, setGuessWrongFlash] = useState(false);
   const [postGuessHold, setPostGuessHold] = useState(false);
+  const [showPlayerEditor, setShowPlayerEditor] = useState(false);
+  const [removeTarget, setRemoveTarget] = useState<{ id: string; name: string } | null>(null);
+  const [removingPlayer, setRemovingPlayer] = useState(false);
   const [themeMode, setThemeMode] = useState<string>(() =>
     typeof document === "undefined" ? "light" : document.documentElement.getAttribute("data-theme") || "light"
   );
@@ -394,6 +398,13 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     guessAttemptRef.current = attemptKey;
     void submitGuess(guess.toUpperCase());
   }, [guess, state?.phase, state?.roundId, state?.wordLength, state?.yourGuess, isActiveGuesser, busy]);
+
+  useEffect(() => {
+    if (!state) return;
+    if (removeTarget && !state.players.some((player) => player.id === removeTarget.id)) {
+      setRemoveTarget(null);
+    }
+  }, [state?.players, removeTarget]);
 
   useEffect(() => {
     return () => {
@@ -827,6 +838,72 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     setNameDraft(compact.slice(0, MAX_NAME_LENGTH));
   }
 
+  async function confirmRemovePlayer() {
+    if (!state || !removeTarget || removingPlayer) {
+      return;
+    }
+    setRemovingPlayer(true);
+    setErrorText("");
+    try {
+      const next = await removeDrawWfPlayer(gameCode, playerToken, removeTarget.id);
+      setState(next);
+      setRemoveTarget(null);
+      setShowPlayerEditor(false);
+    } catch (error) {
+      setErrorText((error as Error).message || "Unable to remove player.");
+    } finally {
+      setRemovingPlayer(false);
+    }
+  }
+
+  function renderPlayersPanel() {
+    if (!state) {
+      return null;
+    }
+
+    return (
+      <div className="players-panel">
+        <div className="drawwf-players-head">
+          <span className="drawwf-edit-spacer" aria-hidden="true" />
+          <p className="body-text left">Current players:</p>
+          <button
+            type="button"
+            className="btn btn-soft drawwf-edit-btn"
+            onClick={() => setShowPlayerEditor((old) => !old)}
+            disabled={removingPlayer || state.players.length <= 1}
+          >
+            {showPlayerEditor ? "Done" : "Edit"}
+          </button>
+        </div>
+        <div className="player-grid">
+          {state.players.map((player) => {
+            const isSelf = player.id === myId;
+            if (!showPlayerEditor) {
+              return (
+                <div key={player.id} className="player-pill">
+                  {player.name}
+                </div>
+              );
+            }
+            return (
+              <button
+                key={player.id}
+                type="button"
+                className="player-pill drawwf-player-pill-edit"
+                onClick={() => setRemoveTarget({ id: player.id, name: player.name })}
+                disabled={isSelf || removingPlayer}
+                title={isSelf ? "You cannot remove yourself." : `Remove ${player.name}`}
+              >
+                <span>{player.name}</span>
+                {!isSelf ? <span className="drawwf-pill-pen">✎</span> : null}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   if (!state) {
     return (
       <section className="runtime-card runtime-flow">
@@ -858,16 +935,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
 
       {state.phase === "rules" && (
         <>
-          <div className="players-panel">
-            <p className="body-text left">Current players:</p>
-            <div className="player-grid">
-              {state.players.map((player) => (
-                <div key={player.id} className="player-pill">
-                  {player.name}
-                </div>
-              ))}
-            </div>
-          </div>
+          {renderPlayersPanel()}
           <button className="btn btn-key" type="button" onClick={() => void doContinue()} disabled={!isWaitingOnYou || busy}>
             {isWaitingOnYou ? "Begin" : "Waiting for others"}
           </button>
@@ -937,16 +1005,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
                 {shareBusy ? "Sharing..." : "Send to friends"}
               </button>
-                        <div className="players-panel">
-            <p className="body-text left">Current players:</p>
-            <div className="player-grid">
-              {state.players.map((player) => (
-                <div key={player.id} className="player-pill">
-                  {player.name}
-                </div>
-              ))}
-            </div>
-          </div>
+              {renderPlayersPanel()}
             </>
           ) : !isGuessUiReady ? (
             <>
@@ -954,6 +1013,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               <button className="btn btn-key" type="button" onClick={startGuessing} disabled={busy}>
                 Guess
               </button>
+              {renderPlayersPanel()}
             </>
           ) : isActiveGuesser ? (
             <>
@@ -1056,13 +1116,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
           <p></p><button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
                 {shareBusy ? "Sharing..." : "Send to more friends"}
               </button>
-          <div className="player-grid">
-              {state.players.map((player) => (
-                <div key={player.id} className="player-pill">
-                  {player.name}
-                </div>
-              ))}
-            </div>
+            {renderPlayersPanel()}
             <p></p><button type="button" className="btn btn-soft runtime-reroll-btn btn-left" onClick={() => window.open("/g/draw-things/", "_blank", "noopener,noreferrer")}>
               Start a NEW game, opens a new tab
             </button>
@@ -1130,6 +1184,30 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
             <div>
               <button type="button" className="btn btn-key" onClick={() => void saveDisplayName()} disabled={savingName || sanitizeName(nameDraft).length === 0}>
                 {savingName ? "Saving..." : "Join game"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {removeTarget && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <h2>Remove {removeTarget.name} from game?</h2>
+            <div className="bottom-row">
+              <button type="button" className="btn btn-key" onClick={() => void confirmRemovePlayer()} disabled={removingPlayer}>
+                {removingPlayer ? "Removing..." : "Remove"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-soft"
+                onClick={() => {
+                  setRemoveTarget(null);
+                  setShowPlayerEditor(false);
+                }}
+                disabled={removingPlayer}
+              >
+                Back
               </button>
             </div>
           </div>
