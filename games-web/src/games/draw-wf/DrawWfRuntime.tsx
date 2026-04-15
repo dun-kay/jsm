@@ -735,16 +735,13 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   async function sendToFriend() {
     if (shareBusy) return;
     setShareBusy(true);
-    const shareData = {
-      title: "Draw Things",
-      text: "Can you guess what I drew? Join my Draw Things game:",
-      url: joinUrl
-    };
+    const shareText = `Can you guess what I drew? Join my Draw Things game:\n${joinUrl}`;
     try {
       if (navigator.share) {
-        await navigator.share(shareData);
+        // Keep this as plain text so platforms are less likely to build a separate preview target URL.
+        await navigator.share({ text: shareText });
       } else {
-        await navigator.clipboard.writeText(joinUrl);
+        await navigator.clipboard.writeText(shareText);
       }
     } finally {
       setShareBusy(false);
