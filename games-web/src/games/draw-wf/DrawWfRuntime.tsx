@@ -119,6 +119,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const [showNameHint, setShowNameHint] = useState(false);
   const [savingName, setSavingName] = useState(false);
   const [shareBusy, setShareBusy] = useState(false);
+  const [showShareFallbackModal, setShowShareFallbackModal] = useState(false);
+  const [shareFallbackText, setShareFallbackText] = useState("");
   const [pendingDrawingPayload, setPendingDrawingPayload] = useState<ReplayPayload | null>(null);
   const [guessStartedRoundId, setGuessStartedRoundId] = useState<string | null>(null);
   const [showQuick, setShowQuick] = useState(false);
@@ -174,6 +176,9 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const isHurryWindow = isActiveGuesser && (showQuick || timeLeft <= 2);
   const guessCountdown = timeLeft;
   const joinUrl = `${window.location.origin}/g/draw-things/?g=${gameCode}`;
+  const shareMoreText = `Can you guess what I drew? Join my Draw Things game...\n${joinUrl}`;
+  const nudgeGuessText = `Hey! I'm waiting for you to guess my drawing....\n${joinUrl}`;
+  const nudgeDrawText = `Hey! I'm waiting for you to do your drawing....\n${joinUrl}`;
 
   function nameSetKey() {
     return `${NAME_SET_PREFIX}${gameCode}_${playerToken}`;
@@ -732,19 +737,28 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     });
   }
 
-  async function sendToFriend() {
+  async function sendShareText(shareText: string) {
     if (shareBusy) return;
     setShareBusy(true);
-    const shareText = `Can you guess what I drew? Join my Draw Things game:\n${joinUrl}`;
     try {
       if (navigator.share) {
         // Keep this as plain text so platforms are less likely to build a separate preview target URL.
         await navigator.share({ text: shareText });
       } else {
-        await navigator.clipboard.writeText(shareText);
+        setShareFallbackText(shareText);
+        setShowShareFallbackModal(true);
       }
     } finally {
       setShareBusy(false);
+    }
+  }
+
+  async function copyShareFallbackText() {
+    if (!shareFallbackText) return;
+    try {
+      await navigator.clipboard.writeText(shareFallbackText);
+    } catch {
+      // ignore clipboard permission failures
     }
   }
 
@@ -1019,7 +1033,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
             <>
               <p><b>Your drawing is live.</b></p>
               <p className="hint-text">Waiting for all active guessers to press Guess.</p>
-              <button type="button" className="btn btn-key" onClick={() => void sendToFriend()} disabled={shareBusy}>
+              <button type="button" className="btn btn-key" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
                 {shareBusy ? "Sharing..." : "Send to more friends"}
               </button>
             </>
@@ -1044,9 +1058,20 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
             
               <h2>{state.roundNumber <= 1 ? "Send your drawing to a friend, see if they can guess it..." : "Waiting for friends to guess..."}</h2><p></p>
               <div><canvas ref={finalReplayRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} className="drawwf-canvas lob" /></div><p></p>
-              <button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Send to friends"}
-              </button>
+              {state.roundNumber <= 1 ? (
+                <button type="button" className="btn btn-key" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+                  {shareBusy ? "Sharing..." : "Send drawing to friends"}
+                </button>
+              ) : (
+                <>
+                  <button type="button" className="btn btn-key" onClick={() => void sendShareText(nudgeGuessText)} disabled={shareBusy}>
+                    {shareBusy ? "Sharing..." : "Nudge..."}
+                  </button>
+                  <button type="button" className="btn btn-key" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+                    {shareBusy ? "Sharing..." : "Send to MORE"}
+                  </button>
+                </>
+              )}
               {renderPlayersPanel()}
             </>
           ) : !isGuessUiReady ? (
@@ -1153,18 +1178,50 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               {busy ? "Loading..." : "Your turn to draw..."}
             </button>
           ) : (
-            <p className="hint-text">Waiting for next drawing...</p>
+            <p className="hint-text">Waiting for <u>{drawer}</u> to do the next drawing...</p>
           )}
-          <p></p><button type="button" className="btn btn-soft" onClick={() => void sendToFriend()} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Send to more friends"}
+          <p></p>
+            {!isWaitingOnYou ? (
+              <button type="button" className="btn btn-key" onClick={() => void sendShareText(nudgeDrawText)} disabled={shareBusy}>
+                {shareBusy ? "Sharing..." : "Nudge your friend to draw"}
               </button>
+            ) : null}
             {renderPlayersPanel()}
-            <p></p><button type="button" className="btn btn-soft runtime-reroll-btn btn-left" onClick={() => window.open("/g/draw-things/", "_blank", "noopener,noreferrer")}>
+            <p></p>
+             <button type="button" className="btn key btn-left" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+                {shareBusy ? "Sharing..." : "Send to MORE friends (max 24 players)"}
+              </button>
+            <button type="button" className="btn btn-soft runtime-reroll-btn btn-left" onClick={() => window.open("/g/draw-things/", "_blank", "noopener,noreferrer")}>
               Start a NEW game, opens a new tab
             </button>
           </>
         )}
         </>
+      )}
+
+      {showShareFallbackModal && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <h2>Share this invite</h2>
+            <p className="hint-text">Copy and paste this message into Messenger, WhatsApp, SMS, or DM.</p>
+            <textarea
+              className="input-pill"
+              value={shareFallbackText}
+              readOnly
+              rows={4}
+              style={{ width: "100%", resize: "none" }}
+              onFocus={(event) => event.currentTarget.select()}
+            />
+            <div className="bottom-row">
+              <button type="button" className="btn btn-key" onClick={() => void copyShareFallbackText()}>
+                Copy
+              </button>
+              <button type="button" className="btn btn-soft" onClick={() => setShowShareFallbackModal(false)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {showPaywall && (
