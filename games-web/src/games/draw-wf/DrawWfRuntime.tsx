@@ -740,8 +740,11 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   async function sendShareText(shareText: string) {
     if (shareBusy) return;
     setShareBusy(true);
+    const isMobileShareSurface =
+      typeof navigator !== "undefined" &&
+      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
     try {
-      if (navigator.share) {
+      if (navigator.share && isMobileShareSurface) {
         // Keep this as plain text so platforms are less likely to build a separate preview target URL.
         await navigator.share({ text: shareText });
       } else {
