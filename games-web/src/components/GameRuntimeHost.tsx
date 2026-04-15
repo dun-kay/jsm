@@ -18,6 +18,7 @@ import {
   getDrawThingsWalletSummary,
   type DrawThingsWalletSummary
 } from "../lib/drawThingsWallet";
+import { ACQUISITION_TEST_MODE } from "../lib/featureFlags";
 
 type GameRuntimeHostProps = {
   gameCode: string;
@@ -179,14 +180,16 @@ export default function GameRuntimeHost({
           <button type="button" className="theme-toggle quit-toggle" onClick={() => setShowQuitConfirm(true)}>
             Quit
           </button>
-          {isDrawThingsRuntime && drawWallet ? (
-            <div className="drawthings-runtime-accessbar">
-              <p className="drawthings-runtime-accessbar-text">Plays +{drawWallet.totalPlays}</p>
-              <button type="button" className="drawthings-mini-btn drawthings-mini-btn-key" onClick={openDrawThingsPaywall}>
-                Unlock 🔓
-              </button>
-            </div>
-          ) : null}
+          <div hidden={ACQUISITION_TEST_MODE}>
+            {isDrawThingsRuntime && drawWallet ? (
+              <div className="drawthings-runtime-accessbar">
+                <p className="drawthings-runtime-accessbar-text">Plays +{drawWallet.totalPlays}</p>
+                <button type="button" className="drawthings-mini-btn drawthings-mini-btn-key" onClick={openDrawThingsPaywall}>
+                  Unlock
+                </button>
+              </div>
+            ) : null}
+          </div>
           <button className="theme-toggle" type="button" onClick={onToggleTheme} aria-label="Toggle light and dark mode">
             {theme === "light" ? "Dark mode" : "Light mode"}
           </button>

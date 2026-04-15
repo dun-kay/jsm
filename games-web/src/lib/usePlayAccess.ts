@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { confirmCheckoutSession, consumeSession, getAccessState, type AccessState } from "./accessApi";
+import { ACQUISITION_TEST_MODE } from "./featureFlags";
 
 export function usePlayAccess() {
   const [accessState, setAccessState] = useState<AccessState | null>(null);
@@ -71,6 +72,11 @@ export function usePlayAccess() {
   const ensureSessionAccess = useCallback(
     async (gameCode: string): Promise<boolean> => {
       setAccessError("");
+      if (ACQUISITION_TEST_MODE) {
+        // Acquisition test mode override:
+        // Previous behavior consumed 1 session via consumeSession(gameCode) and blocked when exhausted.
+        return true;
+      }
       const result = await consumeSession(gameCode);
       await refreshAccessState();
       if (!result.allowed) {
@@ -83,6 +89,11 @@ export function usePlayAccess() {
   );
 
   const primePaywallIfExhausted = useCallback(async (): Promise<void> => {
+    if (ACQUISITION_TEST_MODE) {
+      // Acquisition test mode override:
+      // Previous behavior opened paywall when freeSessionsLeft <= 0 and no paid unlock.
+      return;
+    }
     const next = await getAccessState();
     setAccessState(next);
     if (!next.paidUnlockActive && next.freeSessionsLeft <= 0) {

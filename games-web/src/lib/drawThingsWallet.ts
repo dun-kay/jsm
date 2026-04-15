@@ -1,3 +1,5 @@
+import { ACQUISITION_TEST_MODE } from "./featureFlags";
+
 export type DrawThingsWallet = {
   freePlays: number;
   paidPlays: number;
@@ -157,6 +159,14 @@ export function getDrawThingsWalletSummary(): DrawThingsWalletSummary {
 export function consumeDrawThingsPlay(turnKey: string): ConsumeResult {
   const markKey = `${DRAW_THINGS_TURN_MARK_PREFIX}${turnKey}`;
   if (window.sessionStorage.getItem(markKey) === "1") {
+    return { ok: true, summary: getDrawThingsWalletSummary() };
+  }
+
+  if (ACQUISITION_TEST_MODE) {
+    // Acquisition test mode override:
+    // Previous limits were: unpaid cap 10 plays, +5 every 4h regen, paid pack 100 plays, total cap 105.
+    // We intentionally bypass consumption and blocking for clean acquisition testing.
+    window.sessionStorage.setItem(markKey, "1");
     return { ok: true, summary: getDrawThingsWalletSummary() };
   }
 
