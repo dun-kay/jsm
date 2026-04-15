@@ -12,8 +12,8 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
       <>
         <p>One player draws. Everyone else guesses.</p>
         <br />
-        <p><b>Draw time:</b> 10 seconds.</p>
-        <p><b>Guess time:</b> 10 seconds.</p>
+        <p><b>Draw time:</b> 20 seconds.</p>
+        <p><b>Guess time:</b> 20 seconds.</p>
         <br />
         <p>Guessers can start replay when they press <b>Guess</b>.</p>
         <p>Wrong attempts do not submit. Correct guesses auto-submit.</p>

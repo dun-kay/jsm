@@ -30,9 +30,11 @@ type ReplayPayload = { width: number; height: number; strokes: Stroke[] };
 const CANVAS_WIDTH = 320;
 const CANVAS_HEIGHT = 350;
 const KEYBOARD_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"] as const;
-const DRAW_SECONDS = 10;
-const GUESS_SECONDS = 10;
-const DRAW_QUICK_SECONDS = 3;
+const DRAW_SECONDS = 17;
+const GUESS_SECONDS = 17;
+const DRAW_NUMERIC_SECONDS = 15; // Show 17..3 (15 seconds), then Quick.
+const GUESS_NUMERIC_SECONDS = 15; // Show 17..3 (15 seconds), then Quick.
+const DRAW_QUICK_SECONDS = 5;
 const GUESS_QUICK_SECONDS = 5;
 const GUESS_REPLAY_SECONDS = 10;
 const NAME_SET_PREFIX = "dwf_name_set_";
@@ -492,7 +494,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     setShowQuick(false);
     setTimeLeft(DRAW_SECONDS);
     const started = Date.now();
-    const numericSeconds = DRAW_SECONDS - 1; // Show 10..2, then switch to Quick.
+    const numericSeconds = DRAW_NUMERIC_SECONDS;
     drawTimerRef.current = window.setInterval(() => {
       const elapsed = Math.floor((Date.now() - started) / 1000);
       if (elapsed < numericSeconds) {
@@ -519,7 +521,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
     setShowQuick(false);
     setTimeLeft(GUESS_SECONDS);
     const started = Date.now();
-    const numericSeconds = GUESS_SECONDS - 1; // Show 10..2, then switch to Quick.
+    const numericSeconds = GUESS_NUMERIC_SECONDS;
     guessTimerRef.current = window.setInterval(() => {
       const elapsed = Math.floor((Date.now() - started) / 1000);
       if (elapsed < numericSeconds) {
@@ -733,16 +735,13 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   async function sendToFriend() {
     if (shareBusy) return;
     setShareBusy(true);
-    const shareData = {
-      title: "Draw Things",
-      text: "Can you guess what I drew? Join my Draw Things game:",
-      url: joinUrl
-    };
+    const shareText = `Can you guess what I drew? Join my Draw Things game:\n${joinUrl}`;
     try {
       if (navigator.share) {
-        await navigator.share(shareData);
+        // Keep this as plain text so platforms are less likely to build a separate preview target URL.
+        await navigator.share({ text: shareText });
       } else {
-        await navigator.clipboard.writeText(joinUrl);
+        await navigator.clipboard.writeText(shareText);
       }
     } finally {
       setShareBusy(false);
