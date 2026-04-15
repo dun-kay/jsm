@@ -775,10 +775,14 @@ body {
 }
 
 .btn-left{
-  background: var(--bg);
-  color: var(--text);
   max-width: 300px;
   display: block;
+}
+
+.btn-more{
+  margin-bottom: 0px;
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
 }
 
 .fixed-footer-links {

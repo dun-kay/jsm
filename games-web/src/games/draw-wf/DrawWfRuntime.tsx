@@ -121,6 +121,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const [shareBusy, setShareBusy] = useState(false);
   const [showShareFallbackModal, setShowShareFallbackModal] = useState(false);
   const [shareFallbackText, setShareFallbackText] = useState("");
+  const [showCopiedHint, setShowCopiedHint] = useState(false);
   const [pendingDrawingPayload, setPendingDrawingPayload] = useState<ReplayPayload | null>(null);
   const [guessStartedRoundId, setGuessStartedRoundId] = useState<string | null>(null);
   const [showQuick, setShowQuick] = useState(false);
@@ -147,6 +148,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   const wrongFlashRafRef = useRef<number | null>(null);
   const wrongGuessClearTimerRef = useRef<number | null>(null);
   const postGuessHoldTimerRef = useRef<number | null>(null);
+  const copiedHintTimerRef = useRef<number | null>(null);
   const prevPhaseRef = useRef<string | null>(null);
   const lastGuessRoundRef = useRef<string | null>(null);
   const strokesRef = useRef<Stroke[]>([]);
@@ -465,6 +467,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
       if (wrongFlashRafRef.current) window.cancelAnimationFrame(wrongFlashRafRef.current);
       if (wrongGuessClearTimerRef.current) window.clearTimeout(wrongGuessClearTimerRef.current);
       if (postGuessHoldTimerRef.current) window.clearTimeout(postGuessHoldTimerRef.current);
+      if (copiedHintTimerRef.current) window.clearTimeout(copiedHintTimerRef.current);
     };
   }, []);
 
@@ -740,14 +743,27 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   async function sendShareText(shareText: string) {
     if (shareBusy) return;
     setShareBusy(true);
+    const isMobileShareSurface =
+      typeof navigator !== "undefined" &&
+      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
     try {
-      if (navigator.share) {
+      if (navigator.share && isMobileShareSurface) {
         // Keep this as plain text so platforms are less likely to build a separate preview target URL.
         await navigator.share({ text: shareText });
       } else {
-        setShareFallbackText(shareText);
-        setShowShareFallbackModal(true);
+        await navigator.clipboard.writeText(shareText);
+        setShowCopiedHint(true);
+        if (copiedHintTimerRef.current) {
+          window.clearTimeout(copiedHintTimerRef.current);
+        }
+        copiedHintTimerRef.current = window.setTimeout(() => {
+          setShowCopiedHint(false);
+          copiedHintTimerRef.current = null;
+        }, 3000);
       }
+    } catch {
+      setShareFallbackText(shareText);
+      setShowShareFallbackModal(true);
     } finally {
       setShareBusy(false);
     }
@@ -1071,7 +1087,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               )}
               {renderPlayersPanel()}
               {state.roundNumber > 1 ? (
-                <button type="button" className="btn key btn-left" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+                <button type="button" className="btn btn-soft runtime-reroll-btn btn-left btn-more" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
                   {shareBusy ? "Sharing..." : "Send to MORE friends (max 24 players)"}
                 </button>
               ) : null}
@@ -1190,7 +1206,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
             ) : null}
             {renderPlayersPanel()}
             <p></p>
-             <button type="button" className="btn key btn-left" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+             <button type="button" className="btn btn-soft runtime-reroll-btn btn-left btn-more" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
                 {shareBusy ? "Sharing..." : "Send to MORE friends (max 24 players)"}
               </button>
             <button type="button" className="btn btn-soft runtime-reroll-btn btn-left" onClick={() => window.open("/g/draw-things/", "_blank", "noopener,noreferrer")}>
@@ -1315,6 +1331,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
         </div>
       )}
 
+      {showCopiedHint ? <p className="hint-text">Copied to clipboard</p> : null}
       {(errorText || state.lastError) && <p className="hint-text error-text">{errorText || state.lastError}</p>}
     </section>
   );
