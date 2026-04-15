@@ -10,6 +10,7 @@ import CookieNotice from "./components/CookieNotice";
 import AccessStatusPill from "./components/AccessStatusPill";
 import { GAMES, getGameBySlug } from "./games/registry";
 import type { GameSessionContext } from "./games/types";
+import { ACQUISITION_TEST_MODE } from "./lib/featureFlags";
 
 type RouteState =
   | { kind: "home" }
@@ -495,13 +496,16 @@ export default function App() {
 
   return (
     <>
-      <AccessStatusPill
-        hidden={
-          route.kind === "home" ||
-          route.kind === "runtime" ||
-          (route.kind === "onboarding" && (route.slug === "draw-wf" || route.slug === "draw-things"))
-        }
-      />
+      <div hidden={ACQUISITION_TEST_MODE}>
+        <AccessStatusPill
+          hidden={
+            ACQUISITION_TEST_MODE ||
+            route.kind === "home" ||
+            route.kind === "runtime" ||
+            (route.kind === "onboarding" && (route.slug === "draw-wf" || route.slug === "draw-things"))
+          }
+        />
+      </div>
       {page}
       <FixedFooterLinks />
       <CookieNotice />
