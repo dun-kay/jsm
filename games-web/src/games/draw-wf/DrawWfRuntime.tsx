@@ -1081,7 +1081,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               ) : (
                 <>
                   <button type="button" className="btn btn-key" onClick={() => void sendShareText(nudgeGuessText)} disabled={shareBusy}>
-                    {shareBusy ? "Sharing..." : "Nudge your friends to guess..."}
+                    {shareBusy ? "Sharing..." : "Nudge friends to guess..."}
                   </button>
                 </>
               )}
@@ -1201,7 +1201,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
           <p></p>
             {!isWaitingOnYou ? (
               <button type="button" className="btn btn-key" onClick={() => void sendShareText(nudgeDrawText)} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Nudge your friend to draw..."}
+                {shareBusy ? "Sharing..." : "Nudge friend to draw..."}
               </button>
             ) : null}
             {renderPlayersPanel()}
