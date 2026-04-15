@@ -1087,7 +1087,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               )}
               {renderPlayersPanel()}
               {state.roundNumber > 1 ? (
-                <button type="button" className="btn key btn-left" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+                <button type="button" className="btn btn-soft runtime-reroll-btn btn-left btn-more" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
                   {shareBusy ? "Sharing..." : "Send to MORE friends (max 24 players)"}
                 </button>
               ) : null}
@@ -1206,7 +1206,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
             ) : null}
             {renderPlayersPanel()}
             <p></p>
-             <button type="button" className="btn key btn-left" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+             <button type="button" className="btn btn-soft runtime-reroll-btn btn-left btn-more" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
                 {shareBusy ? "Sharing..." : "Send to MORE friends (max 24 players)"}
               </button>
             <button type="button" className="btn btn-soft runtime-reroll-btn btn-left" onClick={() => window.open("/g/draw-things/", "_blank", "noopener,noreferrer")}>
