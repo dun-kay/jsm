@@ -740,11 +740,8 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
   async function sendShareText(shareText: string) {
     if (shareBusy) return;
     setShareBusy(true);
-    const isMobileShareSurface =
-      typeof navigator !== "undefined" &&
-      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || "");
     try {
-      if (navigator.share && isMobileShareSurface) {
+      if (navigator.share) {
         // Keep this as plain text so platforms are less likely to build a separate preview target URL.
         await navigator.share({ text: shareText });
       } else {
@@ -1068,14 +1065,16 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
               ) : (
                 <>
                   <button type="button" className="btn btn-key" onClick={() => void sendShareText(nudgeGuessText)} disabled={shareBusy}>
-                    {shareBusy ? "Sharing..." : "Nudge..."}
-                  </button>
-                  <button type="button" className="btn btn-key" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
-                    {shareBusy ? "Sharing..." : "Send to MORE"}
+                    {shareBusy ? "Sharing..." : "Nudge your friends to guess..."}
                   </button>
                 </>
               )}
               {renderPlayersPanel()}
+              {state.roundNumber > 1 ? (
+                <button type="button" className="btn key btn-left" onClick={() => void sendShareText(shareMoreText)} disabled={shareBusy}>
+                  {shareBusy ? "Sharing..." : "Send to MORE friends (max 24 players)"}
+                </button>
+              ) : null}
             </>
           ) : !isGuessUiReady ? (
             <>
@@ -1186,7 +1185,7 @@ export default function DrawWfRuntime({ gameCode, playerToken }: DrawWfRuntimePr
           <p></p>
             {!isWaitingOnYou ? (
               <button type="button" className="btn btn-key" onClick={() => void sendShareText(nudgeDrawText)} disabled={shareBusy}>
-                {shareBusy ? "Sharing..." : "Nudge your friend to draw"}
+                {shareBusy ? "Sharing..." : "Nudge your friend to draw..."}
               </button>
             ) : null}
             {renderPlayersPanel()}
