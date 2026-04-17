@@ -728,7 +728,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
               <div className="sw-guess-row">
                 <p className="sw-date-text">
                   Tap & drag to select letters.<br />
-                  Find the day's secret word.<br />
+                  Find the day's secret word. Can be any number of letters.<br />
                   Guesses are ranked by similarity.<br /><br />
                   <u>Try an easy word to get started... {starterHintWord.toUpperCase()}</u>
                 </p>
@@ -835,6 +835,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     </div>
   );
 }
+
 
 
 
