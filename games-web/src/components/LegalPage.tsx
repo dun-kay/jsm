@@ -44,6 +44,7 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Draw Things paid pack:</b> A single purchase grants 100 Draw Things plays for that browser type/device. While paid plays are active, total stored plays are capped at 105 (paid + free refill pool). The buy button is hidden while paid plays remain.</p>
             <p><b>Draw Things inactivity and service changes:</b> If Draw Things plays are not used for an extended period, we may expire unused Draw Things plays after 90 days of inactivity on that browser/device. We may also pause, change, or sunset Draw Things or related services at any time, including for maintenance, commercial, or product reasons, and are not required to keep the service running indefinitely solely to preserve unused plays.</p>
             <p><b>Billing:</b> Payments are processed by Stripe. By purchasing, you authorize the applicable charge shown at checkout.</p>
+            <p><b>Advertising:</b> We may display ads through third-party providers (including Google). Regional consent prompts may be shown where required by law.</p>
             <p><b>Session counting:</b> A session is counted when gameplay starts (not just browsing, lobby, or reading rules).</p>
             <p><b>Storage and continuity:</b> Clearing cookies/local storage, using incognito/private mode, or switching browser types/devices may reset or break access continuity.</p>
             <p><b>Disclaimer:</b> Paid access and free sessions are tied to this browser type/device via local storage and cookies. If you clear cookies/local storage, use private mode, or switch browser types/devices, access may be lost. By continuing or purchasing, you accept this setup and understand this is not grounds for a refund. Issues, contact support.</p>
@@ -57,9 +58,10 @@ export default function LegalPage({ type, theme, onToggleTheme, onBack }: LegalP
             <p><b>Who we are:</b> {COMPANY}</p>
             <p><b>What we collect:</b> Limited game/session data needed to run gameplay and access logic, including display names, session/game IDs, room events, and browser access token state.</p>
             <p><b>Why we collect it:</b> To operate games, enforce free/paid session rules, detect basic abuse, and provide support.</p>
-            <p><b>Cookies and storage:</b> We use first-party browser storage and cookies for access/session continuity. We currently do not use third-party advertising cookies.</p>
+            <p><b>Cookies and storage:</b> We use first-party browser storage/cookies for access and session continuity, and we may use Google advertising technologies (including cookies or local storage) to serve ads.</p>
+            <p><b>Ads and consent:</b> We may show Google Ads. In supported regions (including EU/UK and applicable US states), Google provides a consent flow and handles ad-consent controls based on local requirements.</p>
             <p><b>Payments:</b> Payments are processed by Stripe. We do not store full card numbers. Stripe may process payment and fraud-prevention data under its own terms.</p>
-            <p><b>Data sharing:</b> We do not sell personal data. We may share data with service providers strictly to operate the service (for example, hosting/database/payment processing).</p>
+            <p><b>Data sharing:</b> We do not sell personal data. We may share data with service providers strictly to operate the service (for example, hosting/database/payment processing/advertising delivery).</p>
             <p><b>Retention:</b> We keep operational records for as long as reasonably required for service operation, troubleshooting, fraud prevention, legal, and accounting needs.</p>
             <p><b>Your choices:</b> You can clear browser data at any time, but this may reset access continuity on that browser type/device.</p>
             <p><b>Contact:</b> <a href={CONTACT_URL} target="_blank" rel="noreferrer">Contact link</a></p>
