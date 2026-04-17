@@ -50,7 +50,7 @@ export default function CookieNotice() {
   return (
     <div className={`cookie-notice ${visible ? "is-visible" : ""}`} role="status" aria-live="polite">
       <span className="cookie-notice-text">
-        <b>Cookies:</b> We use essential storage/cookies and may show Google Ads. Read our{" "}
+        <b>Cookies 🍪:</b> We use essential storage/cookies and may show Google Ads. Read our{" "}
         <a href="/privacy-policy/" target="_blank" rel="noreferrer">
           Privacy policy
         </a>
