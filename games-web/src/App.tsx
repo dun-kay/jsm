@@ -9,12 +9,13 @@ import FixedFooterLinks from "./components/FixedFooterLinks";
 import CookieNotice from "./components/CookieNotice";
 import AccessStatusPill from "./components/AccessStatusPill";
 import { GAMES, getGameBySlug } from "./games/registry";
+import SecretWordsRuntime from "./games/secret-words/SecretWordsRuntime";
 import type { GameSessionContext } from "./games/types";
 import { ACQUISITION_TEST_MODE } from "./lib/featureFlags";
 
 type RouteState =
   | { kind: "home" }
-  | { kind: "stats"; mode: "default" | "draw-wf" }
+  | { kind: "stats"; mode: "default" | "draw-wf" | "secret-words" }
   | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
   | { kind: "game-rules"; slug: string }
   | { kind: "onboarding"; slug: string }
@@ -47,6 +48,9 @@ function parseRoute(pathname: string): RouteState {
   }
   if (path === "/stats/draw-wf/" || path === "/stats/draw-things/") {
     return { kind: "stats", mode: "draw-wf" };
+  }
+  if (path === "/stats/secret-words/") {
+    return { kind: "stats", mode: "secret-words" };
   }
   if (path === "/terms/") {
     return { kind: "legal", page: "terms" };
@@ -184,6 +188,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "wormy-worm": {
       h: "Play Wormy Worm | Games With Friends",
       b: "Set the penalty, draw worm pulls, and avoid finishing at the bottom."
+    },
+    "secret-words": {
+      h: "Play Secret Words | Games With Friends",
+      b: "A daily single-player word game. Swipe letters to find the secret word."
     }
   };
 
@@ -231,6 +239,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "wormy-worm": {
       h: "Wormy Worm Rules | Games With Friends",
       b: "Game Rules: Set the penalty, draw three worm pulls each, and avoid the bottom spot."
+    },
+    "secret-words": {
+      h: "Secret Words Rules | Games With Friends",
+      b: "Game Rules: Swipe letters to make words and find the daily secret word."
     }
   };
 
@@ -276,8 +288,16 @@ function getMetaForRoute(route: RouteState): MetaConfig {
 
   if (route.kind === "stats") {
     return {
-      title: route.mode === "draw-wf" ? "Draw Things Stats | Games With Friends" : "Session Stats | Games With Friends",
-      description: route.mode === "draw-wf" ? "Draw Things internal stats page." : "Internal stats page.",
+      title: route.mode === "draw-wf"
+        ? "Draw Things Stats | Games With Friends"
+        : route.mode === "secret-words"
+          ? "Secret Words Stats | Games With Friends"
+          : "Session Stats | Games With Friends",
+      description: route.mode === "draw-wf"
+        ? "Draw Things internal stats page."
+        : route.mode === "secret-words"
+          ? "Secret Words internal stats page."
+          : "Internal stats page.",
       robots: "noindex,nofollow"
     };
   }
@@ -410,19 +430,26 @@ export default function App() {
         />
       );
     } else {
-      page = (
-      <GameOnboardingFlow
-        game={game}
-        onExit={() => navigate("/")}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onLaunchGame={(session) => {
-          saveRuntimeSession(session);
-          setRuntimeSession(session);
-          navigate(`/play/${session.gameCode}/`);
-        }}
-      />
-    );
+      page = game.slug === "secret-words" ? (
+        <SecretWordsRuntime
+          game={game}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onBack={() => navigate("/")}
+        />
+      ) : (
+        <GameOnboardingFlow
+          game={game}
+          onExit={() => navigate("/")}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onLaunchGame={(session) => {
+            saveRuntimeSession(session);
+            setRuntimeSession(session);
+            navigate(`/play/${session.gameCode}/`);
+          }}
+        />
+      );
     }
   }
 
@@ -502,7 +529,8 @@ export default function App() {
             ACQUISITION_TEST_MODE ||
             route.kind === "home" ||
             route.kind === "runtime" ||
-            (route.kind === "onboarding" && (route.slug === "draw-wf" || route.slug === "draw-things"))
+            (route.kind === "onboarding" &&
+              (route.slug === "draw-wf" || route.slug === "draw-things" || route.slug === "secret-words"))
           }
         />
       </div>
@@ -512,3 +540,4 @@ export default function App() {
     </>
   );
 }
+

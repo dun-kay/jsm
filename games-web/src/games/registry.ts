@@ -2,6 +2,22 @@ import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
   {
+    id: "K",
+    slug: "secret-words",
+    title: "Secret Words",
+    description: "Find today's word. Higher words are closer.",
+    shortRules: "",
+    heroImage: "/assets/secret-words-logo.png",
+    theme: "default",
+    minPlayers: 1,
+    maxPlayers: 1,
+    playTime: "2 - 3 mins",
+    ageGuide: "Ages 8+",
+    joinPrefix: "K",
+    route: "/g/secret-words/",
+    enabled: true
+  },
+  {
     id: "J",
     slug: "draw-wf",
     title: "Draw Things",

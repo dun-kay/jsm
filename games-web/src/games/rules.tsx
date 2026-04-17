@@ -6,6 +6,23 @@ type GameIntroRules = {
 };
 
 const RULES_BY_SLUG: Record<string, GameIntroRules> = {
+  "secret-words": {
+    title: "You are about to play... Secret Words",
+    content: (
+      <>
+        <p>This is a <b>daily single-player game.</b></p>
+        <br />
+        <p>Swipe through the letters to make words.</p>
+        <p>When you release, your guess submits.</p>
+        <br />
+        <p>Every valid guess is ranked by closeness.</p>
+        <p><b>#1 is the secret word.</b></p>
+        <br />
+        <p>Use the day slider to play older puzzles.</p>
+        <p>Progress is saved locally on your device.</p>
+      </>
+    )
+  },
   "draw-wf": {
     title: "You are about to play... Draw Things",
     content: (

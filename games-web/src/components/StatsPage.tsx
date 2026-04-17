@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import {
   getDailySessionStats,
   getDrawWfDailyStats,
+  getSecretWordsDailyStats,
   type DailySessionStat,
-  type DrawWfDailyStat
+  type DrawWfDailyStat,
+  type SecretWordsDailyStat
 } from "../lib/statsApi";
 
 type ThemeMode = "light" | "dark";
 
 type StatsPageProps = {
-  mode: "default" | "draw-wf";
+  mode: "default" | "draw-wf" | "secret-words";
   theme: ThemeMode;
   onToggleTheme: () => void;
   onBack: () => void;
@@ -32,6 +34,7 @@ function formatDate(value: string): string {
 export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsPageProps) {
   const [rows, setRows] = useState<DailySessionStat[]>([]);
   const [drawWfRows, setDrawWfRows] = useState<DrawWfDailyStat[]>([]);
+  const [secretWordsRows, setSecretWordsRows] = useState<SecretWordsDailyStat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +49,17 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
           const data = await getDrawWfDailyStats(FROM_DATE);
           if (!canceled) {
             setDrawWfRows(data);
+            setSecretWordsRows([]);
+            setRows([]);
+          }
+          return;
+        }
+
+        if (mode === "secret-words") {
+          const data = await getSecretWordsDailyStats(FROM_DATE);
+          if (!canceled) {
+            setSecretWordsRows(data);
+            setDrawWfRows([]);
             setRows([]);
           }
           return;
@@ -55,6 +69,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
         if (!canceled) {
           setRows(data);
           setDrawWfRows([]);
+          setSecretWordsRows([]);
         }
       } catch (err) {
         if (!canceled) {
@@ -82,7 +97,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
 
       <section className="screen screen-basic">
         <header className="screen-header">
-          <h1>Session Stats</h1>
+          <h1>{mode === "draw-wf" ? "Draw Things Stats" : mode === "secret-words" ? "Secret Words Stats" : "Session Stats"}</h1>
           <p className="body-text small">Daily totals (LA time).</p>
         </header>
 
@@ -90,8 +105,14 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
           {!loading && !error ? (
             <div className="stats-row stats-head">
               <span>Date (LA)</span>
-              <span>Sessions</span>
-              <span>{mode === "draw-wf" ? "Av drawings/se." : "Av us./se."}</span>
+              <span>{mode === "secret-words" ? "Users" : "Sessions"}</span>
+              <span>
+                {mode === "draw-wf"
+                  ? "Av drawings/se."
+                  : mode === "secret-words"
+                    ? "Av guesses/se."
+                    : "Av us./se."}
+              </span>
             </div>
           ) : null}
 
@@ -117,6 +138,16 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
                 </div>
               ))
             : null}
+
+          {mode === "secret-words" && !loading && !error
+            ? secretWordsRows.map((row) => (
+                <div className="stats-row" key={row.statDate}>
+                  <span>{formatDate(row.statDate)}</span>
+                  <span>{row.sessions}</span>
+                  <span>{row.avgGuessesPerSession.toFixed(2)}</span>
+                </div>
+              ))
+            : null}
         </div>
 
         <div className="bottom-stack">
@@ -128,3 +159,4 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
     </div>
   );
 }
+
