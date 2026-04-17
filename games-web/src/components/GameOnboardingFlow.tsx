@@ -744,7 +744,21 @@ export default function GameOnboardingFlow({
 
   return (
     <div className="site-shell">
-        {screen === "lobby" && flow === "join" && !gameStarted ? (
+                {screen === "home" ? (
+          <div className="top-actions">
+            <button className="theme-toggle quit-toggle" type="button" onClick={onExit}>
+              Back
+            </button>
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={onToggleTheme}
+              aria-label="Toggle light and dark mode"
+            >
+              {theme === "light" ? "Dark mode" : "Light mode"}
+            </button>
+          </div>
+        ) : screen === "lobby" && flow === "join" && !gameStarted ? (
           <div className="top-actions">
             <button
               className="theme-toggle quit-toggle"
@@ -773,7 +787,6 @@ export default function GameOnboardingFlow({
             {theme === "light" ? "Dark mode" : "Light mode"}
           </button>
         )}
-
         {screen === "home" && (
           <section className="screen screen-home">
             <header className="screen-header">
@@ -853,9 +866,6 @@ export default function GameOnboardingFlow({
                   </button><p></p>
                 </>
               )}
-              <button className="btn btn-soft" type="button" onClick={onExit}>
-                Back to games
-              </button>
             </div>
           </section>
         )}
@@ -1087,3 +1097,5 @@ export default function GameOnboardingFlow({
     </div>
   );
 }
+
+
