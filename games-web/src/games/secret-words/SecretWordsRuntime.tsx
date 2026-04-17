@@ -3,7 +3,6 @@ import type { GameConfig } from "../types";
 import dailySeed from "./dailySeed.json";
 import {
   getSecretWordsAverageGuesses,
-  getSecretWordsWindow,
   recordSecretWordsCompletion,
   type SecretWordPuzzle
 } from "../../lib/secretWordsApi";
@@ -280,41 +279,16 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   const starterHintWord = activePuzzle?.words?.[activePuzzle.words.length - 1] ?? "";
 
   useEffect(() => {
-    let active = true;
-
-    const load = async () => {
-      setLoading(true);
-      setErrorText("");
-      try {
-        const toDate = today;
-        const fromDate = toIsoLocal(new Date(Date.now() - 21 * 24 * 60 * 60 * 1000));
-        const remote = await getSecretWordsWindow(fromDate, toDate);
-        if (!active) {
-          return;
-        }
-        const sorted = remote
-          .map((entry) => ({
-            ...entry,
-            words: uniqueWords(entry.words.map((word) => word.toLowerCase()))
-          }))
-          .sort((a, b) => b.date.localeCompare(a.date));
-        setPuzzles(sorted.length > 0 ? sorted : normalizedSeed());
-      } catch {
-        if (!active) {
-          return;
-        }
-        setPuzzles(normalizedSeed().sort((a, b) => b.date.localeCompare(a.date)));
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    };
-
-    void load();
-    return () => {
-      active = false;
-    };
+    setLoading(true);
+    setErrorText("");
+    const sorted = normalizedSeed()
+      .map((entry) => ({
+        ...entry,
+        words: uniqueWords(entry.words.map((word) => word.toLowerCase()))
+      }))
+      .sort((a, b) => b.date.localeCompare(a.date));
+    setPuzzles(sorted);
+    setLoading(false);
   }, [today]);
 
   useEffect(() => {
@@ -835,6 +809,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     </div>
   );
 }
+
 
 
 
