@@ -22,7 +22,7 @@ export default function HomeGamesGrid({
       </button>
       <header className="site-header">
         <h1>Games With Friends by Jump Ship Media</h1>
-        <h2>The fastest way to make a night more fun. Play IRL social games with your friends, straight from your phone. No game cards needed.</h2>
+        <h2>Play fun word & social games straight from your phone.</h2>
       </header>
       <section className="games-grid">
         {games.map((game) => (
