@@ -861,6 +861,12 @@ body {
   font-size: 12px;
 }
 
+.cookie-notice-text a {
+  color: var(--text);
+  text-decoration: underline;
+  font-weight: 700;
+}
+
 .cookie-notice-btn {
   border: 2px solid var(--inverse-bg);
   background: transparent;
