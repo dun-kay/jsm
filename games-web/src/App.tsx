@@ -15,7 +15,7 @@ import { ACQUISITION_TEST_MODE } from "./lib/featureFlags";
 
 type RouteState =
   | { kind: "home" }
-  | { kind: "stats"; mode: "default" | "draw-wf" }
+  | { kind: "stats"; mode: "default" | "draw-wf" | "secret-words" }
   | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
   | { kind: "game-rules"; slug: string }
   | { kind: "onboarding"; slug: string }
@@ -48,6 +48,9 @@ function parseRoute(pathname: string): RouteState {
   }
   if (path === "/stats/draw-wf/" || path === "/stats/draw-things/") {
     return { kind: "stats", mode: "draw-wf" };
+  }
+  if (path === "/stats/secret-words/") {
+    return { kind: "stats", mode: "secret-words" };
   }
   if (path === "/terms/") {
     return { kind: "legal", page: "terms" };
@@ -285,8 +288,16 @@ function getMetaForRoute(route: RouteState): MetaConfig {
 
   if (route.kind === "stats") {
     return {
-      title: route.mode === "draw-wf" ? "Draw Things Stats | Games With Friends" : "Session Stats | Games With Friends",
-      description: route.mode === "draw-wf" ? "Draw Things internal stats page." : "Internal stats page.",
+      title: route.mode === "draw-wf"
+        ? "Draw Things Stats | Games With Friends"
+        : route.mode === "secret-words"
+          ? "Secret Words Stats | Games With Friends"
+          : "Session Stats | Games With Friends",
+      description: route.mode === "draw-wf"
+        ? "Draw Things internal stats page."
+        : route.mode === "secret-words"
+          ? "Secret Words internal stats page."
+          : "Internal stats page.",
       robots: "noindex,nofollow"
     };
   }
@@ -529,3 +540,4 @@ export default function App() {
     </>
   );
 }
+
