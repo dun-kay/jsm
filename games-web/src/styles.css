@@ -1261,7 +1261,7 @@ body {
   overflow-x: auto;
   padding-bottom: 6px;
   scroll-snap-type: x mandatory;
-
+  padding-bottom:15px;
 }
 
 .sw-day-chip {
@@ -1391,8 +1391,8 @@ body {
 
 .sw-key {
   position: absolute;
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   border-radius: 999px;
   background: transparent;
   color: var(--text);
@@ -1504,6 +1504,7 @@ body {
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
+
 
 
 
