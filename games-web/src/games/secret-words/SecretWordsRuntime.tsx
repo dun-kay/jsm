@@ -29,6 +29,16 @@ type GuessHistoryState = {
   byDate: Record<string, string[]>;
 };
 
+type HintProgressEntry = {
+  hintsUsed: number;
+  words: string[];
+  gaveUp: boolean;
+};
+
+type HintProgressState = {
+  byDate: Record<string, HintProgressEntry>;
+};
+
 type Point = {
   x: number;
   y: number;
@@ -36,9 +46,14 @@ type Point = {
 
 const PROGRESS_KEY = "notes_secret_words_progress_v1";
 const GUESSES_KEY = "notes_secret_words_guesses_v1";
+const HINTS_KEY = "notes_secret_words_hints_v1";
 const PLAYER_KEY = "notes_secret_words_player_id";
 const KEY_HOLD_MS = 500;
 const SUCCESS_MS = 2000;
+const KEYBOARD_VIEWBOX = 100;
+const KEYBOARD_CENTER = KEYBOARD_VIEWBOX / 2;
+const KEYBOARD_RADIUS = 34;
+const HINT_START_RANKS = [4, 3, 2] as const;
 
 function toIsoLocal(date: Date): string {
   const year = date.getFullYear();
@@ -123,6 +138,63 @@ function writeGuessesForDay(day: string, words: string[]) {
   history.byDate[day] = words;
   persistGuessHistory(history);
 }
+
+function readHintProgress(): HintProgressState {
+  try {
+    const raw = window.localStorage.getItem(HINTS_KEY);
+    if (!raw) {
+      return { byDate: {} };
+    }
+    const parsed = JSON.parse(raw) as HintProgressState;
+    if (!parsed || typeof parsed !== "object" || !parsed.byDate) {
+      return { byDate: {} };
+    }
+    return parsed;
+  } catch {
+    return { byDate: {} };
+  }
+}
+
+function persistHintProgress(value: HintProgressState) {
+  window.localStorage.setItem(HINTS_KEY, JSON.stringify(value));
+}
+
+function readHintsForDay(day: string, puzzleWords: string[]): HintProgressEntry {
+  const hints = readHintProgress();
+  const existing = hints.byDate[day];
+  if (!existing) {
+    return { hintsUsed: 0, words: [], gaveUp: false };
+  }
+
+  const seen = new Set<string>();
+  const words = existing.words
+    .map((word) => String(word).toLowerCase())
+    .filter((word) => {
+      if (seen.has(word)) {
+        return false;
+      }
+      seen.add(word);
+      return puzzleWords.includes(word);
+    });
+
+  const hintsUsed = Math.max(0, Math.min(3, Number(existing.hintsUsed) || 0));
+  return {
+    hintsUsed,
+    words,
+    gaveUp: Boolean(existing.gaveUp)
+  };
+}
+
+function writeHintsForDay(day: string, entry: HintProgressEntry) {
+  const history = readHintProgress();
+  history.byDate[day] = {
+    hintsUsed: Math.max(0, Math.min(3, entry.hintsUsed)),
+    words: entry.words.map((word) => String(word).toLowerCase()),
+    gaveUp: Boolean(entry.gaveUp)
+  };
+  persistHintProgress(history);
+}
+
 function getOrCreateLocalPlayerId(): string {
   try {
     const current = window.localStorage.getItem(PLAYER_KEY);
@@ -152,12 +224,10 @@ function pointString(point: Point): string {
 }
 
 function findPointForKey(index: number, keyCount: number): Point {
-  const center = 180;
-  const radius = 80;
   const angle = (Math.PI * 2 * index) / keyCount - Math.PI / 2;
   return {
-    x: center + radius * Math.cos(angle),
-    y: center + radius * Math.sin(angle)
+    x: KEYBOARD_CENTER + KEYBOARD_RADIUS * Math.cos(angle),
+    y: KEYBOARD_CENTER + KEYBOARD_RADIUS * Math.sin(angle)
   };
 }
 
@@ -220,8 +290,13 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   const [averageGuesses, setAverageGuesses] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showQuitModal, setShowQuitModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [hintWords, setHintWords] = useState<string[]>([]);
+  const [gaveUp, setGaveUp] = useState(false);
 
   const keyboardWrapRef = useRef<HTMLDivElement | null>(null);
+  const sliderRef = useRef<HTMLDivElement | null>(null);
 
   const pointerIdRef = useRef<number | null>(null);
   const draggingRef = useRef(false);
@@ -276,7 +351,35 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
 
   const inGame = Boolean(activePuzzle);
   const solved = guesses.some((entry) => entry.rank === 1);
-  const starterHintWord = activePuzzle?.words?.[activePuzzle.words.length - 1] ?? "";
+  const completed = solved || gaveUp;
+  const starterHintWord = activePuzzle?.words?.[activePuzzle.words.length - 10] ?? "";
+  const highlightedDate = mostRecentUnplayed?.date ?? recentPuzzles[0]?.date ?? null;
+  const shownWordSet = useMemo(() => {
+    const words = new Set<string>();
+    for (const entry of guesses) {
+      words.add(entry.word);
+    }
+    for (const word of hintWords) {
+      words.add(word);
+    }
+    return words;
+  }, [guesses, hintWords]);
+
+  const hintEntries = useMemo(() => {
+    if (!activePuzzle) {
+      return [];
+    }
+    return hintWords
+      .map((word) => ({ word, rank: activePuzzle.words.indexOf(word) + 1 }))
+      .filter((entry) => entry.rank > 0);
+  }, [activePuzzle, hintWords]);
+
+  const visibleEntries = useMemo(() => {
+    return [
+      ...hintEntries.map((entry) => ({ ...entry, source: "hint" as const })),
+      ...guesses.map((entry) => ({ ...entry, source: "guess" as const }))
+    ];
+  }, [hintEntries, guesses]);
 
   useEffect(() => {
     setLoading(true);
@@ -321,6 +424,19 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     pathPointsRef.current = pathPoints;
   }, [pathPoints]);
 
+  useEffect(() => {
+    if (inGame || !highlightedDate || !sliderRef.current) {
+      return;
+    }
+
+    const target = sliderRef.current.querySelector(`[data-sw-day="${highlightedDate}"]`) as HTMLButtonElement | null;
+    if (!target) {
+      return;
+    }
+
+    sliderRef.current.scrollLeft = Math.max(0, target.offsetLeft);
+  }, [inGame, highlightedDate, recentPuzzles]);
+
   function updateUrlForDay(day: string | null) {
     const url = new URL(window.location.href);
     if (day) {
@@ -334,12 +450,24 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   function startPuzzle(day: string) {
     setActiveDate(day);
     const puzzle = puzzles.find((entry) => entry.date === day);
-    setGuesses(puzzle ? readGuessesForDay(day, puzzle.words) : []);
+    if (puzzle) {
+      setGuesses(readGuessesForDay(day, puzzle.words));
+      const hintState = readHintsForDay(day, puzzle.words);
+      setHintsUsed(hintState.hintsUsed);
+      setHintWords(hintState.words);
+      setGaveUp(hintState.gaveUp);
+    } else {
+      setGuesses([]);
+      setHintsUsed(0);
+      setHintWords([]);
+      setGaveUp(false);
+    }
     setInputNotice("");
     setPathIndexes([]);
     setPathPoints([]);
     setTraceCursor(null);
     setAverageGuesses(null);
+    setShowHelpModal(false);
     updateUrlForDay(day);
   }
 
@@ -353,6 +481,10 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     setAverageGuesses(null);
     setShowShareModal(false);
     setShowQuitModal(false);
+    setShowHelpModal(false);
+    setHintsUsed(0);
+    setHintWords([]);
+    setGaveUp(false);
     updateUrlForDay(null);
   }
 
@@ -376,7 +508,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     }, KEY_HOLD_MS);
   }
 
-  async function completePuzzle(guessCount: number) {
+  async function completePuzzle(guessCount: number, options?: { skipOverlay?: boolean }) {
     if (!activePuzzle) {
       return;
     }
@@ -393,9 +525,11 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     setProgress(updated);
     persistProgress(updated);
 
-    setShowSuccessOverlay(true);
-    await new Promise((resolve) => window.setTimeout(resolve, SUCCESS_MS));
-    setShowSuccessOverlay(false);
+    if (!options?.skipOverlay) {
+      setShowSuccessOverlay(true);
+      await new Promise((resolve) => window.setTimeout(resolve, SUCCESS_MS));
+      setShowSuccessOverlay(false);
+    }
 
     const localPlayerId = getOrCreateLocalPlayerId();
     try {
@@ -424,7 +558,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
       return;
     }
 
-    if (guesses.some((entry) => entry.word === normalized)) {
+    if (shownWordSet.has(normalized)) {
       setInputNotice("ALREADY GUESSED");
       triggerShake();
       return;
@@ -445,6 +579,73 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     if (rank === 1) {
       void completePuzzle(next.length);
     }
+  }
+
+  function persistHintState(nextHintsUsed: number, nextHintWords: string[], nextGaveUp: boolean) {
+    if (!activePuzzle) {
+      return;
+    }
+    writeHintsForDay(activePuzzle.date, {
+      hintsUsed: nextHintsUsed,
+      words: nextHintWords,
+      gaveUp: nextGaveUp
+    });
+  }
+
+  function revealHintWord() {
+    if (!activePuzzle || solved || gaveUp || hintsUsed >= 3) {
+      return;
+    }
+
+    const startRank = HINT_START_RANKS[hintsUsed] ?? 2;
+    const visible = new Set<string>(shownWordSet);
+
+    let selectedWord = "";
+    for (let rank = startRank; rank <= activePuzzle.words.length; rank += 1) {
+      const candidate = activePuzzle.words[rank - 1];
+      if (candidate && !visible.has(candidate)) {
+        selectedWord = candidate;
+        break;
+      }
+    }
+
+    if (!selectedWord) {
+      for (let rank = 2; rank <= activePuzzle.words.length; rank += 1) {
+        const candidate = activePuzzle.words[rank - 1];
+        if (candidate && !visible.has(candidate)) {
+          selectedWord = candidate;
+          break;
+        }
+      }
+    }
+
+    if (!selectedWord) {
+      return;
+    }
+
+    const nextHintsUsed = Math.min(3, hintsUsed + 1);
+    const nextHintWords = [selectedWord, ...hintWords.filter((word) => word !== selectedWord)];
+    setHintsUsed(nextHintsUsed);
+    setHintWords(nextHintWords);
+    persistHintState(nextHintsUsed, nextHintWords, gaveUp);
+  }
+
+  function giveUpGame() {
+    if (!activePuzzle || solved || gaveUp) {
+      return;
+    }
+    setGaveUp(true);
+    setInputNotice("");
+    persistHintState(hintsUsed, hintWords, true);
+    void completePuzzle(guesses.length);
+  }
+
+  function onHintAction() {
+    if (hintsUsed >= 3) {
+      giveUpGame();
+      return;
+    }
+    revealHintWord();
   }
 
   function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
@@ -479,8 +680,8 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     const wrapRect = keyboardWrapRef.current?.getBoundingClientRect();
     if (wrapRect) {
       setTraceCursor({
-        x: event.clientX - wrapRect.left,
-        y: event.clientY - wrapRect.top
+        x: ((event.clientX - wrapRect.left) / wrapRect.width) * KEYBOARD_VIEWBOX,
+        y: ((event.clientY - wrapRect.top) / wrapRect.height) * KEYBOARD_VIEWBOX
       });
     }
 
@@ -489,12 +690,28 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     if (!key) {
       return;
     }
+
     const index = Number(key.dataset.swKey);
-    if (pathIndexesRef.current.includes(index)) {
+    const currentIndexes = pathIndexesRef.current;
+
+    if (
+      currentIndexes.length >= 2
+      && index === currentIndexes[currentIndexes.length - 2]
+    ) {
+      const nextIndexes = currentIndexes.slice(0, -1);
+      const nextPoints = pathPointsRef.current.slice(0, -1);
+      pathIndexesRef.current = nextIndexes;
+      pathPointsRef.current = nextPoints;
+      setPathIndexes(nextIndexes);
+      setPathPoints(nextPoints);
       return;
     }
 
-    const nextIndexes = [...pathIndexesRef.current, index];
+    if (currentIndexes.includes(index)) {
+      return;
+    }
+
+    const nextIndexes = [...currentIndexes, index];
     const nextPoints = [...pathPointsRef.current, findPointForKey(index, wheelLetters.length)];
     pathIndexesRef.current = nextIndexes;
     pathPointsRef.current = nextPoints;
@@ -512,6 +729,11 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
       event.currentTarget.releasePointerCapture(pointerIdRef.current);
     }
     pointerIdRef.current = null;
+
+    if (pathIndexesRef.current.length < 2) {
+      lockKeyboardThenClearPath();
+      return;
+    }
 
     const word = pathIndexesRef.current.map((index) => wheelLetters[index] || "").join("");
     submitGuess(word);
@@ -632,7 +854,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
               <img className="landing-hero-image" src={game.heroImage} alt={`${game.title} image`} />
             </div>
             <h1>Guess the Secret Word:</h1>
-            <p className="body-text">Find the daily secret word. Words higher on the list are closer to the answer.</p>
+            <p className="body-text">Find the daily secret word.<br></br>Guesses are ranked by similarity.</p>
           </header>
 
           <div className="bottom-stack sw-stack">
@@ -640,14 +862,16 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
             <br></br>
             <p className="hint-text">Previous games:</p>
             <div className="sw-slider-wrap">
-              <div className="sw-slider">
+              <div ref={sliderRef} className="sw-slider">
                 {recentPuzzles.map((entry) => {
                   const isToday = entry.date === today;
+                  const isHighlighted = entry.date === highlightedDate;
                   return (
                     <button
                       key={entry.date}
                       type="button"
-                      className={`sw-day-chip${isToday ? " is-today" : ""}`}
+                      data-sw-day={entry.date}
+                      className={`sw-day-chip${isHighlighted ? " is-today" : ""}`}
                       onClick={() => startPuzzle(entry.date)}
                     >
                       <span></span>
@@ -661,16 +885,18 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
             </div>
           </div>
         </section>
-      ) : solved ? (
+      ) : completed ? (
         <section className="screen screen-basic sw-screen sw-play-screen">
           <header className="screen-header">
-            <h1>Solved!</h1>
-             <div className="sw-date-guess-row-inner">
-            <p className="sw-date-text">{formatLongDay(activePuzzle!.date)}</p>
-            <p className="sw-date-text">Guesses: {guesses.length}</p>
+            <h1>{gaveUp ? "Round Complete:" : "Solved!"}</h1>
+            <div className="sw-date-guess-row">
+              <p className="sw-date-text">{formatLongDay(activePuzzle!.date)}</p>
+              <p className="sw-date-text">Guesses: {guesses.length}</p>
             </div>
-            <p className="sw-date-text">Avg: <b>{averageGuesses ?? "Calculating..."}</b></p>
-          </header>
+            <div className="sw-date-guess-row-inner">
+              <p className="sw-date-text">{gaveUp ? "Gave up..." : `Hints: ${hintsUsed}/3`}</p>
+            <p className="sw-date-text">Avg. Guesses: <b>{averageGuesses ?? "Waiting..."}</b></p>
+                      </div></header>
 
           <div className="bottom-stack">
             <button className="btn btn-key" type="button" onClick={playAgain}>Play more</button>
@@ -680,7 +906,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
       ) : (
         <section className="screen screen-basic sw-screen sw-play-screen">
           <header className="screen-header">
-            <h1>Guess the Secret Word</h1>
+            <h1>Guess the Secret Word:</h1>
           </header>
           <div className="sw-date-guess-row">
             <p className="sw-date-text">{formatLongDay(activePuzzle!.date)}</p>
@@ -698,22 +924,23 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
           </div>
 
           <div className="sw-guesses sw-guesses-scroll">
-            {guesses.length === 0 ? (
+            {visibleEntries.length === 0 ? (
               <div className="sw-guess-row">
                 <p className="sw-date-text">
                   Tap & drag to select letters.<br />
-                  Find the day's secret word. Can be any number of letters.<br />
-                  Guesses are ranked by similarity.<br /><br />
-                  <u>Try an easy word to get started... {starterHintWord.toUpperCase()}</u>
+                  Try to find the day's secret word.<br /><br />
+                  The word can be <u>any number of letters long.</u><br /><br  />
+                  Guesses are ranked by their similarity to the word. The secret word is ranked 1.<br /><br />
+                  Try an <u>easy word to get started... {starterHintWord.toUpperCase()}.</u>
                 </p>
               </div>
             ) : null}
-            {guesses.map((entry) => {
+            {visibleEntries.map((entry) => {
               const total = activePuzzle!.words.length;
               const fillPercent = ((total - entry.rank + 1) / total) * 100;
               const hue = Math.max(0, Math.min(120, Math.round((fillPercent / 100) * 120)));
               return (
-                <div className="sw-guess-row" key={`${entry.word}-${entry.rank}`}>
+                <div className="sw-guess-row" key={`${entry.source}-${entry.word}-${entry.rank}`}>
                   <div className="sw-guess-bar-track">
                     <div className="sw-guess-bar" style={{ width: `${fillPercent.toFixed(1)}%`, minWidth: "40px", backgroundColor: `hsl(${hue}, 72%, 42%)` }} />
                     <div className="sw-guess-bar-labels">
@@ -725,7 +952,25 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
               );
             })}
           </div>
-
+          <div className="sw-date-guess-row">
+            <p className="sw-date-text">{gaveUp ? "Gave up" : `Hints: ${hintsUsed}/3`}</p>
+            <div className="sw-hint-actions">
+                    <button
+                type="button"
+                className="btn btn-soft runtime-reroll-btn btn-left mores shorter-btn"
+                onClick={onHintAction}
+              >
+                {hintsUsed >= 3 ? "Give up" : "Hint"}
+              </button>
+              <button
+                type="button"
+                className="btn btn-soft runtime-reroll-btn btn-left mores shorter-btn vs"
+                onClick={() => setShowHelpModal(true)}
+              >
+                ??
+              </button>
+            </div>
+          </div>
           <div
             ref={keyboardWrapRef}
             className={`sw-keyboard-wrap${shake ? " sw-shake" : ""}${keyboardLocked ? " sw-locked" : ""}`}
@@ -735,7 +980,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
             onPointerCancel={onPointerUp}
             role="presentation"
           >
-            <svg className="sw-trace" viewBox="0 0 360 360" preserveAspectRatio="none" aria-hidden="true">
+            <svg className="sw-trace" viewBox={`0 0 ${KEYBOARD_VIEWBOX} ${KEYBOARD_VIEWBOX}`} preserveAspectRatio="none" aria-hidden="true">
               <polyline
                 points={
                   [...pathPoints, ...(traceCursor ? [traceCursor] : [])]
@@ -754,7 +999,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
                   type="button"
                   data-sw-key={index}
                   className={`sw-key${selected ? " is-active" : ""}`}
-                  style={{ left: `${point.x - 30}px`, top: `${point.y - 30}px` }}
+                  style={{ left: `${point.x}%`, top: `${point.y}%` }}
                   disabled={keyboardLocked}
                 >
                   {letter}
@@ -806,9 +1051,42 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
           </div>
         </div>
       ) : null}
+
+      {showHelpModal ? (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div className="modal-card">
+            <h2>Help?</h2>
+            <p className="sw-date-text">
+              Tap & drag to select letters.<br />
+              Try to find the day's secret word.<br /><br />
+              The word can be <u>any number of letters long.</u><br /><br />
+              Guesses are ranked by their similarity to the word. The secret word is ranked 1.  Similarity can be based on meaning or letter similarity.<br /><br />
+              If you are stuck, use a hint or try an <u>easy word... {starterHintWord.toUpperCase()}.</u>
+            </p>
+            <div>
+              <button className="btn btn-soft" type="button" onClick={() => setShowHelpModal(false)}>
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
