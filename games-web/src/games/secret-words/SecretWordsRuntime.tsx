@@ -54,6 +54,7 @@ const KEYBOARD_VIEWBOX = 100;
 const KEYBOARD_CENTER = KEYBOARD_VIEWBOX / 2;
 const KEYBOARD_RADIUS = 34;
 const HINT_START_RANKS = [4, 3, 2] as const;
+const ALL_PLAYED_TEXT = "Congrats, you have played all available games right now. Come back tomorrow to play again.";
 
 function toIsoLocal(date: Date): string {
   const year = date.getFullYear();
@@ -244,7 +245,23 @@ function hashSeed(value: string): number {
   return hash >>> 0;
 }
 
-function shuffledLettersForDay(dateIso: string, letters: string): string[] {
+function containsCircularSecretOrder(chars: string[], secretWord: string): boolean {
+  if (!secretWord) {
+    return false;
+  }
+  const normalized = secretWord.toLowerCase();
+  if (normalized.length < 2 || normalized.length > chars.length) {
+    return false;
+  }
+
+  const circle = chars.join("").toLowerCase();
+  const doubled = circle + circle;
+  const reversed = normalized.split("").reverse().join("");
+
+  return doubled.includes(normalized) || doubled.includes(reversed);
+}
+
+function shuffledLettersForDay(dateIso: string, letters: string, secretWord = ""): string[] {
   const chars = letters.toUpperCase().split("");
   if (chars.length < 2) {
     return chars;
@@ -267,6 +284,26 @@ function shuffledLettersForDay(dateIso: string, letters: string): string[] {
     const first = chars.shift();
     if (first) {
       chars.push(first);
+    }
+  }
+
+  if (secretWord) {
+    for (let attempt = 0; attempt < 12; attempt += 1) {
+      if (!containsCircularSecretOrder(chars, secretWord)) {
+        break;
+      }
+
+      const firstIndex = Math.floor(rand() * chars.length);
+      const secondOffset = 1 + Math.floor(rand() * (chars.length - 1));
+      const secondIndex = (firstIndex + secondOffset) % chars.length;
+      [chars[firstIndex], chars[secondIndex]] = [chars[secondIndex], chars[firstIndex]];
+
+      if (attempt % 2 === 0) {
+        const first = chars.shift();
+        if (first) {
+          chars.push(first);
+        }
+      }
     }
   }
 
@@ -315,7 +352,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     if (!activePuzzle) {
       return [];
     }
-    return shuffledLettersForDay(activePuzzle.date, activePuzzle.letters);
+    return shuffledLettersForDay(activePuzzle.date, activePuzzle.letters, activePuzzle.words[0] ?? "");
   }, [activePuzzle]);
 
   const previewWord = useMemo(() => {
@@ -333,9 +370,15 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
 
   const recentPuzzles = useMemo(() => playablePuzzles.slice(0, 11), [playablePuzzles]);
 
-  const mostRecentUnplayed = useMemo(() => {
-    return playablePuzzles.find((entry) => !progress.completed[entry.date]) ?? playablePuzzles[0] ?? null;
+  const unplayedPuzzle = useMemo(() => {
+    return playablePuzzles.find((entry) => !progress.completed[entry.date]) ?? null;
   }, [playablePuzzles, progress.completed]);
+
+  const allAvailablePlayed = playablePuzzles.length > 0 && unplayedPuzzle == null;
+
+  const mostRecentUnplayed = useMemo(() => {
+    return unplayedPuzzle ?? playablePuzzles[0] ?? null;
+  }, [unplayedPuzzle, playablePuzzles]);
 
   const successText = useMemo(() => {
     return `I guessed today's Secret Word in ${guesses.length} guesses, can you do it in less?`;
@@ -741,6 +784,10 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   }
 
   function playToday() {
+    if (allAvailablePlayed) {
+      return;
+    }
+
     const target = mostRecentUnplayed ?? playablePuzzles[0];
     if (target) {
       startPuzzle(target.date);
@@ -858,8 +905,11 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
           </header>
 
           <div className="bottom-stack sw-stack">
-            <button className="btn btn-key" type="button" onClick={playToday}>Play</button>
+            <button className="btn btn-key" type="button" onClick={playToday} disabled={allAvailablePlayed}>Play</button>
             <br></br>
+                        {allAvailablePlayed ? (
+              <p className="hint-text error-text">{ALL_PLAYED_TEXT}</p>
+            ) : null}
             <p className="hint-text">Previous games:</p>
             <div className="sw-slider-wrap">
               <div ref={sliderRef} className="sw-slider">
@@ -1074,6 +1124,8 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     </div>
   );
 }
+
+
 
 
 

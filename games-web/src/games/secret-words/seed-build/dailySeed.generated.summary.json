@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-04-18T11:51:19.834Z",
+  "source": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combo_word_index.common.min50.secrets.sanitized.ranked.jsonl",
+  "output": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\dailySeed.json",
+  "window": {
+    "startDate": "2021-04-18",
+    "endDate": "2046-04-18",
+    "totalDays": 9132
+  },
+  "combos": {
+    "available": 9743,
+    "uniqueUsedInWindow": 9132,
+    "shuffleSeed": "secret-words-daily-seed-25y-v1"
+  }
+}

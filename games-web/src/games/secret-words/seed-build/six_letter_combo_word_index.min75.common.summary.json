@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-04-18T09:55:46.116Z",
+  "source": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combo_word_index.min75.jsonl",
+  "commonWordsSource": {
+    "url": "https://raw.githubusercontent.com/aparrish/wordfreq-en-25000/main/wordfreq-en-25000-log.json",
+    "cachePath": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\wordfreq-en-25000-log.json",
+    "downloadedThisRun": true,
+    "commonWordCount": 10705
+  },
+  "totals": {
+    "combosIn": 18689,
+    "combosOut": 18689,
+    "combosDropped": 0,
+    "wordsIn": 1756830,
+    "wordsOut": 968212,
+    "wordsRemoved": 788618
+  },
+  "outputs": {
+    "jsonl": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combo_word_index.min75.common.jsonl",
+    "combos": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combos_randomized.min75.common.txt"
+  }
+}
