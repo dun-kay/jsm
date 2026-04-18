@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-04-18T09:46:49.958Z",
+  "source": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combo_word_index.jsonl",
+  "minWordsThreshold": 20,
+  "totals": {
+    "inputCombos": 230230,
+    "keptCombos": 196178,
+    "removedCombos": 34052,
+    "keptWordAssignments": 8805955
+  },
+  "outputs": {
+    "jsonl": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combo_word_index.min20.jsonl",
+    "combos": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combos_randomized.min20.txt"
+  }
+}

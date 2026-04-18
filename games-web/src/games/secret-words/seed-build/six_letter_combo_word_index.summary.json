@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-04-18T09:42:41.793Z",
+  "dictionary": {
+    "source": "https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt",
+    "path": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\words_alpha.txt",
+    "downloadedThisRun": true,
+    "filteredWordsCount": 31917,
+    "constraints": [
+      "letters only a-z",
+      "length 2-6",
+      "no repeated letters"
+    ]
+  },
+  "combos": {
+    "total": 230230,
+    "randomizedSeed": "secret-words-six-letter-combos-v1",
+    "randomizedOutputPath": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combos_randomized.txt"
+  },
+  "index": {
+    "outputPath": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\six_letter_combo_word_index.jsonl",
+    "nonEmptyCombos": 230230,
+    "emptyCombos": 0,
+    "totalWordAssignments": 9310627,
+    "maxWordsInSingleCombo": 240,
+    "maxWordsCombo": "AEPRST"
+  }
+}
