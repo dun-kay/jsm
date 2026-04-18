@@ -5,7 +5,7 @@ export const GAMES: GameConfig[] = [
     id: "K",
     slug: "secret-words",
     title: "Secret Words",
-    description: "Find today's word. Higher words are closer.",
+    description: "Can you find today's secret word?",
     shortRules: "",
     heroImage: "/assets/secret-words-logo.png",
     theme: "default",
