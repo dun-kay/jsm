@@ -338,7 +338,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   }, [playablePuzzles, progress.completed]);
 
   const successText = useMemo(() => {
-    return `Look, I guessed todays Secret Word in ${guesses.length}, can you do it in less?`;
+    return `I guessed today's Secret Word in ${guesses.length} guesses, can you do it in less?`;
   }, [guesses.length]);
 
   const shareUrl = useMemo(() => {
