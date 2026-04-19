@@ -65,7 +65,7 @@ function toIsoLocal(date: Date): string {
 
 function formatDayLabel(dateIso: string): string {
   const date = new Date(`${dateIso}T00:00:00`);
-  return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+  return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "2-digit" });
 }
 
 function formatLongDay(dateIso: string): string {
@@ -330,6 +330,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [hintWords, setHintWords] = useState<string[]>([]);
+  const [entryOrder, setEntryOrder] = useState<string[]>([]);
   const [gaveUp, setGaveUp] = useState(false);
 
   const keyboardWrapRef = useRef<HTMLDivElement | null>(null);
@@ -368,7 +369,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     return puzzles.filter((entry) => entry.date <= today).sort((a, b) => b.date.localeCompare(a.date));
   }, [puzzles, today]);
 
-  const recentPuzzles = useMemo(() => playablePuzzles.slice(0, 11), [playablePuzzles]);
+  const sliderPuzzles = playablePuzzles;
 
   const unplayedPuzzle = useMemo(() => {
     return playablePuzzles.find((entry) => !progress.completed[entry.date]) ?? null;
@@ -396,7 +397,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   const solved = guesses.some((entry) => entry.rank === 1);
   const completed = solved || gaveUp;
   const starterHintWord = activePuzzle?.words?.[activePuzzle.words.length - 10] ?? "";
-  const highlightedDate = mostRecentUnplayed?.date ?? recentPuzzles[0]?.date ?? null;
+  const highlightedDate = mostRecentUnplayed?.date ?? sliderPuzzles[0]?.date ?? null;
   const shownWordSet = useMemo(() => {
     const words = new Set<string>();
     for (const entry of guesses) {
@@ -413,16 +414,32 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
       return [];
     }
     return hintWords
-      .map((word) => ({ word, rank: activePuzzle.words.indexOf(word) + 1 }))
+      .map((word) => ({ word, rank: activePuzzle.words.indexOf(word) + 1, source: "hint" as const }))
       .filter((entry) => entry.rank > 0);
   }, [activePuzzle, hintWords]);
 
   const visibleEntries = useMemo(() => {
-    return [
-      ...hintEntries.map((entry) => ({ ...entry, source: "hint" as const })),
-      ...guesses.map((entry) => ({ ...entry, source: "guess" as const }))
-    ];
-  }, [hintEntries, guesses]);
+    const byWord = new Map<string, { word: string; rank: number; source: "guess" | "hint" }>();
+
+    for (const entry of hintEntries) {
+      byWord.set(entry.word, entry);
+    }
+
+    for (const entry of guesses) {
+      byWord.set(entry.word, { ...entry, source: "guess" as const });
+    }
+
+    const ordered = entryOrder.filter((word) => byWord.has(word));
+    for (const word of byWord.keys()) {
+      if (!ordered.includes(word)) {
+        ordered.push(word);
+      }
+    }
+
+    return ordered
+      .map((word) => byWord.get(word))
+      .filter((entry): entry is { word: string; rank: number; source: "guess" | "hint" } => Boolean(entry));
+  }, [entryOrder, hintEntries, guesses]);
 
   useEffect(() => {
     setLoading(true);
@@ -478,7 +495,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     }
 
     sliderRef.current.scrollLeft = Math.max(0, target.offsetLeft);
-  }, [inGame, highlightedDate, recentPuzzles]);
+  }, [inGame, highlightedDate, sliderPuzzles]);
 
   function updateUrlForDay(day: string | null) {
     const url = new URL(window.location.href);
@@ -494,15 +511,20 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     setActiveDate(day);
     const puzzle = puzzles.find((entry) => entry.date === day);
     if (puzzle) {
-      setGuesses(readGuessesForDay(day, puzzle.words));
+      const savedGuesses = readGuessesForDay(day, puzzle.words);
+      setGuesses(savedGuesses);
       const hintState = readHintsForDay(day, puzzle.words);
       setHintsUsed(hintState.hintsUsed);
       setHintWords(hintState.words);
       setGaveUp(hintState.gaveUp);
+      const guessWords = savedGuesses.map((entry) => entry.word);
+      const nextOrder = [...guessWords, ...hintState.words.filter((word) => !guessWords.includes(word))];
+      setEntryOrder(nextOrder);
     } else {
       setGuesses([]);
       setHintsUsed(0);
       setHintWords([]);
+      setEntryOrder([]);
       setGaveUp(false);
     }
     setInputNotice("");
@@ -527,6 +549,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     setShowHelpModal(false);
     setHintsUsed(0);
     setHintWords([]);
+    setEntryOrder([]);
     setGaveUp(false);
     updateUrlForDay(null);
   }
@@ -617,6 +640,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     setInputNotice("");
     const next = [{ word: normalized, rank }, ...guesses];
     setGuesses(next);
+    setEntryOrder((current) => [normalized, ...current.filter((word) => word !== normalized)]);
     writeGuessesForDay(activePuzzle.date, next.map((entry) => entry.word));
 
     if (rank === 1) {
@@ -670,6 +694,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     const nextHintWords = [selectedWord, ...hintWords.filter((word) => word !== selectedWord)];
     setHintsUsed(nextHintsUsed);
     setHintWords(nextHintWords);
+    setEntryOrder((current) => [selectedWord, ...current.filter((word) => word !== selectedWord)]);
     persistHintState(nextHintsUsed, nextHintWords, gaveUp);
   }
 
@@ -913,7 +938,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
             <p className="hint-text">Previous games:</p>
             <div className="sw-slider-wrap">
               <div ref={sliderRef} className="sw-slider">
-                {recentPuzzles.map((entry) => {
+                {sliderPuzzles.map((entry) => {
                   const isToday = entry.date === today;
                   const isHighlighted = entry.date === highlightedDate;
                   return (
@@ -1124,29 +1149,5 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
