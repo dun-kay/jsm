@@ -63,6 +63,38 @@ function toIsoLocal(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+function computeDailyStreak(completed: ProgressState["completed"]): number {
+  const completedDates = Object.keys(completed).filter((day) => /^\d{4}-\d{2}-\d{2}$/.test(day));
+  if (completedDates.length === 0) {
+    return 0;
+  }
+
+  const completedSet = new Set(completedDates);
+  const today = new Date();
+  const todayIso = toIsoLocal(today);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayIso = toIsoLocal(yesterday);
+
+  const latestPlayed = completedDates.slice().sort((a, b) => b.localeCompare(a))[0];
+  if (latestPlayed !== todayIso && latestPlayed !== yesterdayIso) {
+    return 0;
+  }
+
+  let streak = 0;
+  const cursor = new Date(`${latestPlayed}T00:00:00`);
+  while (true) {
+    const iso = toIsoLocal(cursor);
+    if (!completedSet.has(iso)) {
+      break;
+    }
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  return streak;
+}
+
 function formatDayLabel(dateIso: string): string {
   const date = new Date(`${dateIso}T00:00:00`);
   return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "2-digit" });
@@ -376,6 +408,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
   }, [playablePuzzles, progress.completed]);
 
   const allAvailablePlayed = playablePuzzles.length > 0 && unplayedPuzzle == null;
+  const dailyStreak = useMemo(() => computeDailyStreak(progress.completed), [progress.completed]);
 
   const mostRecentUnplayed = useMemo(() => {
     return unplayedPuzzle ?? playablePuzzles[0] ?? null;
@@ -925,6 +958,9 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
             <div className="landing-hero-wrap">
               <img className="landing-hero-image" src={game.heroImage} alt={`${game.title} image`} />
             </div>
+            <div className="play-meta-row">
+              <div className="play">Daily run: {dailyStreak}</div>
+            </div>
             <h1>Guess the Secret Word:</h1>
             <p className="body-text">Find the daily secret word.<br></br>Guesses are ranked by similarity.</p>
           </header>
@@ -963,6 +999,9 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
       ) : completed ? (
         <section className="screen screen-basic sw-screen sw-play-screen">
           <header className="screen-header">
+            <div className="play-meta-row">
+              <div className="play">Daily run: {dailyStreak}</div>
+            </div>
             <h1>{gaveUp ? "Round Complete:" : "Solved!"}</h1>
             <div className="sw-date-guess-row">
               <p className="sw-date-text">{formatLongDay(activePuzzle!.date)}</p>
@@ -981,6 +1020,9 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
       ) : (
         <section className="screen screen-basic sw-screen sw-play-screen">
           <header className="screen-header">
+            <div className="play-meta-row">
+              <div className="play">Daily run: {dailyStreak}</div>
+            </div>
             <h1>Guess the Secret Word:</h1>
           </header>
           <div className="sw-date-guess-row">
@@ -1149,5 +1191,14 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
 
 
