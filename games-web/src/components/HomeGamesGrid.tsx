@@ -116,7 +116,7 @@ export default function HomeGamesGrid({
         />
         <h2>{game.title}</h2>
         <p>{game.description}</p>
-        <div className="play-meta-row">{game.slug === "secret-words" ? <div className="play">Daily run: {dailyStreak}</div> : null}
+        <div className="play-meta-row">{game.slug === "secret-words" ? <div className="play">{dailyStreak} game streak</div> : null}
           <div className="play">{playerLabel(game)}</div>
           <div className="play">{game.playTime}</div>
           
@@ -159,4 +159,5 @@ export default function HomeGamesGrid({
     </div>
   );
 }
+
 

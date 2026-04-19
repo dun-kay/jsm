@@ -959,7 +959,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
               <img className="landing-hero-image" src={game.heroImage} alt={`${game.title} image`} />
             </div>
             <div className="play-meta-row">
-              <div className="play">Daily run: {dailyStreak}</div>
+              <div className="play">{dailyStreak} game streak</div>
             </div>
             <h1>Guess the Secret Word:</h1>
             <p className="body-text">Find the daily secret word.<br></br>Guesses are ranked by similarity.</p>
@@ -1000,7 +1000,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
         <section className="screen screen-basic sw-screen sw-play-screen">
           <header className="screen-header">
             <div className="play-meta-row">
-              <div className="play">Daily run: {dailyStreak}</div>
+              <div className="play">{dailyStreak} game streak</div>
             </div>
             <h1>{gaveUp ? "Round Complete:" : "Solved!"}</h1>
             <div className="sw-date-guess-row">
@@ -1021,7 +1021,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
         <section className="screen screen-basic sw-screen sw-play-screen">
           <header className="screen-header">
             <div className="play-meta-row">
-              <div className="play">Daily run: {dailyStreak}</div>
+              <div className="play">{dailyStreak} game streak</div>
             </div>
             <h1>Guess the Secret Word:</h1>
           </header>
@@ -1191,6 +1191,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
     </div>
   );
 }
+
 
 
 
