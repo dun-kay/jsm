@@ -1588,6 +1588,10 @@ body {
   text-align: center;
 }
 
+.hide {
+  display:none;
+}
+
 .tw-theme-subtitle {
   margin: 0;
   font-size: 12px;

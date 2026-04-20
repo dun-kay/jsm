@@ -2,22 +2,6 @@ import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
     {
-    id: "L",
-    slug: "theme-words",
-    title: "Theme Words",
-    description: "Find today's words from the theme.",
-    shortRules: "",
-    heroImage: "/assets/theme-words-logo.png",
-    theme: "default",
-    minPlayers: 1,
-    maxPlayers: 1,
-    playTime: "4 - 6 mins",
-    ageGuide: "Ages 10+",
-    joinPrefix: "L",
-    route: "/g/theme-words/",
-    enabled: true
-  },
-  {
     id: "K",
     slug: "secret-words",
     title: "Secret Words",
@@ -31,6 +15,22 @@ export const GAMES: GameConfig[] = [
     ageGuide: "Ages 8+",
     joinPrefix: "K",
     route: "/g/secret-words/",
+    enabled: true
+  },  
+  {
+    id: "L",
+    slug: "theme-words",
+    title: "Theme Words",
+    description: "Find today's words from the letter theme.",
+    shortRules: "",
+    heroImage: "/assets/theme-words-logo.png",
+    theme: "default",
+    minPlayers: 1,
+    maxPlayers: 1,
+    playTime: "4 - 6 mins",
+    ageGuide: "Ages 10+",
+    joinPrefix: "L",
+    route: "/g/theme-words/",
     enabled: true
   },
   {
