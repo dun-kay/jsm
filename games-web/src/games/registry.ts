@@ -1,6 +1,22 @@
 import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
+    {
+    id: "L",
+    slug: "theme-words",
+    title: "Theme Words",
+    description: "Find today's words from the theme.",
+    shortRules: "",
+    heroImage: "/assets/theme-words-logo.png",
+    theme: "default",
+    minPlayers: 1,
+    maxPlayers: 1,
+    playTime: "4 - 6 mins",
+    ageGuide: "Ages 10+",
+    joinPrefix: "L",
+    route: "/g/theme-words/",
+    enabled: true
+  },
   {
     id: "K",
     slug: "secret-words",
@@ -188,6 +204,8 @@ export function getGameBySlug(slug: string): GameConfig | undefined {
         ? "fruit-bowl"
         : slug === "draw-things"
           ? "draw-wf"
+          : slug === "theme-word"
+            ? "theme-words"
           : slug;
   return GAMES.find((game) => game.slug === normalized && game.enabled);
 }

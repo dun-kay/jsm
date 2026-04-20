@@ -1003,7 +1003,7 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
               <div className="play">{dailyStreak} game streak</div>
             </div>
             <h1>{gaveUp ? "Round Complete:" : "Solved!"}</h1>
-            <div className="sw-date-guess-row">
+            <div className="sw-date-guess-row-inner">
               <p className="sw-date-text">{formatLongDay(activePuzzle!.date)}</p>
               <p className="sw-date-text">Guesses: {guesses.length}</p>
             </div>
@@ -1070,14 +1070,14 @@ export default function SecretWordsRuntime({ game, theme, onToggleTheme, onBack 
             })}
           </div>
           <div className="sw-date-guess-row">
-            <p className="sw-date-text">{gaveUp ? "Gave up" : `Hints: ${hintsUsed}/3`}</p>
+
             <div className="sw-hint-actions">
                     <button
                 type="button"
                 className="btn btn-soft runtime-reroll-btn btn-left mores shorter-btn"
                 onClick={onHintAction}
               >
-                {hintsUsed >= 3 ? "Give up" : "Hint"}
+                {hintsUsed >= 3 ? "Give up" : `Hint ${hintsUsed}/3`}
               </button>
               <button
                 type="button"

@@ -15,6 +15,7 @@ type SecretWordsProgressState = {
 };
 
 const SECRET_WORDS_PROGRESS_KEY = "notes_secret_words_progress_v1";
+const THEME_WORDS_PROGRESS_KEY = "notes_theme_words_progress_v1";
 
 function toIsoLocal(date: Date): string {
   const year = date.getFullYear();
@@ -23,9 +24,9 @@ function toIsoLocal(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function readSecretWordsDailyStreak(): number {
+function readDailyStreak(progressKey: string): number {
   try {
-    const raw = window.localStorage.getItem(SECRET_WORDS_PROGRESS_KEY);
+    const raw = window.localStorage.getItem(progressKey);
     if (!raw) {
       return 0;
     }
@@ -74,26 +75,30 @@ export default function HomeGamesGrid({
   theme,
   onToggleTheme
 }: HomeGamesGridProps) {
-  const [dailyStreak, setDailyStreak] = useState(0);
+  const [secretWordsStreak, setSecretWordsStreak] = useState(0);
+  const [themeWordsStreak, setThemeWordsStreak] = useState(0);
 
   useEffect(() => {
-    const refreshStreak = () => {
-      setDailyStreak(readSecretWordsDailyStreak());
+    const refreshStreaks = () => {
+      setSecretWordsStreak(readDailyStreak(SECRET_WORDS_PROGRESS_KEY));
+      setThemeWordsStreak(readDailyStreak(THEME_WORDS_PROGRESS_KEY));
     };
 
-    refreshStreak();
-    window.addEventListener("focus", refreshStreak);
-    window.addEventListener("storage", refreshStreak);
+    refreshStreaks();
+    window.addEventListener("focus", refreshStreaks);
+    window.addEventListener("storage", refreshStreaks);
 
     return () => {
-      window.removeEventListener("focus", refreshStreak);
-      window.removeEventListener("storage", refreshStreak);
+      window.removeEventListener("focus", refreshStreaks);
+      window.removeEventListener("storage", refreshStreaks);
     };
   }, []);
 
-  const dailyGames = games.filter((game) => game.slug === "secret-words");
+  const dailyGames = games.filter((game) => game.slug === "secret-words" || game.slug === "theme-words");
   const socialGames = games.filter((game) => game.slug === "draw-wf");
-  const partyGames = games.filter((game) => game.slug !== "secret-words" && game.slug !== "draw-wf");
+  const partyGames = games.filter(
+    (game) => game.slug !== "secret-words" && game.slug !== "theme-words" && game.slug !== "draw-wf"
+  );
 
   function playerLabel(game: GameConfig): string {
     if (game.minPlayers === 1 && game.maxPlayers === 1) {
@@ -103,7 +108,7 @@ export default function HomeGamesGrid({
   }
 
   function showAgeGuide(game: GameConfig): boolean {
-    return game.slug !== "secret-words" && game.slug !== "draw-wf";
+    return game.slug !== "secret-words" && game.slug !== "theme-words" && game.slug !== "draw-wf";
   }
 
   function renderGameCard(game: GameConfig) {
@@ -116,7 +121,9 @@ export default function HomeGamesGrid({
         />
         <h2>{game.title}</h2>
         <p>{game.description}</p>
-        <div className="play-meta-row">{game.slug === "secret-words" ? <div className="play">{dailyStreak} game streak</div> : null}
+        <div className="play-meta-row">
+          {game.slug === "secret-words" ? <div className="play">{secretWordsStreak} game streak</div> : null}
+          {game.slug === "theme-words" ? <div className="play">{themeWordsStreak} game streak</div> : null}
           <div className="play">{playerLabel(game)}</div>
           <div className="play">{game.playTime}</div>
           

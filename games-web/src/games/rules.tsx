@@ -23,6 +23,23 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
       </>
     )
   },
+  "theme-words": {
+    title: "You are about to play... Theme Words",
+    content: (
+      <>
+        <p>This is a <b>daily single-player game.</b></p>
+        <br />
+        <p>Swipe through the letters to make words.</p>
+        <p>When you release, your guess submits.</p>
+        <br />
+        <p>Find all words listed for the day's theme.</p>
+        <p><b>Each found word fills the puzzle grid.</b></p>
+        <br />
+        <p>Use the day slider to play older puzzles.</p>
+        <p>Progress is saved locally on your device.</p>
+      </>
+    )
+  },
   "draw-wf": {
     title: "You are about to play... Draw Things",
     content: (
