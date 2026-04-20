@@ -10,6 +10,7 @@ import CookieNotice from "./components/CookieNotice";
 import AccessStatusPill from "./components/AccessStatusPill";
 import { GAMES, getGameBySlug } from "./games/registry";
 import SecretWordsRuntime from "./games/secret-words/SecretWordsRuntime";
+import ThemeWordsRuntime from "./games/theme-words/ThemeWordsRuntime";
 import type { GameSessionContext } from "./games/types";
 import { ACQUISITION_TEST_MODE } from "./lib/featureFlags";
 
@@ -192,6 +193,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "secret-words": {
       h: "Play Secret Words | Games With Friends",
       b: "A daily single-player word game. Swipe letters to find the secret word."
+    },
+    "theme-words": {
+      h: "Play Theme Words | Games With Friends",
+      b: "A daily single-player word game. Find all words that match the day's theme."
     }
   };
 
@@ -243,6 +248,10 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "secret-words": {
       h: "Secret Words Rules | Games With Friends",
       b: "Game Rules: Swipe letters to make words and find the daily secret word."
+    },
+    "theme-words": {
+      h: "Theme Words Rules | Games With Friends",
+      b: "Game Rules: Swipe letters to find every word from the daily theme list."
     }
   };
 
@@ -437,6 +446,13 @@ export default function App() {
           onToggleTheme={toggleTheme}
           onBack={() => navigate("/")}
         />
+      ) : game.slug === "theme-words" ? (
+        <ThemeWordsRuntime
+          game={game}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onBack={() => navigate("/")}
+        />
       ) : (
         <GameOnboardingFlow
           game={game}
@@ -530,7 +546,12 @@ export default function App() {
             route.kind === "home" ||
             route.kind === "runtime" ||
             (route.kind === "onboarding" &&
-              (route.slug === "draw-wf" || route.slug === "draw-things" || route.slug === "secret-words"))
+              (
+                route.slug === "draw-wf"
+                || route.slug === "draw-things"
+                || route.slug === "secret-words"
+                || route.slug === "theme-words"
+              ))
           }
         />
       </div>
