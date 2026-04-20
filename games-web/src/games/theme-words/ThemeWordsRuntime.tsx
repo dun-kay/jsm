@@ -958,7 +958,7 @@ export default function ThemeWordsRuntime({ game, theme, onToggleTheme, onBack }
               <div className="play">{dailyStreak} game streak</div>
             </div>
             <h1>Find the Theme Words:</h1>
-            <p className="body-text">Find the hidden words in today's theme.<br />Use the letter wheel to build words.</p>
+            <p className="body-text">Find the hidden words in today's letter theme. Use the letter wheel to build words.</p>
           </header>
 
           <div className="bottom-stack sw-stack">
@@ -1016,7 +1016,7 @@ export default function ThemeWordsRuntime({ game, theme, onToggleTheme, onBack }
               <div className="play">{dailyStreak} game streak</div>
             </div>
             <h1>Find the Theme Words:</h1>
-            <p className="tw-theme-title">{activePuzzle!.themeTitle}</p>
+            <p className="tw-theme-title hide">{activePuzzle!.themeTitle}</p>
           </header>
           <div className="sg">
             <div className="hint-text nb">
@@ -1140,7 +1140,7 @@ export default function ThemeWordsRuntime({ game, theme, onToggleTheme, onBack }
         <div className="modal-backdrop" role="dialog" aria-modal="true">
           <div className="modal-card">
             <h2>Are you sure?</h2>
-            <p className="body-text small">You can come back to this puzzle any time.</p>
+            <p className="body-text small">Don't quit just because it's hard. Keep trying!</p>
             <div className="bottom-row">
               <button className="btn btn-key" type="button" onClick={returnToLanding}>
                 Quit
@@ -1183,7 +1183,7 @@ export default function ThemeWordsRuntime({ game, theme, onToggleTheme, onBack }
             <p className="sw-date-text">
               Tap and drag letters to make a word.<br /><br />
               If the word is in the list, it will be revealed in the grid.<br /><br />
-              Find every word to finish the theme.
+              Find every word to finish the letter theme.
             </p>
             <div>
               <button className="btn btn-soft" type="button" onClick={() => setShowHelpModal(false)}>
