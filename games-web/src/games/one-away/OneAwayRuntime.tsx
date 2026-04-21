@@ -1,6 +1,7 @@
 ﻿import { useEffect, useMemo, useRef, useState } from "react";
 import type { GameConfig } from "../types";
 import dailySeed from "./dailySeed.json";
+import allowedWords from "./allowedWords.4to6.json";
 import { getOneAwayAverageGuesses, recordOneAwayCompletion } from "../../lib/oneAwayApi";
 
 type ThemeMode = "light" | "dark";
@@ -209,7 +210,7 @@ export default function OneAwayRuntime({ game, theme, onToggleTheme, onBack }: O
   const today = useMemo(() => toIsoLocal(new Date()), []);
   const dailyStreak = useMemo(() => computeDailyStreak(progress.completed), [progress.completed]);
   const commonWords = useMemo(() => {
-    const set = new Set<string>();
+    const set = new Set<string>(allowedWords as string[]);
     for (const puzzle of puzzles) {
       set.add(puzzle.target);
       for (const word of puzzle.words) set.add(word);
@@ -692,9 +693,6 @@ export default function OneAwayRuntime({ game, theme, onToggleTheme, onBack }: O
           <div className="oa-keyboard">
             {KEYBOARD_ROWS.map((row, rowIdx) => (
               <div key={row} className="drawwf-keyboard-row">
-                {rowIdx === KEYBOARD_ROWS.length - 1 ? (
-                  <button type="button" className="oa-enter-btn" onClick={() => void submitGuess()}>GO!</button>
-                ) : null}
                 {row.split("").map((letter) => (
                   <button
                     key={`${row}-${letter}`}
@@ -711,7 +709,11 @@ export default function OneAwayRuntime({ game, theme, onToggleTheme, onBack }: O
                 ) : null}
               </div>
             ))}
-          </div>
+          
+              <div className="oa-guess-row">
+                <button type="button" className="oa-enter-btn" onClick={() => void submitGuess()}>GUESS</button>
+              </div>
+              </div>
               </div>{notice ? <p className="hint-text error-text">{notice}</p> : null}</section>
       )}
 
