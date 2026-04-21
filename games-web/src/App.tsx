@@ -11,12 +11,14 @@ import AccessStatusPill from "./components/AccessStatusPill";
 import { GAMES, getGameBySlug } from "./games/registry";
 import SecretWordsRuntime from "./games/secret-words/SecretWordsRuntime";
 import ThemeWordsRuntime from "./games/theme-words/ThemeWordsRuntime";
+import OneAwayRuntime from "./games/one-away/OneAwayRuntime";
+import OrderMeRuntime from "./games/order-me/OrderMeRuntime";
 import type { GameSessionContext } from "./games/types";
 import { ACQUISITION_TEST_MODE } from "./lib/featureFlags";
 
 type RouteState =
   | { kind: "home" }
-  | { kind: "stats"; mode: "default" | "draw-wf" | "secret-words" }
+  | { kind: "stats"; mode: "default" | "draw-wf" | "secret-words" | "one-away" | "order-me" }
   | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
   | { kind: "game-rules"; slug: string }
   | { kind: "onboarding"; slug: string }
@@ -52,6 +54,12 @@ function parseRoute(pathname: string): RouteState {
   }
   if (path === "/stats/secret-words/") {
     return { kind: "stats", mode: "secret-words" };
+  }
+  if (path === "/stats/one-away/") {
+    return { kind: "stats", mode: "one-away" };
+  }
+  if (path === "/stats/order-me/") {
+    return { kind: "stats", mode: "order-me" };
   }
   if (path === "/terms/") {
     return { kind: "legal", page: "terms" };
@@ -197,6 +205,14 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "theme-words": {
       h: "Play Theme Words | Games With Friends",
       b: "A daily single-player word game. Find all words that match the day's theme."
+    },
+    "one-away": {
+      h: "Play One Away | Games With Friends",
+      b: "Guess today's hidden word from the clues."
+    },
+    "order-me": {
+      h: "Play Order Me | Games With Friends",
+      b: "Order the words by similarity to the main word."
     }
   };
 
@@ -252,6 +268,14 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     "theme-words": {
       h: "Theme Words Rules | Games With Friends",
       b: "Game Rules: Swipe letters to find every word from the daily theme list."
+    },
+    "one-away": {
+      h: "One Away Rules | Games With Friends",
+      b: "Game Rules: Guess the hidden word from 3 ordered clues in 4 guesses."
+    },
+    "order-me": {
+      h: "Order Me Rules | Games With Friends",
+      b: "Game Rules: Reorder six words by similarity to the main word in 4 checks."
     }
   };
 
@@ -301,11 +325,19 @@ function getMetaForRoute(route: RouteState): MetaConfig {
         ? "Draw Things Stats | Games With Friends"
         : route.mode === "secret-words"
           ? "Secret Words Stats | Games With Friends"
+          : route.mode === "one-away"
+            ? "One Away Stats | Games With Friends"
+            : route.mode === "order-me"
+              ? "Order Me Stats | Games With Friends"
           : "Session Stats | Games With Friends",
       description: route.mode === "draw-wf"
         ? "Draw Things internal stats page."
         : route.mode === "secret-words"
           ? "Secret Words internal stats page."
+          : route.mode === "one-away"
+            ? "One Away internal stats page."
+            : route.mode === "order-me"
+              ? "Order Me internal stats page."
           : "Internal stats page.",
       robots: "noindex,nofollow"
     };
@@ -446,6 +478,20 @@ export default function App() {
           onToggleTheme={toggleTheme}
           onBack={() => navigate("/")}
         />
+      ) : game.slug === "one-away" ? (
+        <OneAwayRuntime
+          game={game}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onBack={() => navigate("/")}
+        />
+      ) : game.slug === "order-me" ? (
+        <OrderMeRuntime
+          game={game}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onBack={() => navigate("/")}
+        />
       ) : game.slug === "theme-words" ? (
         <ThemeWordsRuntime
           game={game}
@@ -550,6 +596,8 @@ export default function App() {
                 route.slug === "draw-wf"
                 || route.slug === "draw-things"
                 || route.slug === "secret-words"
+                || route.slug === "one-away"
+                || route.slug === "order-me"
                 || route.slug === "theme-words"
               ))
           }

@@ -40,6 +40,38 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
       </>
     )
   },
+  "one-away": {
+    title: "You are about to play... One Away",
+    content: (
+      <>
+        <p>This is a daily single-player game.</p>
+        <br />
+       <p>You are shown 3 words from a list of four (words #2 - #4), ranked from most similar to least similar.</p>
+              <br />
+              <p>Guess the #1 word in 4 guesses.</p>
+              <br />
+              <p>Green letters are correct and lock in place.</p>
+              <br />
+              <p>Grey keyboard letters are not in the word.</p>
+            
+      </>
+    )
+  },
+  "order-me": {
+    title: "You are about to play... Order Me",
+    content: (
+      <>
+        <p>This is a <b>daily single-player game.</b></p>
+        <br />
+        <p>You get one main word and <b>6 related words</b>.</p>
+        <p>Drag them into order from <b>most similar to least similar</b>.</p>
+        <br />
+        <p>Each check uses one guess, and you have <b>4 guesses</b>.</p>
+        <p>Green = exact position, Yellow = right row wrong position, Red = wrong row.</p>
+        <p>Green locks in place. Red placements are blocked for that slot.</p>
+      </>
+    )
+  },
   "draw-wf": {
     title: "You are about to play... Draw Things",
     content: (

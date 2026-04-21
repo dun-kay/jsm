@@ -16,6 +16,8 @@ type SecretWordsProgressState = {
 
 const SECRET_WORDS_PROGRESS_KEY = "notes_secret_words_progress_v1";
 const THEME_WORDS_PROGRESS_KEY = "notes_theme_words_progress_v1";
+const ONE_AWAY_PROGRESS_KEY = "notes_one_away_progress_v1";
+const ORDER_ME_PROGRESS_KEY = "notes_order_me_progress_v1";
 
 function toIsoLocal(date: Date): string {
   const year = date.getFullYear();
@@ -77,11 +79,15 @@ export default function HomeGamesGrid({
 }: HomeGamesGridProps) {
   const [secretWordsStreak, setSecretWordsStreak] = useState(0);
   const [themeWordsStreak, setThemeWordsStreak] = useState(0);
+  const [oneAwayStreak, setOneAwayStreak] = useState(0);
+  const [orderMeStreak, setOrderMeStreak] = useState(0);
 
   useEffect(() => {
     const refreshStreaks = () => {
       setSecretWordsStreak(readDailyStreak(SECRET_WORDS_PROGRESS_KEY));
       setThemeWordsStreak(readDailyStreak(THEME_WORDS_PROGRESS_KEY));
+      setOneAwayStreak(readDailyStreak(ONE_AWAY_PROGRESS_KEY));
+      setOrderMeStreak(readDailyStreak(ORDER_ME_PROGRESS_KEY));
     };
 
     refreshStreaks();
@@ -94,10 +100,21 @@ export default function HomeGamesGrid({
     };
   }, []);
 
-  const dailyGames = games.filter((game) => game.slug === "secret-words" || game.slug === "theme-words");
+  const dailyGames = games.filter(
+    (game) =>
+      game.slug === "secret-words" ||
+      game.slug === "theme-words" ||
+      game.slug === "one-away" ||
+      game.slug === "order-me"
+  );
   const socialGames = games.filter((game) => game.slug === "draw-wf");
   const partyGames = games.filter(
-    (game) => game.slug !== "secret-words" && game.slug !== "theme-words" && game.slug !== "draw-wf"
+    (game) =>
+      game.slug !== "secret-words" &&
+      game.slug !== "theme-words" &&
+      game.slug !== "one-away" &&
+      game.slug !== "order-me" &&
+      game.slug !== "draw-wf"
   );
 
   function playerLabel(game: GameConfig): string {
@@ -108,7 +125,13 @@ export default function HomeGamesGrid({
   }
 
   function showAgeGuide(game: GameConfig): boolean {
-    return game.slug !== "secret-words" && game.slug !== "theme-words" && game.slug !== "draw-wf";
+    return (
+      game.slug !== "secret-words" &&
+      game.slug !== "theme-words" &&
+      game.slug !== "one-away" &&
+      game.slug !== "order-me" &&
+      game.slug !== "draw-wf"
+    );
   }
 
   function renderGameCard(game: GameConfig) {
@@ -124,6 +147,8 @@ export default function HomeGamesGrid({
         <div className="play-meta-row">
           {game.slug === "secret-words" ? <div className="play">{secretWordsStreak} game streak</div> : null}
           {game.slug === "theme-words" ? <div className="play">{themeWordsStreak} game streak</div> : null}
+          {game.slug === "one-away" ? <div className="play">{oneAwayStreak} game streak</div> : null}
+          {game.slug === "order-me" ? <div className="play">{orderMeStreak} game streak</div> : null}
           <div className="play">{playerLabel(game)}</div>
           <div className="play">{game.playTime}</div>
           
