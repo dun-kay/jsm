@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-04-21T01:51:10.135Z",
+  "source": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\top7000_len4_len5_len6_neighbors_top6.jsonl",
+  "outputs": {
+    "oneAway": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\one-away\\dailySeed.json",
+    "orderMe": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\order-me\\dailySeed.json"
+  },
+  "config": {
+    "startDate": "2024-04-21",
+    "totalDays": 3080,
+    "oneAwayNeighbors": 3,
+    "orderMeNeighbors": 6,
+    "oneAwayShuffleSeed": "one-away-v1-3080",
+    "orderMeShuffleSeed": "order-me-v1-3080"
+  },
+  "window": {
+    "startDate": "2024-04-21",
+    "endDate": "2032-09-25"
+  }
+}

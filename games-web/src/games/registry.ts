@@ -2,6 +2,38 @@ import type { GameConfig } from "./types";
 
 export const GAMES: GameConfig[] = [
     {
+    id: "M",
+    slug: "one-away",
+    title: "One Away",
+    description: "Guess today's #1 word from the clues.",
+    shortRules: "",
+    heroImage: "/assets/one-away-logo.png",
+    theme: "default",
+    minPlayers: 1,
+    maxPlayers: 1,
+    playTime: "2 - 5 mins",
+    ageGuide: "Ages 8+",
+    joinPrefix: "M",
+    route: "/g/one-away/",
+    enabled: true
+  },
+    {
+    id: "N",
+    slug: "order-me",
+    title: "Order Me",
+    description: "Order today's words based on similarity.",
+    shortRules: "",
+    heroImage: "/assets/order-me-logo.png",
+    theme: "default",
+    minPlayers: 1,
+    maxPlayers: 1,
+    playTime: "3 - 6 mins",
+    ageGuide: "Ages 8+",
+    joinPrefix: "N",
+    route: "/g/order-me/",
+    enabled: true
+  },
+  {
     id: "K",
     slug: "secret-words",
     title: "Secret Words",
@@ -11,7 +43,7 @@ export const GAMES: GameConfig[] = [
     theme: "default",
     minPlayers: 1,
     maxPlayers: 1,
-    playTime: "2 - 3 mins",
+    playTime: "2 - 5 mins",
     ageGuide: "Ages 8+",
     joinPrefix: "K",
     route: "/g/secret-words/",
@@ -27,7 +59,7 @@ export const GAMES: GameConfig[] = [
     theme: "default",
     minPlayers: 1,
     maxPlayers: 1,
-    playTime: "4 - 6 mins",
+    playTime: "3 - 6 mins",
     ageGuide: "Ages 10+",
     joinPrefix: "L",
     route: "/g/theme-words/",
@@ -206,6 +238,10 @@ export function getGameBySlug(slug: string): GameConfig | undefined {
           ? "draw-wf"
           : slug === "theme-word"
             ? "theme-words"
+            : slug === "oneaway"
+              ? "one-away"
+              : slug === "orderme"
+                ? "order-me"
           : slug;
   return GAMES.find((game) => game.slug === normalized && game.enabled);
 }

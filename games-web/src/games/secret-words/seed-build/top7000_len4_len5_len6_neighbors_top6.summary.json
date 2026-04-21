@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-04-21T01:29:43.410Z",
+  "source": {
+    "wordfreqPath": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\wordfreq-en-25000-log.json",
+    "datamuseCachePath": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\datamuse-ml-cache.json",
+    "datamuseEndpoint": "https://api.datamuse.com/words?ml=<word>&max=1000"
+  },
+  "config": {
+    "topN": 7000,
+    "lengths": [
+      4,
+      5,
+      6
+    ],
+    "neighborsPerTarget": 6,
+    "weights": {
+      "semantic": 0.65,
+      "letter": 0.35
+    }
+  },
+  "totals": {
+    "targets": 3080,
+    "cacheHits": 3080,
+    "cacheMisses": 0
+  },
+  "outputs": {
+    "jsonl": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\top7000_len4_len5_len6_neighbors_top6.jsonl",
+    "txt": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\top7000_len4_len5_len6_neighbors_top6.txt"
+  },
+  "elapsedMs": 12797
+}
