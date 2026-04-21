@@ -134,6 +134,15 @@ export default function HomeGamesGrid({
     );
   }
 
+  function isDailyGame(game: GameConfig): boolean {
+    return (
+      game.slug === "secret-words" ||
+      game.slug === "theme-words" ||
+      game.slug === "one-away" ||
+      game.slug === "order-me"
+    );
+  }
+
   function renderGameCard(game: GameConfig) {
     return (
       <button key={game.id} type="button" className="game-card" onClick={() => onOpenGame(game)}>
@@ -149,8 +158,8 @@ export default function HomeGamesGrid({
           {game.slug === "theme-words" ? <div className="play">{themeWordsStreak} game streak</div> : null}
           {game.slug === "one-away" ? <div className="play">{oneAwayStreak} game streak</div> : null}
           {game.slug === "order-me" ? <div className="play">{orderMeStreak} game streak</div> : null}
-          <div className="play">{playerLabel(game)}</div>
-          <div className="play">{game.playTime}</div>
+          {!isDailyGame(game) ? <div className="play">{playerLabel(game)}</div> : null}
+          {!isDailyGame(game) ? <div className="play">{game.playTime}</div> : null}
           
           {showAgeGuide(game) ? <div className="play">{game.ageGuide}</div> : null}
         </div>
@@ -174,7 +183,7 @@ export default function HomeGamesGrid({
       <section className="home-sections">
         <div className="home-section">
           <h2 id="daily" className="home-section-title">Daily games:</h2>
-          <div className="games-grid">{dailyGames.map(renderGameCard)}</div>
+          <div className="games-grid daily-games-grid">{dailyGames.map(renderGameCard)}</div>
         </div>
 
         <div className="home-section">

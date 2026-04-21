@@ -718,17 +718,22 @@ body {
   margin-bottom: 10px;
 }
 
+.daily-games-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .game-card {
   border: 2px solid var(--line);
   background: transparent;
   color: var(--text);
   border-radius: 16px;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
   cursor: pointer;
   display: grid;
   gap: 10px;
   width: 100%;
+  overflow: hidden;
 
 }
 
@@ -764,7 +769,7 @@ body {
   display: block;
   width: calc(100% + 40px);
   height: 100px;
-  margin: -20px -20px 0 -20px;
+  margin: -10px -20px -5px -20px;
   object-fit: cover;
   border-radius: 14px 14px 0 0;
 }
@@ -1964,6 +1969,3 @@ body {
   justify-content: center;
   background: var(--bgkeys);
 }
-
-
-
