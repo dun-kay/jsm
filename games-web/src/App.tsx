@@ -18,8 +18,9 @@ import { ACQUISITION_TEST_MODE } from "./lib/featureFlags";
 
 type RouteState =
   | { kind: "home" }
-  | { kind: "stats"; mode: "default" | "draw-wf" | "secret-words" | "one-away" | "order-me" }
+  | { kind: "stats"; mode: "default" | "draw-wf" | "secret-words" | "theme-words" | "one-away" | "order-me" }
   | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
+  | { kind: "redirect"; to: string }
   | { kind: "game-rules"; slug: string }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
@@ -55,11 +56,17 @@ function parseRoute(pathname: string): RouteState {
   if (path === "/stats/secret-words/") {
     return { kind: "stats", mode: "secret-words" };
   }
+  if (path === "/stats/theme-words/") {
+    return { kind: "stats", mode: "theme-words" };
+  }
   if (path === "/stats/one-away/") {
     return { kind: "stats", mode: "one-away" };
   }
   if (path === "/stats/order-me/") {
     return { kind: "stats", mode: "order-me" };
+  }
+  if (path.startsWith("/stats/")) {
+    return { kind: "stats", mode: "default" };
   }
   if (path === "/terms/") {
     return { kind: "legal", page: "terms" };
@@ -68,7 +75,7 @@ function parseRoute(pathname: string): RouteState {
     return { kind: "legal", page: "privacy" };
   }
   if (path === "/how-unlimited-works/") {
-    return { kind: "legal", page: "unlimited" };
+    return { kind: "redirect", to: "/" };
   }
 
   const onboardingMatch = path.match(/^\/g\/([^/]+)\/$/);
@@ -304,18 +311,21 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     if (route.page === "terms") {
       return {
         title: "Terms | Games With Friends by Jump Ship Media",
-        description: "Games with friends is a way to play IRL social with your friends, straight from your phone."
+        description: "Games with friends is a way to play IRL social with your friends, straight from your phone.",
+        robots: "noindex,nofollow"
       };
     }
     if (route.page === "privacy") {
       return {
         title: "Privacy policy | Games With Friends by Jump Ship Media",
-        description: "Games with friends is a way to play IRL social with your friends, straight from your phone."
+        description: "Games with friends is a way to play IRL social with your friends, straight from your phone.",
+        robots: "noindex,nofollow"
       };
     }
     return {
       title: "How Play Access Works | Games With Friends by Jump Ship Media",
-      description: "Learn how unlimited and Draw Things play-pack access works across sessions and devices."
+      description: "Learn how unlimited and Draw Things play-pack access works across sessions and devices.",
+      robots: "noindex,nofollow"
     };
   }
 
@@ -325,6 +335,8 @@ function getMetaForRoute(route: RouteState): MetaConfig {
         ? "Draw Things Stats | Games With Friends"
         : route.mode === "secret-words"
           ? "Secret Words Stats | Games With Friends"
+          : route.mode === "theme-words"
+            ? "Theme Words Stats | Games With Friends"
           : route.mode === "one-away"
             ? "One Away Stats | Games With Friends"
             : route.mode === "order-me"
@@ -334,6 +346,8 @@ function getMetaForRoute(route: RouteState): MetaConfig {
         ? "Draw Things internal stats page."
         : route.mode === "secret-words"
           ? "Secret Words internal stats page."
+          : route.mode === "theme-words"
+            ? "Theme Words internal stats page."
           : route.mode === "one-away"
             ? "One Away internal stats page."
             : route.mode === "order-me"
@@ -386,6 +400,16 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (route.kind !== "redirect") {
+      return;
+    }
+    window.location.replace(route.to);
+  }, [route]);
+
+  useEffect(() => {
+    if (route.kind === "redirect") {
+      return;
+    }
     const meta = getMetaForRoute(route);
     document.title = meta.title;
     upsertMetaTag("description", meta.description);

@@ -5,17 +5,19 @@ import {
   getOneAwayDailyStats,
   getOrderMeDailyStats,
   getSecretWordsDailyStats,
+  getThemeWordsDailyStats,
   type DailySessionStat,
   type DrawWfDailyStat,
   type OneAwayDailyStat,
   type OrderMeDailyStat,
-  type SecretWordsDailyStat
+  type SecretWordsDailyStat,
+  type ThemeWordsDailyStat
 } from "../lib/statsApi";
 
 type ThemeMode = "light" | "dark";
 
 type StatsPageProps = {
-  mode: "default" | "draw-wf" | "secret-words" | "one-away" | "order-me";
+  mode: "default" | "draw-wf" | "secret-words" | "theme-words" | "one-away" | "order-me";
   theme: ThemeMode;
   onToggleTheme: () => void;
   onBack: () => void;
@@ -39,6 +41,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
   const [rows, setRows] = useState<DailySessionStat[]>([]);
   const [drawWfRows, setDrawWfRows] = useState<DrawWfDailyStat[]>([]);
   const [secretWordsRows, setSecretWordsRows] = useState<SecretWordsDailyStat[]>([]);
+  const [themeWordsRows, setThemeWordsRows] = useState<ThemeWordsDailyStat[]>([]);
   const [oneAwayRows, setOneAwayRows] = useState<OneAwayDailyStat[]>([]);
   const [orderMeRows, setOrderMeRows] = useState<OrderMeDailyStat[]>([]);
   const [loading, setLoading] = useState(true);
@@ -56,6 +59,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
           if (!canceled) {
             setDrawWfRows(data);
             setSecretWordsRows([]);
+            setThemeWordsRows([]);
             setOneAwayRows([]);
             setOrderMeRows([]);
             setRows([]);
@@ -68,6 +72,20 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
           if (!canceled) {
             setSecretWordsRows(data);
             setDrawWfRows([]);
+            setThemeWordsRows([]);
+            setOneAwayRows([]);
+            setOrderMeRows([]);
+            setRows([]);
+          }
+          return;
+        }
+
+        if (mode === "theme-words") {
+          const data = await getThemeWordsDailyStats(FROM_DATE);
+          if (!canceled) {
+            setThemeWordsRows(data);
+            setDrawWfRows([]);
+            setSecretWordsRows([]);
             setOneAwayRows([]);
             setOrderMeRows([]);
             setRows([]);
@@ -81,6 +99,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
             setOneAwayRows(data);
             setDrawWfRows([]);
             setSecretWordsRows([]);
+            setThemeWordsRows([]);
             setOrderMeRows([]);
             setRows([]);
           }
@@ -93,6 +112,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
             setOrderMeRows(data);
             setDrawWfRows([]);
             setSecretWordsRows([]);
+            setThemeWordsRows([]);
             setOneAwayRows([]);
             setRows([]);
           }
@@ -104,6 +124,7 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
           setRows(data);
           setDrawWfRows([]);
           setSecretWordsRows([]);
+          setThemeWordsRows([]);
           setOneAwayRows([]);
           setOrderMeRows([]);
         }
@@ -138,6 +159,8 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
               ? "Draw Things Stats"
               : mode === "secret-words"
                 ? "Secret Words Stats"
+                : mode === "theme-words"
+                  ? "Theme Words Stats"
                 : mode === "one-away"
                   ? "One Away Stats"
                   : mode === "order-me"
@@ -151,10 +174,12 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
           {!loading && !error ? (
             <div className="stats-row stats-head">
               <span>Date (LA)</span>
-              <span>{mode === "secret-words" || mode === "one-away" || mode === "order-me" ? "Users" : "Sessions"}</span>
+              <span>{mode === "secret-words" || mode === "theme-words" || mode === "one-away" || mode === "order-me" ? "Users" : "Sessions"}</span>
               <span>
                 {mode === "draw-wf"
                   ? "Av drawings/se."
+                  : mode === "theme-words"
+                    ? "Av sec/se."
                   : mode === "secret-words" || mode === "one-away" || mode === "order-me"
                     ? "Av guesses/se."
                     : "Av us./se."}
@@ -201,6 +226,16 @@ export default function StatsPage({ mode, theme, onToggleTheme, onBack }: StatsP
                   <span>{formatDate(row.statDate)}</span>
                   <span>{row.sessions}</span>
                   <span>{row.avgGuessesPerSession.toFixed(2)}</span>
+                </div>
+              ))
+            : null}
+
+          {mode === "theme-words" && !loading && !error
+            ? themeWordsRows.map((row) => (
+                <div className="stats-row" key={row.statDate}>
+                  <span>{formatDate(row.statDate)}</span>
+                  <span>{row.sessions}</span>
+                  <span>{row.avgSecondsPerSession.toFixed(2)}</span>
                 </div>
               ))
             : null}
