@@ -325,8 +325,8 @@ body {
 }
 
 .oa-enter-btn {
-  width: 40px;
-  height: 40px;
+  width: 90%;
+  height: 38px;
   font-size: 15px;
   background: var(--inverse-bg);
   color: var(--inverse-text);
@@ -344,16 +344,26 @@ body {
   will-change: transform;
 }
 
+.oa-guess-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+}
+
 .keyboard-bottom {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 300px;
+  height: 250px;
 }
 
 .wf:active:not(:disabled),
 .wf-backspace:active:not(:disabled) {
   transform: scale(1.12);
+}
+
+.oa-bcks{
+  width: 150px;
 }
 
 .btn-soft {
@@ -1774,10 +1784,13 @@ body {
   margin-top: 8px;
   display: grid;
   gap: 6px;
+  border:solid 2px #000;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .oa-keyboard .drawwf-keyboard-row .wf {
-  width: 30px;
+  width: 32px;
   height: 44px;
   border-radius: 8px;
   margin: 0;
