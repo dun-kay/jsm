@@ -125,7 +125,7 @@ export const GAMES: GameConfig[] = [
     minPlayers: 2,
     maxPlayers: 18,
     playTime: "5 - 15 mins",
-    ageGuide: "Ages 17+",
+    ageGuide: "Ages 16+",
     joinPrefix: "G",
     route: "/g/never-ever/",
     enabled: true
@@ -189,7 +189,7 @@ export const GAMES: GameConfig[] = [
     minPlayers: 3,
     maxPlayers: 18,
     playTime: "5 - 15 mins",
-    ageGuide: "Ages 17+",
+    ageGuide: "Ages 16+",
     joinPrefix: "H",
     route: "/g/most-likely/",
     enabled: true

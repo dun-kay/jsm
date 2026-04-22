@@ -118,8 +118,6 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>Vote truthfully, <b>the least voted for option gets called out...</b></p>
         <br></br>
         <p>You might <b>find out things about your friends you never knew</b> or didn't want to...</p>
-        <br></br>
-        <p>Like which of your friends would definitely <b>get back with their ex... again.</b></p>
       </>
     )
   },
