@@ -774,11 +774,16 @@ export default function OrderMeRuntime({ game, theme, onToggleTheme, onBack }: O
               ))}
             </div><div className="sw-hint-actions"><button type="button" className="btn btn-soft runtime-reroll-btn btn-left mores shorter-btn vs" onClick={() => setShowHelpModal(true)}>??</button>
           </div></div>
-<div className="space15"></div>
-                    <div className="bottom-row">
+
+            <div className="notice-slot">
+           {notice ? <p className="hint-text error-text">{notice}</p> : null}
+          </div>
+        
+
+            <div className="bottom-row">
             <button className="btn btn-soft" type="button" onClick={clearBoard}>Clear</button>
             <button className="btn btn-key" type="button" onClick={() => void checkOrder()} disabled={placed.some((word) => !word)}>Guess</button>
-          </div>
+            </div>
 
             <div className="om-pool">{poolWords.map((word) => (
               <button
@@ -801,7 +806,7 @@ export default function OrderMeRuntime({ game, theme, onToggleTheme, onBack }: O
             </div>
           ) : null}
 
-          {notice ? <p className="hint-text error-text">{notice}</p> : null}
+          
 
         </section>
       )}

@@ -689,7 +689,7 @@ export default function OneAwayRuntime({ game, theme, onToggleTheme, onBack }: O
           
           <div className="space10"></div>
           
-          <div className="keyboard-bottom">
+          <div className="keyboard-bottom">{notice ? <p className="hint-text error-text">{notice}</p> : null}
           <div className="oa-keyboard">
             {KEYBOARD_ROWS.map((row, rowIdx) => (
               <div key={row} className="drawwf-keyboard-row">
@@ -714,7 +714,7 @@ export default function OneAwayRuntime({ game, theme, onToggleTheme, onBack }: O
                 <button type="button" className="oa-enter-btn" onClick={() => void submitGuess()}>GUESS</button>
               </div>
               </div>
-              </div>{notice ? <p className="hint-text error-text">{notice}</p> : null}</section>
+              </div></section>
       )}
 
 

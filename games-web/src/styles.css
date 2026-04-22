@@ -266,6 +266,8 @@ body {
   text-align: center;
 }
 
+.notice-slot { min-height: 24px; }
+
 .nb {
   font-weight: 300;
 }
