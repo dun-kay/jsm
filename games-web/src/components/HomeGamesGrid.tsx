@@ -178,7 +178,14 @@ export default function HomeGamesGrid({
           <br></br>
         </h1>
         <h2>Play fun daily, social, & party games.</h2>
+        <div className="play-row">
+          <a href="#party"><div className="play">Party games</div></a>
+          <a href="#social"><div className="play">Social games</div></a>
+          <a href="#daily"><div className="play">Daily games</div></a>
+          </div>
+          <p></p>
       </header>
+      
 
       <section className="home-sections">
         <div className="home-section">
