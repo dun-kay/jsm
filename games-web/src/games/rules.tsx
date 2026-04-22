@@ -118,20 +118,18 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>Vote truthfully, <b>the least voted for option gets called out...</b></p>
         <br></br>
         <p>You might <b>find out things about your friends you never knew</b> or didn't want to...</p>
-        <br></br>
-        <p>Like which of your friends would definitely <b>get back with their ex... again.</b></p>
       </>
     )
   },
   "wormy-worm": {
-    title: "You are about to play... Wormy Worm ðŸª±ðŸª±ðŸª±",
+    title: "You are about to play... Wormy Worm",
     content: (
       <>
         <p>Settle arguments. <b>Let the worms decide.</b></p>
         <br />
         <p>To begin, <b>set a game penalty.</b></p>
         <br />
-        <p>Each round, <b>every player draws a worm from the bucket ðŸª£</b>. Sometimes you get <b>more worms</b>, other times, <b>less worms</b>.</p>
+        <p>Each round, <b>every player draws a worm from the bucket</b>. Sometimes you get <b>more worms</b>, other times, <b>less worms</b>.</p>
         <br />
         <p>Most worms <b>over three rounds wins.</b></p>
         <p>Least worms, <b>loses.</b></p>
@@ -184,7 +182,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <p>The game starts with <b>everyone adding 2 prompts</b> to the game.</p>
         <p>These prompts can be anything. A word, two words, a phrase... <b>make it fun & memorable.</b></p>
         <br />
-        <p>The players are then split into two teams. <b>Team Mango ðŸ¥­ & Team Peach ðŸ‘.</b></p>
+        <p>The players are then split into two teams. <b>Team Mango & Team Peach.</b></p>
         <br />
         <p>Teams take turns describing, acting, or using a single word to try <b>help their team guess the prompts they pull from the bowl.</b></p>
         <br />
@@ -223,7 +221,7 @@ const RULES_BY_SLUG: Record<string, GameIntroRules> = {
         <br></br>
         <p>The game is <b>meant to be played very fast.</b> So push your friends to play faster & faster...</p>
         <br />
-        <p>Each player has 3 hidden animal cards: <b>Crazy Llama ðŸ¦™, Poison Dart Frog ðŸ¸, & Mountain Gorilla ðŸ¦</b>.</p>
+        <p>Each player has 3 hidden animal cards: <b>Crazy Llama, Poison Dart Frog, & Mountain Gorilla.</b></p>
         <p>One of those 3 cards is Charlatan-marked.</p>
         <br />
         <p>On your turn, ask the next player: <b>Are you a [Llama... Frog... or Gorilla...]?</b></p>

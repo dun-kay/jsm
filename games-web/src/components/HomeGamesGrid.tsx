@@ -107,13 +107,14 @@ export default function HomeGamesGrid({
       game.slug === "one-away" ||
       game.slug === "order-me"
   );
-  const socialGames = games.filter((game) => game.slug === "draw-wf");
+  const socialGames = games.filter((game) => game.slug === "draw-things" || game.slug === "draw-wf");
   const partyGames = games.filter(
     (game) =>
       game.slug !== "secret-words" &&
       game.slug !== "theme-words" &&
       game.slug !== "one-away" &&
       game.slug !== "order-me" &&
+      game.slug !== "draw-things" &&
       game.slug !== "draw-wf"
   );
 
@@ -130,6 +131,7 @@ export default function HomeGamesGrid({
       game.slug !== "theme-words" &&
       game.slug !== "one-away" &&
       game.slug !== "order-me" &&
+      game.slug !== "draw-things" &&
       game.slug !== "draw-wf"
     );
   }
@@ -187,9 +189,9 @@ export default function HomeGamesGrid({
         </h1>
         <h2>Play fun daily, social, & party games.</h2>
         <div className="play-row">
-          <a href="#party"><div className="play">Party games</div></a>
-          <a href="#social"><div className="play">Social games</div></a>
-          <a href="#daily"><div className="play">Daily games</div></a>
+          <a href="#party"><button className="play">Party games</button></a>
+          <a href="#social"><button className="play">Social games</button></a>
+          <a href="#daily"><button className="play">Daily games</button></a>
           </div>
           <p></p>
       </header>
@@ -215,4 +217,3 @@ export default function HomeGamesGrid({
     </div>
   );
 }
-
