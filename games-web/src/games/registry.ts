@@ -67,7 +67,7 @@ export const GAMES: GameConfig[] = [
   },
   {
     id: "J",
-    slug: "draw-wf",
+    slug: "draw-things",
     title: "Draw Things",
     description: "Draw things. Guess things. You have 20s.",
     shortRules: "",
@@ -99,18 +99,18 @@ export const GAMES: GameConfig[] = [
   },
       {
     id: "D",
-    slug: "murder-club",
-    title: "Murder Club",
-    description: "Find the hidden killer & their accomplices. Vote to submit or reject evidence.",
-    shortRules: "One killer hides amoung you. Vote to submit or reject case evidence. Catch the killer before they derail the investigation.",
-    heroImage: "/assets/murder-club-logo.png",
+    slug: "detective-club",
+    title: "Detective Club",
+    description: "Find the hidden culprits. Vote to submit or reject evidence.",
+    shortRules: "Half the group blocks evidence while the rest push it through. Find culprits before they derail the investigation.",
+    heroImage: "/assets/detective-club-logo.png",
     theme: "default",
     minPlayers: 4,
     maxPlayers: 18,
     playTime: "10 - 20 mins",
     ageGuide: "Ages 14+",
     joinPrefix: "D",
-    route: "/g/murder-club/",
+    route: "/g/detective-club/",
     enabled: true
   },
 
@@ -240,7 +240,7 @@ export function getGameBySlug(slug: string): GameConfig | undefined {
             ? "theme-words"
             : slug === "oneaway"
               ? "one-away"
-              : slug === "orderme"
+          : slug === "orderme"
                 ? "order-me"
           : slug;
   return GAMES.find((game) => game.slug === normalized && game.enabled);

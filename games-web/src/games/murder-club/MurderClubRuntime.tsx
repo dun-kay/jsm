@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import {
   castMurderClubEvidenceVote,
   castMurderClubSuspectVote,
@@ -242,7 +242,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
   if (!state || !theme) {
     return (
       <section className="runtime-card">
-        <h2>Murder Club</h2>
+        <h2>Detective Club</h2>
         <p>Loading game...</p>
         {errorText && <p className="hint-text error-text">{errorText}</p>}
       </section>
@@ -278,24 +278,24 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
         <>
           {state.you.role === "conspirator" ? (
             <>
-              <h2>Your team, Murderer</h2>
+              <h2>Your team, Culprit</h2>
               <p><b>Do not reveal your team or any information on this card (bluffing allowed).</b></p>
               <p></p><p></p>
               <p>Your goal is to have evidence rejected from the case file.</p>
-              <p>3 evidence rejects wins the game for murderers.</p><p></p>
+              <p>3 evidence rejects wins the game for culprits.</p><p></p>
               <p>Because all suspect and evidence votes require a majority & evidence votes are public, be careful of appearing too suspicious.<p></p>Tread carefully.</p><p></p>
               {conspiratorNames.length > 0 && (
-                <p><b>Your murderer team mates (don't reveal this to anyone, they know who you are):<p></p>{conspiratorNames.join(", ")}</b></p>
+                <p><b>Your culprit team mates (don't reveal this to anyone, they know who you are):<p></p>{conspiratorNames.join(", ")}</b></p>
               )}
             </>
           ) : (
             <>
-              <h2>Your team, Investigator</h2>
+              <h2>Your team, Detective</h2>
               <p><b>Do not reveal your team or any information on this card (bluffing allowed).</b></p>
               <p></p><p></p>
-              <p>Find the murderers and have evidence submitted to the case file.</p>
-              <p>3 evidence submits wins the game for investigators.</p><p></p>
-              <p>When you choose which player to place under suspicion, it's better to try and put people you think are muderers under suspicion.</p><p>That way there's a less chance of evidence getting rejected (the goal of the murderers).</p>
+              <p>Find the culprits and have evidence submitted to the case file.</p>
+              <p>3 evidence submits wins the game for detectives.</p><p></p>
+              <p>When you choose which player to place under suspicion, it's better to try and put people you think are culprits under suspicion.</p><p>That way there's a less chance of evidence getting rejected (the goal of the culprits).</p>
             </>
           )}
           <button type="button" className="btn btn-key" onClick={() => void doContinue()} disabled={busy || !isWaitingOnYou(state)}>
@@ -337,7 +337,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
           ) : (
             <>
               <h2>Discuss & select a suspect...</h2>
-              <p>Select a suspect, who is a murderer?<p></p>They will be blocked from speaking or voting during the evidence decision this round.</p>
+              <p>Select a suspect, who is involved?<p></p>They will be blocked from speaking or voting during the evidence decision this round.</p>
               <div className="player-grid">
                 {state.players.map((player) => (
                   <button
@@ -392,8 +392,8 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
           </div><p></p>
 
           <div className="bottom-row">
-            <p>Murderers, evidence blocks to win: {state.conspiratorScore}/{state.targetScore}</p>
-            <p>Investigators, evidence submits to win: {state.investigatorScore}/{state.targetScore}</p>
+            <p>Culprits, evidence blocks to win: {state.conspiratorScore}/{state.targetScore}</p>
+            <p>Detectives, evidence submits to win: {state.investigatorScore}/{state.targetScore}</p>
           </div>
           <p></p>
           {state.you.isUnderSuspicion ? (
@@ -428,7 +428,7 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
                     {card === "reject" ? "Reject" : "Admit"}
                   </button>
                 ))}
-              </div><p></p>In general, Murderers want to reject & Investigators want to admit evidence. Play carefully, or you'll be put under suspicion...
+              </div><p></p>In general, Culprits want to reject & Detectives want to admit evidence. Play carefully, or you'll be put under suspicion...
               
               <button
                 type="button"
@@ -448,13 +448,13 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
           {state.evidenceVoteResult === "admitted" && (
             <>
               <h2>Evidence admitted...</h2>
-              <p>The evidence will be admitted to the case file, +1 point for the investigators.</p><p></p>
+              <p>The evidence will be admitted to the case file, +1 point for the Detectives.</p><p></p>
             </>
           )}
           {state.evidenceVoteResult === "rejected" && (
             <>
               <h2>Evidence rejected...</h2>
-              <p>The evidence will be rejected from the case file, +1 point for the murderers.</p><p></p>
+              <p>The evidence will be rejected from the case file, +1 point for the culprits.</p><p></p>
             </>
           )}
           {state.evidenceVoteResult === "hung" && (
@@ -465,8 +465,8 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
           )}
 
           <div className="bottom-row">
-            <p>Murderers, evidence blocks to win: {state.conspiratorScore}/{state.targetScore}</p>
-            <p>Investigators, evidence submits to win: {state.investigatorScore}/{state.targetScore}</p>
+            <p>Culprits, evidence blocks to win: {state.conspiratorScore}/{state.targetScore}</p>
+            <p>Detectives, evidence submits to win: {state.investigatorScore}/{state.targetScore}</p>
           </div>
           <p></p><p>Votes:</p>
           <div className="player-grid">
@@ -505,11 +505,11 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
         <>
           <h2>
             {state.investigatorScore >= state.targetScore
-              ? "Investigators win!"
-              : "Murderers win!"}
+              ? "Detectives win!"
+              : "Culprits win!"}
           </h2>
-          <p>Investigators, evidence submits to win: {state.investigatorScore}/{state.targetScore}</p>
-          <p>Murderers, evidence blocks to win: {state.conspiratorScore}/{state.targetScore}</p>
+          <p>Detectives, evidence submits to win: {state.investigatorScore}/{state.targetScore}</p>
+          <p>Culprits, evidence blocks to win: {state.conspiratorScore}/{state.targetScore}</p>
           <p></p><p><b>You can reveal your team to the other players...</b></p><p></p>
           {state.you.isHost ? (
             <button type="button" className="btn btn-key" onClick={() => void doPlayAgain()} disabled={busy}>
@@ -536,3 +536,4 @@ export default function MurderClubRuntime({ gameCode, playerToken }: MurderClubR
     </section>
   );
 }
+

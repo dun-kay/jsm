@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-04-21T13:00:51.700Z",
+  "inputs": {
+    "wordsAlphaPath": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\words_alpha.txt",
+    "wordfreqPath": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\wordfreq-en-25000-log.json"
+  },
+  "rules": {
+    "minLength": 3,
+    "maxLength": 6,
+    "maxWordfreqRank": 22000,
+    "excludesRudeWords": true,
+    "excludesNameBlock": true,
+    "excludesNonGameWordBlock": true,
+    "excludesLikelyAcronyms": true
+  },
+  "totals": {
+    "alphaCandidates": 55111,
+    "alphaUnique": 55111,
+    "modernTotal": 8221,
+    "len3": 762,
+    "len4": 1789,
+    "len5": 2559,
+    "len6": 3111
+  },
+  "spotChecks": {
+    "paso": false,
+    "doable": false
+  },
+  "outputs": {
+    "txt": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\modern_english_3to6_words.txt",
+    "json": "C:\\Users\\tjwil\\jsm-games\\games-web\\src\\games\\secret-words\\seed-build\\modern_english_3to6_words.json"
+  }
+}

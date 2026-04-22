@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -8,30 +8,23 @@
     <meta name="description" content="One player is the spy. Use one-word clues to keep the secret hidden from them." />
     <link rel="canonical" href="https://jumpship.media/g/secret-category/" />
     <script>
-      (function () {
-        var ua = navigator.userAgent || "";
-        var isBot = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|whatsapp|telegrambot|discordbot|twitterbot|linkedinbot/i.test(ua);
-        if (!isBot) {
-          var redirectPath = window.location.pathname + window.location.search + window.location.hash;
-          try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
-          window.location.replace("/");
-        }
-      })();
-
-      function openGameInApp() {
+      function openGameInApp(event) {
+        if (event && typeof event.preventDefault === 'function') { event.preventDefault(); }
         var redirectPath = window.location.pathname + window.location.search + window.location.hash;
         try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
         window.location.assign("/");
       }
-    </script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5825917506662262"
-     crossorigin="anonymous"></script></head>
+    </script></head>
   <body>
     <main>
       <h1>Play Secret Categories</h1>
       <p>One player is the spy. Use one-word clues to keep the secret hidden from them.</p>
-      <p><button onclick="openGameInApp()">Play This Game</button></p>
+      <p><a href="/" onclick="openGameInApp(event)">Play This Game</a></p>
+      <p><a href="/">Browse all games</a></p>
     </main>
   </body>
 </html>
+
+
+
 

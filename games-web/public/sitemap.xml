@@ -1,61 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://jumpship.media/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/secret-category/</loc>
+    <loc>https://jumpship.media/privacy-policy/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/secret-category/rules/</loc>
+    <loc>https://jumpship.media/terms/</loc>
+  </url>
+  <url>
+    <loc>https://jumpship.media/g/secret-category/</loc>
   </url>
   <url>
     <loc>https://jumpship.media/g/popular-people/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/popular-people/rules/</loc>
-  </url>
-  <url>
     <loc>https://jumpship.media/g/fruit-bowl/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/fruit-bowl/rules/</loc>
-  </url>
-  <url>
-    <loc>https://jumpship.media/g/murder-club/</loc>
-  </url>
-  <url>
-    <loc>https://jumpship.media/g/murder-club/rules/</loc>
+    <loc>https://jumpship.media/g/detective-club/</loc>
   </url>
   <url>
     <loc>https://jumpship.media/g/lying-llama/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/lying-llama/rules/</loc>
-  </url>
-  <url>
     <loc>https://jumpship.media/g/fake-famous/</loc>
-  </url>
-  <url>
-    <loc>https://jumpship.media/g/fake-famous/rules/</loc>
   </url>
   <url>
     <loc>https://jumpship.media/g/never-ever/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/never-ever/rules/</loc>
-  </url>
-  <url>
     <loc>https://jumpship.media/g/wormy-worm/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/wormy-worm/rules/</loc>
-  </url>
-  <url>
     <loc>https://jumpship.media/g/most-likely/</loc>
-  </url>
-  <url>
-    <loc>https://jumpship.media/g/most-likely/rules/</loc>
   </url>
   <url>
     <loc>https://jumpship.media/g/draw-things/</loc>
@@ -64,24 +43,12 @@
     <loc>https://jumpship.media/g/secret-words/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/secret-words/rules/</loc>
-  </url>
-  <url>
     <loc>https://jumpship.media/g/one-away/</loc>
-  </url>
-  <url>
-    <loc>https://jumpship.media/g/one-away/rules/</loc>
   </url>
   <url>
     <loc>https://jumpship.media/g/order-me/</loc>
   </url>
   <url>
-    <loc>https://jumpship.media/g/order-me/rules/</loc>
-  </url>
-  <url>
     <loc>https://jumpship.media/g/theme-words/</loc>
-  </url>
-  <url>
-    <loc>https://jumpship.media/g/theme-words/rules/</loc>
   </url>
 </urlset>

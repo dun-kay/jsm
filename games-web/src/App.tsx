@@ -4,7 +4,6 @@ import GameRuntimeHost from "./components/GameRuntimeHost";
 import HomeGamesGrid from "./components/HomeGamesGrid";
 import LegalPage from "./components/LegalPage";
 import StatsPage from "./components/StatsPage";
-import GameRulesPage from "./components/GameRulesPage";
 import FixedFooterLinks from "./components/FixedFooterLinks";
 import CookieNotice from "./components/CookieNotice";
 import AccessStatusPill from "./components/AccessStatusPill";
@@ -21,7 +20,6 @@ type RouteState =
   | { kind: "stats"; mode: "default" | "draw-wf" | "secret-words" | "theme-words" | "one-away" | "order-me" }
   | { kind: "legal"; page: "terms" | "privacy" | "unlimited" }
   | { kind: "redirect"; to: string }
-  | { kind: "game-rules"; slug: string }
   | { kind: "onboarding"; slug: string }
   | { kind: "runtime"; gameCode: string };
 type ThemeMode = "light" | "dark";
@@ -85,7 +83,7 @@ function parseRoute(pathname: string): RouteState {
 
   const gameRulesMatch = path.match(/^\/g\/([^/]+)\/rules\/$/);
   if (gameRulesMatch) {
-    return { kind: "game-rules", slug: gameRulesMatch[1] };
+    return { kind: "redirect", to: `/g/${gameRulesMatch[1]}/` };
   }
 
   const runtimeMatch = path.match(/^\/play\/([^/]+)\/$/);
@@ -173,9 +171,9 @@ function getMetaForRoute(route: RouteState): MetaConfig {
       h: "Play Fruit Bowl | Games With Friends",
       b: "Guess the prompts your team pulls from the fruit bowl. Describe, act, or use a word."
     },
-    "murder-club": {
-      h: "Play Murder Club | Games With Friends",
-      b: "Find the hidden killer & their accomplices. Vote to submit or reject evidence."
+    "detective-club": {
+      h: "Play Detective Club | Games With Friends",
+      b: "Find the hidden culprits. Vote to submit or reject evidence."
     },
     "lying-llama": {
       h: "Play Lying Llama | Games With Friends",
@@ -223,69 +221,6 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     }
   };
 
-  const rulesBySlug: Record<string, { h: string; b: string }> = {
-    "secret-category": {
-      h: "Secret Categories Rules | Games With Friends",
-      b: "Game Rules: One player is the spy. Use one-word clues to keep the secret hidden from them."
-    },
-    "popular-people": {
-      h: "Popular People Rules | Games With Friends",
-      b: "Game Rules: Guess your friends' chosen popular person before they guess yours."
-    },
-    "fruit-bowl": {
-      h: "Fruit Bowl Rules | Games With Friends",
-      b: "Game Rules: Guess the prompts your team pulls from the fruit bowl. Describe, act, or use a word."
-    },
-    "murder-club": {
-      h: "Murder Club Rules | Games With Friends",
-      b: "Game Rules: Find the hidden killer & their accomplices. Vote to submit or reject evidence."
-    },
-    "lying-llama": {
-      h: "Lying Llama Rules | Games With Friends",
-      b: "Game Rules: Ask, bluff, call Charlatan, and collect the most cards to win."
-    },
-    "fake-famous": {
-      h: "Fake Famous Rules | Games With Friends",
-      b: "Game Rules: Vote real or fake, then guess who said it from five options."
-    },
-    "never-ever": {
-      h: "Never Ever Rules | Games With Friends",
-      b: "Game Rules: Read the card, vote your answer, and see who gets called out."
-    },
-    "most-likely": {
-      h: "Most Likely Rules | Games With Friends",
-      b: "Game Rules: Two players vote first, then the group validates the winner."
-    },
-    "draw-wf": {
-      h: "Draw Things Rules | Games With Friends",
-      b: "Game Rules: One player draws for 7 seconds, everyone else guesses on replay."
-    },
-    "draw-things": {
-      h: "Draw Things Rules | Games With Friends",
-      b: "Game Rules: One player draws for 7 seconds, everyone else guesses on replay."
-    },
-    "wormy-worm": {
-      h: "Wormy Worm Rules | Games With Friends",
-      b: "Game Rules: Set the penalty, draw three worm pulls each, and avoid the bottom spot."
-    },
-    "secret-words": {
-      h: "Secret Words Rules | Games With Friends",
-      b: "Game Rules: Swipe letters to make words and find the daily secret word."
-    },
-    "theme-words": {
-      h: "Theme Words Rules | Games With Friends",
-      b: "Game Rules: Swipe letters to find every word from the daily theme list."
-    },
-    "one-away": {
-      h: "One Away Rules | Games With Friends",
-      b: "Game Rules: Guess the hidden word from 3 ordered clues in 4 guesses."
-    },
-    "order-me": {
-      h: "Order Me Rules | Games With Friends",
-      b: "Game Rules: Reorder six words by similarity to the main word in 4 checks."
-    }
-  };
-
   if (route.kind === "home") {
     return {
       title: "Play Games With Friends by Jump Ship Media",
@@ -300,31 +235,22 @@ function getMetaForRoute(route: RouteState): MetaConfig {
     }
   }
 
-  if (route.kind === "game-rules") {
-    const meta = rulesBySlug[route.slug];
-    if (meta) {
-      return { title: meta.h, description: meta.b };
-    }
-  }
-
   if (route.kind === "legal") {
     if (route.page === "terms") {
       return {
         title: "Terms | Games With Friends by Jump Ship Media",
-        description: "Games with friends is a way to play IRL social with your friends, straight from your phone.",
-        robots: "noindex,nofollow"
+        description: "Games with friends is a way to play IRL social with your friends, straight from your phone."
       };
     }
     if (route.page === "privacy") {
       return {
         title: "Privacy policy | Games With Friends by Jump Ship Media",
-        description: "Games with friends is a way to play IRL social with your friends, straight from your phone.",
-        robots: "noindex,nofollow"
+        description: "Games with friends is a way to play IRL social with your friends, straight from your phone."
       };
     }
     return {
-      title: "How Play Access Works | Games With Friends by Jump Ship Media",
-      description: "Learn how unlimited and Draw Things play-pack access works across sessions and devices.",
+      title: "Page Moved | Games With Friends by Jump Ship Media",
+      description: "This page has moved.",
       robots: "noindex,nofollow"
     };
   }
@@ -463,27 +389,6 @@ export default function App() {
   }
 
   if (route.kind === "onboarding") {
-    if (route.slug === "really-donald") {
-      navigate("/g/fake-famous/");
-      return null;
-    }
-    if (route.slug === "celebrities") {
-      navigate("/g/popular-people/");
-      return null;
-    }
-    if (route.slug === "fruit-bowel") {
-      navigate("/g/fruit-bowl/");
-      return null;
-    }
-    if (route.slug === "murder-clubs") {
-      navigate("/g/murder-club/");
-      return null;
-    }
-    if (route.slug === "draw-wf") {
-      navigate("/g/draw-things/");
-      return null;
-    }
-
     const game = getGameBySlug(route.slug);
     if (!game) {
       page = (
@@ -534,51 +439,6 @@ export default function App() {
             setRuntimeSession(session);
             navigate(`/play/${session.gameCode}/`);
           }}
-        />
-      );
-    }
-  }
-
-  if (route.kind === "game-rules") {
-    if (route.slug === "really-donald") {
-      navigate("/g/fake-famous/rules/");
-      return null;
-    }
-    if (route.slug === "celebrities") {
-      navigate("/g/popular-people/rules/");
-      return null;
-    }
-    if (route.slug === "fruit-bowel") {
-      navigate("/g/fruit-bowl/rules/");
-      return null;
-    }
-    if (route.slug === "murder-clubs") {
-      navigate("/g/murder-club/rules/");
-      return null;
-    }
-    if (route.slug === "draw-wf") {
-      navigate("/g/draw-things/rules/");
-      return null;
-    }
-
-    const game = getGameBySlug(route.slug);
-    if (!game) {
-      page = (
-        <HomeGamesGrid
-          games={enabledGames}
-          onOpenGame={(entry) => navigate(entry.route)}
-          theme={theme}
-          onToggleTheme={toggleTheme}
-        />
-      );
-    } else {
-      page = (
-        <GameRulesPage
-          game={game}
-          theme={theme}
-          onToggleTheme={toggleTheme}
-          onPlay={() => navigate(game.route)}
-          onBack={() => navigate("/")}
         />
       );
     }

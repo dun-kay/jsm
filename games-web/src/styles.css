@@ -736,6 +736,7 @@ body {
   border: 2px solid var(--line);
   background: transparent;
   color: var(--text);
+  text-decoration: none;
   border-radius: 16px;
   padding: 10px;
   text-align: center;
