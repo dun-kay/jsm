@@ -165,7 +165,7 @@ export default function GameRuntimeHost({
     (game?.slug === "secret-category" ||
       game?.slug === "popular-people" ||
       game?.slug === "fruit-bowl" ||
-      game?.slug === "murder-club" ||
+      game?.slug === "detective-club" ||
       game?.slug === "lying-llama" ||
       game?.slug === "fake-famous" ||
       game?.slug === "never-ever" ||
@@ -203,7 +203,7 @@ export default function GameRuntimeHost({
         {game.slug === "fruit-bowl" && (
           <FruitBowlRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
-        {game.slug === "murder-club" && (
+        {game.slug === "detective-club" && (
           <MurderClubRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
         {game.slug === "lying-llama" && (

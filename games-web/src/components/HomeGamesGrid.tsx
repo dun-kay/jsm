@@ -145,7 +145,15 @@ export default function HomeGamesGrid({
 
   function renderGameCard(game: GameConfig) {
     return (
-      <button key={game.id} type="button" className="game-card" onClick={() => onOpenGame(game)}>
+      <a
+        key={game.id}
+        href={game.route}
+        className="game-card"
+        onClick={(event) => {
+          event.preventDefault();
+          onOpenGame(game);
+        }}
+      >
         <img
           className="gridimage"
           src={game.heroImage || "/assets/secret-categories-logo.png"}
@@ -163,7 +171,7 @@ export default function HomeGamesGrid({
           
           {showAgeGuide(game) ? <div className="play">{game.ageGuide}</div> : null}
         </div>
-      </button>
+      </a>
     );
   }
 
@@ -207,5 +215,4 @@ export default function HomeGamesGrid({
     </div>
   );
 }
-
 

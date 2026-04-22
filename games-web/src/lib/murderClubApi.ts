@@ -71,7 +71,7 @@ function mapState(data: unknown): MurderClubState {
     targetScore: Number(raw.targetScore ?? 3),
     investigatorScore: Number(raw.investigatorScore ?? 0),
     conspiratorScore: Number(raw.conspiratorScore ?? 0),
-    themeId: String(raw.themeId ?? "holiday-murder"),
+    themeId: String(raw.themeId ?? "holiday-case"),
     evidenceIndex: Number(raw.evidenceIndex ?? 0),
     suspectPlayerId: (raw.suspectPlayerId as string | null) ?? null,
     suspectVoteResult: (raw.suspectVoteResult as MurderClubState["suspectVoteResult"]) ?? null,
@@ -116,7 +116,7 @@ async function rpcState(fn: string, params: Record<string, unknown>): Promise<Mu
   const supabase = getSupabaseClient();
   const { data, error } = await supabase.rpc(fn, params);
   if (error || !data) {
-    throw new Error(error?.message || "Murder Club request failed.");
+    throw new Error(error?.message || "Detective Club request failed.");
   }
   return mapState(data);
 }
