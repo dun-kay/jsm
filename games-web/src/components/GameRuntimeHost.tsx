@@ -105,7 +105,7 @@ export default function GameRuntimeHost({
   }, [gameCode, initialSession?.playerToken, sessionExpired]);
 
   useEffect(() => {
-    if (gameSlug !== "draw-wf") {
+    if (gameSlug !== "draw-wf" && gameSlug !== "draw-things") {
       setDrawWallet(null);
       return;
     }
@@ -155,7 +155,7 @@ export default function GameRuntimeHost({
   }
 
   const game = gameSlug ? getGameBySlug(gameSlug) : undefined;
-  const isDrawThingsRuntime = game?.slug === "draw-wf";
+  const isDrawThingsRuntime = game?.slug === "draw-things";
 
   const openDrawThingsPaywall = () => {
     window.dispatchEvent(new Event(DRAW_THINGS_OPEN_PAYWALL_EVENT));
@@ -171,7 +171,7 @@ export default function GameRuntimeHost({
       game?.slug === "never-ever" ||
       game?.slug === "most-likely" ||
       game?.slug === "wormy-worm" ||
-      game?.slug === "draw-wf") &&
+      game?.slug === "draw-things") &&
     initialSession?.playerToken
   ) {
     return (
@@ -221,7 +221,7 @@ export default function GameRuntimeHost({
         {game.slug === "wormy-worm" && (
           <WormyWormRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
-        {game.slug === "draw-wf" && (
+        {game.slug === "draw-things" && (
           <DrawWfRuntime gameCode={gameCode} playerToken={initialSession.playerToken} />
         )}
         {showQuitConfirm && (
