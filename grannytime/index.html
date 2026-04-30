@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Granny Time</title>
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '556786465129742');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=556786465129742&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <style>
+    :root {
+      --bg-dark: #221106;
+      --bg-mid: #3b1c0b;
+      --gold: #f5c11c;
+      --gold-soft: #ffd95a;
+      --panel: #2b160c;
+      --text: #fff7d1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 80% 15%, #5a2d12 0%, transparent 40%),
+        radial-gradient(circle at 20% 85%, #3f1f0d 0%, transparent 35%),
+        linear-gradient(180deg, var(--bg-mid), var(--bg-dark));
+    }
+
+    .card {
+      width: min(560px, 100%);
+      background: linear-gradient(180deg, #3a1d0e, #241208);
+      border: 4px solid #7a4a12;
+      border-radius: 18px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45), inset 0 0 0 2px #2a1509;
+      padding: 30px 24px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 2px solid rgba(245, 193, 28, 0.45);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    .granny {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 2px solid #b16c15;
+      background: linear-gradient(180deg, #ffe08a, #f2bc35);
+      color: #4f2a08;
+      font-size: clamp(14px, 2.7vw, 18px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 0 #7b4b12, 0 8px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 7vw, 52px);
+      letter-spacing: 1px;
+      color: var(--gold-soft);
+      text-transform: uppercase;
+      text-shadow: 0 3px 0 #6a3e10, 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    p {
+      margin: 12px 0 24px;
+      font-size: clamp(18px, 3.5vw, 24px);
+      color: #ffe99b;
+    }
+
+    .button {
+      display: inline-block;
+      text-decoration: none;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 14px 22px;
+      color: #2a1607;
+      background: linear-gradient(180deg, #ffe364, #f5c11c);
+      border: 3px solid #8a540f;
+      border-radius: 12px;
+      box-shadow: 0 6px 0 #73450f, 0 11px 18px rgba(0, 0, 0, 0.3);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 0 #73450f, 0 14px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .button:active {
+      transform: translateY(3px);
+      box-shadow: 0 3px 0 #73450f, 0 7px 12px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="granny" aria-hidden="true">Coming Soon</div>
+    <h1>Granny Time</h1>
+    <p>Granny Time is coming soon!</p>
+    <a class="button" href="https://tally.so/r/ZjG4e5" target="_blank" rel="noopener noreferrer">Sign up to the waitlist</a>
+  </main>
+</body>
+</html>
+
