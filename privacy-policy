@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Privacy Policy - Gem Core</title>
+	<style>
+  body {
+    font-family: Courier, monospace;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+  <p><b>Privacy Policy</b></p>
+  <p><strong>Effective Date:</strong> June 16, 2026</p>
+  <p><em>Gem Core</em> does not collect any user data, use any third party providers, or share your data with third party providers.</p>
+  <p>This app is made with GoDot and does not use third-party SDKs or analytics.</p>
+  <p>Contact us at james[at]jumpship[dot]media</a> for any questions.</p>
+  <p><b>Terms & Conditions</b></p>
+  <p><strong>Effective Date:</strong> June 16, 2026</p>
+  <p>By using <em>Gem Core</em>, you agree to the following simple terms:</p>
+	<p><ul>
+  <li>This game is provided “as is” without any guarantees or warranties</li>
+  <li>All characters and storylines are fictional.</li>
+  <li>The game is intended for entertainment purposes only.</li>
+  <li>You may not copy, modify, or redistribute the game without permission.</li>
+  </ul></p>
+  <p>We reserve the right to update these terms if needed.</p>
+  <p>Contact us at james[at]jumpship[dot]media</a> for any questions.</p>
+</body>
+</html>
