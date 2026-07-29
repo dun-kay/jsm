@@ -1,20 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jump Ship Media</title>
-    	<style>
-  body {
-    font-family: Courier, monospace;
-    font-size: 14px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jump Ship Media</title>
+  <link rel="icon" type="image/svg+xml" href="jsm logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #000;
+      --muted: #000;
+      --paper: #fff;
+      --line: #fff;
+      --leaf: #fff;
+      --coral: #4A7DFF;
+      --gold: #fff;
+      --sea: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Montserrat", Arial, sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 52px 0 34px;
+    }
+
+    .logo {
+      display: block;
+      margin-bottom: 78px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: 0;
+      text-align: right;
+      text-transform: lowercase;
+    }
+
+    .logo span {
+      color: var(--coral);
+    }
+
+    .hero {
+      max-width: 880px;
+      padding-bottom: 54px;
+    }
+
+    h1 {
+      max-width: 860px;
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.01;
+      letter-spacing: 0;
+    }
+
+    .subhead {
+      max-width: 660px;
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      margin-top: 15px;
+      padding: 5px 20px;
+      border: 1px solid var(--ink);
+      border-radius: 3px;
+      background: var(--ink);
+      color: #fffdf7;
+      font: 12px;
+      font-weight: 600;
+      line-height: 0;
+      text-decoration: none;
+      transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      background: transparent;
+      color: var(--ink);
+      transform: translateY(-2px);
+    }
+
+    .divider {
+      display: block;
+      max-width: 400px;
+      aspect-ratio: 1080 / 200;
+      height: auto;
+      margin: 8px 0 64px;
+      object-fit: cover;
+    }
+
+    .proof {
+      display: block;
+      align-items: start;
+      padding: 18px 0 74px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--leaf);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.12;
+    }
+
+    .help-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.18;
+    }
+
+    .help-list li {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 14px;
+      align-items: baseline;
+    }
+
+    .help-list li::before {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--coral);
+      transform: translateY(-1px);
+    }
+
+    .company-range {
+      margin: 28px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .manifesto {
+      max-width: 930px;
+      padding: 70px 0 92px;
+      border-top: 2px solid var(--line);
+      border-bottom: 2px solid var(--line);
+    }
+
+    .manifesto p {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .manifesto p + p {
+      margin-top: 26px;
+    }
+
+    .manifesto .button {
+      background: var(--coral);
+      border-color: var(--coral);
+      color: #fffdf7;
+    }
+
+    .manifesto .button:hover,
+    .manifesto .button:focus-visible {
+      background: transparent;
+      color: var(--coral);
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: right;
+      gap: 24px;
+      padding-top: 32px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .footer-link {
+      text-decoration-thickness: 2px;
+      text-underline-offset: 5px;
+    }
+
+    .footer-mark {
+      width: 148px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 28px, 1120px);
+        padding-top: 32px;
+      }
+
+      .logo {
+        margin-bottom: 58px;
+      }
+
+      .button {
+        width: 100%;
+        padding: 0 18px;
+        text-align: center;
+      }
+
+      .proof {
+        grid-template-columns: 1fr;
+        padding-bottom: 58px;
+      }
+
+      .manifesto {
+        padding: 52px 0 68px;
+      }
+
+      .footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
-    <p><b>Welcome.</b></p>
-    <p>Jump Ship Media is a small game publisher.</p>
-    <p></p>
-    <p></p>
+  <main class="page">
+    <div class="logo" aria-label="jumps ship media">jump ship <span>.media</span></div>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <p><b>Your strategic product and growth partners.</b></p>
+      <p>Trusted by teams growing fintech &amp; consumer software.</p>
+      <a class="button" href="https://tally.so/r/Npv8pQ">Let's see if we're a good fit.</a>
+    </section>
+
+    <section>
+      <p>You've already built a great product. <b>Let's figure out why it isn't growing.</b></p>
+      <p>You don't need more ideas. <b>Just the right ones.</b></p>
+      <p>Building isn't the bottleneck. <b>Knowing what not to build is.</b></p>
+      <p>Don't waste six months <b>on the wrong thing.</b></p>
+      <br>
+      <p><b>We help companies grow by focusing on the right opportunities.</b> From start-ups to public companies, we've helped teams:</p>
+      <p><b>Find</b> product-market fit.</p>
+      <p><b>Scale</b> customer acquisition.</p>
+      <p><b>Launch</b> new products.</p>
+      <p><b>Improve</b> retention.</p>
+      <p><b>Enter</b> new markets.</p>
+    </section>
+
+    <footer class="footer">
+      <a class="footer-link" href="privacy-policy">Privacy</a>
+    </footer>
+  </main>
 </body>
 </html>
