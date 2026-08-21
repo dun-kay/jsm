@@ -1,0 +1,30 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Play Detective Club | Games With Friends</title>
+    <meta name="robots" content="index,follow" />
+    <meta name="description" content="Find the hidden culprits and their accomplices. Vote to submit or reject evidence." />
+    <link rel="canonical" href="https://jumpship.media/g/detective-club/" />
+    <script>
+      function openGameInApp(event) {
+        if (event && typeof event.preventDefault === 'function') { event.preventDefault(); }
+        var redirectPath = window.location.pathname + window.location.search + window.location.hash;
+        try { sessionStorage.setItem("notes_redirect_path", redirectPath); } catch (e) {}
+        window.location.assign("/");
+      }
+    </script></head>
+  <body>
+    <main>
+      <h1>Play Detective Club</h1>
+      <p>Find the hidden culprits and their accomplices. Vote to submit or reject evidence.</p>
+      <p><a href="/" onclick="openGameInApp(event)">Play This Game</a></p>
+      <p><a href="/">Browse all games</a></p>
+    </main>
+  </body>
+</html>
+
+
+
+
