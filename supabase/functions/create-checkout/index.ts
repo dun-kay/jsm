@@ -95,6 +95,7 @@ Deno.serve(async (request) => {
       headers: {
         Authorization: `Bearer ${stripeSecretKey}`,
         "Content-Type": "application/x-www-form-urlencoded",
+        "Stripe-Version": "2023-08-16",
       },
       body: checkoutBody,
     });
