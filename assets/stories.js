@@ -419,11 +419,10 @@ function formatProductPrice(product) {
   }).format(amountCents / 100);
 }
 
-function trackBeginCheckout(productId) {
+function trackBeginCheckout() {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
-    event: "begin_checkout",
-    product_id: productId,
+    event: "InitiateCheckout",
   });
 }
 
@@ -947,7 +946,7 @@ async function renderReader() {
   productOptions.querySelectorAll("[data-product-id]").forEach((button) => {
     button.addEventListener("click", async () => {
       const productId = button.dataset.productId;
-      trackBeginCheckout(productId);
+      trackBeginCheckout();
 
       const latestSession = await getSession();
       if (!latestSession) {
