@@ -419,6 +419,14 @@ function formatProductPrice(product) {
   }).format(amountCents / 100);
 }
 
+function trackBeginCheckout(productId) {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "begin_checkout",
+    product_id: productId,
+  });
+}
+
 function renderNextEpisodeNav(container, catalog, episode) {
   if (!container || !episode) return;
 
@@ -938,6 +946,9 @@ async function renderReader() {
 
   productOptions.querySelectorAll("[data-product-id]").forEach((button) => {
     button.addEventListener("click", async () => {
+      const productId = button.dataset.productId;
+      trackBeginCheckout(productId);
+
       const latestSession = await getSession();
       if (!latestSession) {
         notice.textContent = "Sign in first, then choose an unlock option.";
@@ -952,7 +963,7 @@ async function renderReader() {
           Authorization: `Bearer ${latestSession.access_token}`,
         },
         body: JSON.stringify({
-          product_id: button.dataset.productId,
+          product_id: productId,
           return_path: readerReturnPath(),
         }),
       });
