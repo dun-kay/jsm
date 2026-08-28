@@ -63,6 +63,7 @@ async function addEmailToBrevoLists(apiKey: string, email: string, listIds: numb
 
     if (!response.ok) {
       const detail = await response.text();
+      if (response.status === 400 && detail.includes("already in list")) return;
       failures.push(`List ${id}: ${response.status} ${detail}`);
     }
   }));

@@ -342,6 +342,7 @@ async function renderSeriesNotificationButton(container) {
 
   container.innerHTML = "";
   container.classList.remove("error");
+  return;
 
   const session = await getSession();
   if (!session || await hasSeriesNotification()) return;
