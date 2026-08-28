@@ -1,0 +1,13 @@
+{
+  "name": "jsm-stories",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:frontend": "node --check assets/stories.js",
+    "dev": "node scripts/dev-server.mjs",
+    "import:blackwater": "node scripts/import-blackwater-content.mjs"
+  },
+  "devDependencies": {
+    "supabase": "^2.58.5"
+  }
+}

@@ -1,0 +1,998 @@
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --text: #252525;
+  --button-bg: #252525;
+  --button-text: #ffffff;
+  --secondary-button-bg: #ffffff;
+  --secondary-button-text: #252525;
+  --outline: #252525;
+  --outline-weight: 1px;
+  --muted: #666666;
+  --danger: #8b3328;
+  --settings-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #151515;
+  --text: #f4f4f4;
+  --button-bg: #f4f4f4;
+  --button-text: #151515;
+  --secondary-button-bg: #151515;
+  --secondary-button-text: #f4f4f4;
+  --outline: #f4f4f4;
+  --muted: #b8b8b8;
+  --danger: #ff9a8f;
+  --settings-shadow: 0 14px 34px rgba(0, 0, 0, 0.36);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Montserrat, Arial, sans-serif;
+  font-size: 16px;
+  letter-spacing: 0;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.site-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 52px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 22px;
+}
+
+.brand {
+  display: grid;
+  gap: 2px;
+  color: var(--text);
+  text-align: left;
+  text-decoration: none;
+}
+
+.brand-main {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  line-height: 1;
+}
+
+.brand-jsm {
+  color: var(--text);
+  font-family: Montserrat, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.brand-mark {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex: 0 0 auto;
+  transform: translateY(1px);
+}
+
+.brand-stories {
+  color: #4a7dff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.brand-stories-mark {
+  color: inherit;
+}
+
+.brand-sub {
+  font-family: Montserrat, Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: lowercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+.nav-links a:first-child {
+  background: var(--button-bg);
+  color: var(--button-text);
+}
+
+.nav-links a:last-child {
+  background: var(--secondary-button-bg);
+  color: var(--secondary-button-text);
+}
+
+.button,
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 3px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button-subline {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.2;
+  opacity: 0.86;
+}
+
+.button.secondary {
+  background: var(--secondary-button-bg);
+  color: var(--secondary-button-text);
+}
+
+.text-button {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
+.hero-stories {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.95fr);
+  gap: 44px;
+  align-items: end;
+  padding: 18px 0 64px;
+}
+
+.home-hero {
+  width: 100dvw;
+  min-height: 500px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  margin: 0 0 24px calc(50% - 50dvw);
+  padding: 54px 18px;
+  border-top: var(--outline-weight) solid var(--outline);
+  border-bottom: var(--outline-weight) solid var(--outline);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0.52)),
+    url("../blackwater-key-art.png") center / cover;
+  color: #ffffff;
+  text-align: center;
+}
+
+.home-hero-inner {
+  width: min(600px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.home-hero h3 {
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.home-hero h1 {
+  color: #ffffff;
+}
+
+.home-hero-inner p {
+  margin: 0;
+  color: #ffffff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.home-hero .button,
+.hero-cta {
+  border-color: #4a7dff;
+  background: #4a7dff;
+  color: #ffffff;
+  margin-top: 4px;
+}
+
+.hero-cta {
+  margin-top: 18px;
+}
+
+.art-disclaimer {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 14px;
+  width: auto;
+  margin: 0;
+  color: #ffffffda;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 10px;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.art-disclaimer a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.kicker {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.12;
+}
+
+h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.blue-text {
+  color: #4a7dff;
+}
+
+.lede {
+  max-width: 620px;
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.series-poster {
+  min-height: 420px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: var(--bg);
+  border: var(--outline-weight) solid var(--outline);
+  color: var(--text);
+}
+
+.series-poster p {
+  max-width: 360px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.section-band {
+  padding: 42px 0;
+  border-top: var(--outline-weight) solid var(--outline);
+}
+
+.home-hero + .section-band {
+  border-top: 0;
+}
+
+.page-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.page-breadcrumb a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.serial-hero {
+  min-height: 350px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  margin-bottom: 34px;
+  padding: 44px 18px;
+  border: var(--outline-weight) solid var(--outline);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.46)),
+    url("../blackwater-key-art.png") center / cover;
+  color: #ffffff;
+  text-align: center;
+}
+
+.serial-hero-inner {
+  width: min(600px, 100%);
+}
+
+.serial-hero h1 {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.serial-logline {
+  margin: 14px auto 0;
+  color: #ffffff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.episode-directory {
+  max-width: 760px;
+  margin: 0 auto;
+  padding-bottom: 22px;
+}
+
+.account-section {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.release-note {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.season-filter {
+  display: inline-grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.season-filter label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.season-filter select {
+  min-height: 34px;
+  padding: 0 32px 0 10px;
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.featured-serials-title {
+  margin-top: 34px;
+}
+
+.series-card,
+.episode-row,
+.library-row,
+.auth-panel {
+  background: var(--bg);
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 6px;
+}
+
+.series-card {
+  padding: 22px;
+  text-decoration: none;
+}
+
+.series-card:hover,
+.episode-row[href]:hover,
+.library-row[href]:hover {
+  outline: var(--outline-weight) solid var(--outline);
+  outline-offset: 3px;
+}
+
+.series-card p,
+.episode-row p,
+.library-row p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.episode-list,
+.library-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.season-heading {
+  margin-bottom: 4px;
+  padding-bottom: 10px;
+  border-bottom: var(--outline-weight) solid var(--outline);
+}
+
+.episode-row,
+.library-row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+}
+
+.episode-row {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.library-row {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.episode-thumb {
+  width: 72px;
+  aspect-ratio: 1;
+  border: var(--outline-weight) solid var(--outline);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.18)),
+    url("../blackwater-key-art.png") center / cover;
+}
+
+.episode-copy h3 {
+  font-size: 20px;
+}
+
+.status-pill {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.reader {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.reader-hero-art {
+  width: 100%;
+  aspect-ratio: 1672 / 941;
+  position: relative;
+  border: var(--outline-weight) solid var(--outline);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.42)),
+    url("../blackwater-key-art.png") center / cover;
+}
+
+.reader-header {
+  padding: 22px 0 34px;
+}
+
+.reader-header h1 {
+  font-size: 22px;
+}
+
+.reader-meta {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.reader-meta a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.reader-access-status {
+  margin: 0 0 12px;
+  color: #4a7dff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.reader-body {
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.reader-body p {
+  margin: 0 0 1.05em;
+}
+
+.reader-anchor {
+  scroll-margin-top: 118px;
+}
+
+.reader-paywall {
+  position: relative;
+  margin: 24px 0 26px;
+  padding: 64px 0 24px;
+  overflow: hidden;
+}
+
+.reader-paywall::before {
+  content: "The story continues, the truth in Blackwater Bay is closer than it looks, and every answer has a shadow behind it. Laura, Kit, Jules and Owen are only beginning to understand what the town has been hiding. Down by the water, old rumours keep moving through the mist. Every door that opens seems to lead to another secret, another warning, another reason not to keep asking questions. But once they start pulling at the thread, the whole town begins to unravel around them.";
+  position: absolute;
+  inset: 8px 8px auto;
+  height: 330px;
+  padding: 12px 24px;
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: inherit;
+  line-height: 1.7;
+  filter: blur(3px);
+  opacity: .95;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 62%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 62%, transparent);
+  pointer-events: none;
+}
+
+.reader-paywall::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(color-mix(in srgb, var(--bg) 8%, transparent), var(--bg) 78%);
+  pointer-events: none;
+}
+
+.reader-paywall > * {
+  position: relative;
+  z-index: 1;
+}
+
+.reader-next {
+  display: flex;
+  justify-content: center;
+  margin: 34px 0 0;
+}
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 18px;
+  margin-top: 52px;
+  padding-top: 24px;
+  border-top: var(--outline-weight) solid var(--outline);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.site-footer a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.legal-page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 42px 0 20px;
+  border-top: var(--outline-weight) solid var(--outline);
+}
+
+.legal-page h1,
+.legal-page h2 {
+  margin-top: 0;
+}
+
+.legal-page h2 {
+  margin-top: 30px;
+}
+
+.legal-page p {
+  margin: 14px 0 0;
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.legal-page a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.product-options {
+  display: grid;
+  gap: 10px;
+  margin: 14px auto 0;
+  width: min(100%, 420px);
+}
+
+.auth-panel {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 460px);
+  margin: 0 auto;
+  padding: 22px;
+  border: 0;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--settings-shadow);
+}
+
+.auth-panel input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 3px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.paywall-intro,
+.paywall-form,
+.paywall-purchase-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.paywall-intro h1,
+.paywall-form h1,
+.paywall-purchase-copy h1 {
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.paywall-purchase-copy h3 {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.paywall-purchase-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.email-sent-state p {
+  margin: 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.paywall-choice-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.paywall-primary {
+  border-color: #4a7dff;
+  background: #4a7dff;
+  color: #ffffff;
+}
+
+.product-options .paywall-primary {
+  flex-direction: column;
+  gap: 2px;
+  min-height: 54px;
+  text-align: center;
+}
+
+.notify-series-button {
+  display: flex;
+  width: min(100%, 460px);
+  margin: 14px auto 0;
+  background: var(--button-bg);
+  color: var(--button-text);
+}
+
+#reader-notice {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.paywall-primary:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+.consent-list {
+  display: grid;
+  gap: 8px;
+}
+
+.consent-list label {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.consent-list input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  min-height: 0;
+  margin: 1px 0 0;
+  padding: 0;
+}
+
+.terms-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.terms-note a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.notice {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.notice.error {
+  color: var(--danger);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.reader-settings {
+  position: fixed;
+  left: 15px;
+  top: 90vh;
+  z-index: 20;
+  width: 44px;
+  height: 44px;
+  color: var(--text);
+}
+
+.settings-toggle {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 50%;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.settings-panel {
+  position: absolute;
+  left: 52px;
+  bottom: 0;
+  display: grid;
+  gap: 8px;
+  min-width: 132px;
+  padding: 10px;
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 6px;
+  background: var(--bg);
+  box-shadow: var(--settings-shadow);
+}
+
+.settings-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.settings-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.settings-options button {
+  min-height: 30px;
+  padding: 0 8px;
+  border: var(--outline-weight) solid var(--outline);
+  border-radius: 3px;
+  background: var(--secondary-button-bg);
+  color: var(--secondary-button-text);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.settings-options button[aria-pressed="true"] {
+  background: var(--button-bg);
+  color: var(--button-text);
+}
+
+@media (max-width: 760px) {
+  .site-shell {
+    width: min(100% - 24px, 1120px);
+    padding-top: 22px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    padding-bottom: 34px;
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .hero-stories {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding-bottom: 44px;
+  }
+
+  .home-hero {
+    min-height: 430px;
+  }
+
+  .serial-hero {
+    min-height: 280px;
+  }
+
+  .series-poster {
+    min-height: 320px;
+  }
+
+  .episode-row,
+  .library-row {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .episode-row .button,
+  .episode-row .status-pill,
+  .library-row .button {
+    grid-column: 2;
+    width: fit-content;
+  }
+
+  .episode-thumb {
+    width: 56px;
+  }
+
+  .episode-copy h3 {
+    font-size: 18px;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .home-hero .button,
+  .hero-cta {
+    width: min(220px, 100%);
+  }
+
+  .home-hero > .art-disclaimer,
+  .serial-hero > .art-disclaimer {
+    position: static;
+    width: 100%;
+    padding: 0 22px;
+    margin-top: 22px;
+    font-size: 10px;
+    text-align: center;
+    justify-content: end;
+  }
+
+  .reader-body {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .reader-meta {
+    font-size: 12px;
+  }
+}
