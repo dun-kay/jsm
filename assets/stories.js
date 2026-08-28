@@ -525,7 +525,7 @@ function renderReaderAuthChoice(container, { seriesSlug = currentSeriesSlug(), s
   container.innerHTML = html`
     <div class="paywall-intro">
       <h1><span class="blue-text">Hey there,</span> you have reached the end of this episode preview.</h1>
-      <h3>Sign-up or log-in to continue reading.</h3>
+      <h3>To keep reading, unlock Season 1, Part 1, Episodes 1-5. Start by creating a free account or logging in.</h3>
       <div class="paywall-choice-actions">
         <button class="button paywall-primary" type="button" data-auth-mode="signup">Sign Up</button>
         <button class="button" type="button" data-auth-mode="login">Log In</button>
