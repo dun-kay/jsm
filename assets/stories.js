@@ -279,6 +279,18 @@ async function ensureBrevoContact() {
   }
 }
 
+function syncContactInBackground(afterSync) {
+  void (async () => {
+    try {
+      await applyPendingPreferences();
+      await ensureBrevoContact();
+      if (afterSync) await afterSync();
+    } catch (error) {
+      console.error("Background contact sync failed", error);
+    }
+  })();
+}
+
 async function fetchCatalog({ allowFallback = true } = {}) {
   const seriesSlug = currentSeriesSlug();
   const { data, error } = await supabase
@@ -832,8 +844,6 @@ function renderSignedInAccountPanel(container, email) {
 }
 
 async function renderReader() {
-  await applyPendingPreferences();
-  await ensureBrevoContact();
   const params = new URLSearchParams(window.location.search);
   const episodeNumber = Number(params.get("e") || "1");
   const purchaseState = params.get("purchase");
@@ -847,6 +857,7 @@ async function renderReader() {
   const paywall = document.querySelector("#reader-paywall");
   const notice = document.querySelector("#reader-notice");
   const nextNav = document.querySelector("#reader-next");
+  syncContactInBackground(() => renderSeriesNotificationButton(notice));
 
   if (!episode || !episode.published) {
     title.textContent = "Coming Soon";
@@ -873,8 +884,9 @@ async function renderReader() {
   renderNextEpisodeNav(nextNav, catalog, episode);
 
   const session = await getSession();
+  const productsPromise = session ? fetchProducts(episode.episode_id) : Promise.resolve([]);
   if (session) {
-    await renderSeriesNotificationButton(notice);
+    void renderSeriesNotificationButton(notice);
     const paidContent = await loadPaidContent(episode.episode_id, purchaseState === "success");
     if (paidContent) {
       if (accessStatus) accessStatus.textContent = "Full episode unlocked";
@@ -915,7 +927,7 @@ async function renderReader() {
     return;
   }
 
-  const products = await fetchProducts(episode.episode_id);
+  const products = await productsPromise;
   productOptions.innerHTML = products.map((product) => html`
     <button class="button paywall-primary" type="button" data-product-id="${escapeHtml(product.product_id)}">
       <span>Purchase to continue reading</span>
@@ -982,8 +994,7 @@ async function loadPaidContent(episodeId, shouldPoll = false) {
 }
 
 async function renderAccount() {
-  await applyPendingPreferences();
-  await ensureBrevoContact();
+  syncContactInBackground();
   const auth = document.querySelector("#account-auth");
   const library = document.querySelector("#account-library");
   const session = await getSession();
@@ -1026,5 +1037,5 @@ const renderers = {
 
 await handleAuthRedirect();
 initReaderSettings();
-await syncAccountNav();
-renderers[page]?.();
+void syncAccountNav();
+await renderers[page]?.();
