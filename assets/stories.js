@@ -77,7 +77,7 @@ function scrollToReaderAnchor() {
 }
 
 function initReaderSettings() {
-  applyTheme(localStorage.getItem(themeKey) || "light");
+  applyTheme(localStorage.getItem(themeKey) || "dark");
 
   const settings = document.createElement("aside");
   settings.className = "reader-settings";
@@ -861,6 +861,7 @@ async function renderReader() {
   const title = document.querySelector("#reader-title");
   const meta = document.querySelector("#reader-meta");
   const accessStatus = document.querySelector("#reader-access-status");
+  const bridge = document.querySelector("#reader-bridge");
   const preview = document.querySelector("#reader-preview");
   const paid = document.querySelector("#reader-paid");
   const paywall = document.querySelector("#reader-paywall");
@@ -881,6 +882,15 @@ async function renderReader() {
 
   document.title = `${episode.title} | JSM Stories`;
   title.textContent = episodeTitleLine(episode.episode_number, episode.title);
+  if (bridge) {
+    bridge.innerHTML = episode.episode_number === 1
+      ? html`
+        <h4>BLACKWATER BAY</h4>
+        <h1><i>The mystery begins here.</i></h1>
+      `
+      : "";
+    bridge.classList.toggle("hidden", episode.episode_number !== 1);
+  }
   meta.innerHTML = html`
     <a href="/blackwater/">Blackwater Bay</a>
     /
