@@ -3,7 +3,7 @@ add column if not exists display_amount_cents integer,
 add column if not exists display_currency text;
 
 update public.products
-set display_amount_cents = 800,
+set display_amount_cents = 499,
     display_currency = 'AUD'
 where id = '44444444-4444-4444-8444-444444444441';
 

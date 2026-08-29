@@ -411,7 +411,7 @@ function formatProductPrice(product) {
   const amountCents = Number(product.display_amount_cents);
   const currency = String(product.display_currency || "AUD").toUpperCase();
 
-  if (!Number.isFinite(amountCents)) return "A$8.00";
+  if (!Number.isFinite(amountCents)) return "A$4.99";
 
   return new Intl.NumberFormat(undefined, {
     style: "currency",

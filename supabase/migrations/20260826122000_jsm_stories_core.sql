@@ -267,7 +267,7 @@ insert into public.products (id, name, stripe_price_id, active)
 values (
   '44444444-4444-4444-8444-444444444441',
   'Blackwater Bay, Season 1, Part 1',
-  'price_1U9InnIYRzF4KXaedA1kI0K6',
+  'price_1U9b6PIYRzF4KXaepegfoDYE',
   true
 )
 on conflict (stripe_price_id) do update
