@@ -953,6 +953,7 @@ h3 {
   gap: 16px;
   width: min(640px, 100%);
   margin: 0 auto 26px;
+  padding-top: 1rem;
   text-align: center;
 }
 
@@ -969,11 +970,6 @@ h3 {
 .waitlist-hero h1 {
   font-size: 30px;
   line-height: 1.08;
-}
-
-.waitlist-hero h2 {
-  color: var(--muted);
-  font-size: 18px;
 }
 
 .waitlist-art {
@@ -994,6 +990,18 @@ h3 {
 
 .waitlist-art-inner {
   width: min(600px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.waitlist-art h2 {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
 }
 
 .waitlist-logline {
@@ -1005,20 +1013,12 @@ h3 {
   line-height: 1.45;
 }
 
-.waitlist-signup {
-  display: grid;
-  gap: 16px;
-  width: min(560px, 100%);
-  margin: 0 auto;
-  text-align: center;
-}
-
 .waitlist-subhead {
   max-width: 540px;
   margin: 0 auto;
-  color: var(--text);
+  color: #ffffff;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.5;
 }
 
@@ -1033,10 +1033,10 @@ h3 {
   width: 100%;
   min-height: 44px;
   padding: 0 14px;
-  border: var(--outline-weight) solid var(--outline);
+  border: var(--outline-weight) solid #ffffff;
   border-radius: 3px;
-  background: var(--bg);
-  color: var(--text);
+  background: rgba(21, 21, 21, 0.82);
+  color: #ffffff;
 }
 
 .waitlist-form .button {
@@ -1052,7 +1052,7 @@ h3 {
   grid-template-columns: 16px minmax(0, 1fr);
   gap: 8px;
   align-items: start;
-  color: var(--muted);
+  color: #ffffff;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 13px;
   font-style: italic;
@@ -1069,11 +1069,21 @@ h3 {
 
 .waitlist-section {
   width: min(760px, 100%);
-  margin: 56px auto 0;
+  margin: 28px auto 0;
 }
 
 .waitlist-section h3 {
   font-size: 20px;
+  text-align: center;
+}
+
+.swipe-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.35;
   text-align: center;
 }
 
