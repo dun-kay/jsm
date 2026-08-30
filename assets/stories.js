@@ -1063,6 +1063,7 @@ function renderWaitlist() {
     event.preventDefault();
     notice.textContent = "";
     notice.classList.remove("error");
+    form.classList.remove("is-submitted");
 
     const email = emailInput.value.trim();
     if (!email) {
@@ -1098,13 +1099,16 @@ function renderWaitlist() {
       }
 
       form.reset();
-      notice.textContent = "You're on the list. I'll email you when Blackwater Bay launches.";
+      form.classList.add("is-submitted");
+      notice.textContent = "You're on the list. I'll email you soon, when Blackwater Bay launches. In the meantime, send this to your friends so you can share in the mystery together.";
     } catch (error) {
       notice.textContent = error.message;
       notice.classList.add("error");
     } finally {
-      submitButton.disabled = false;
-      submitButton.textContent = "Get First Access";
+      if (!form.classList.contains("is-submitted")) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Get First Access";
+      }
     }
   });
 }

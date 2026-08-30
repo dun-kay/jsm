@@ -961,7 +961,7 @@ h3 {
   margin: 0;
   color: #4a7dff;
   font-family: Montserrat, Arial, sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -1045,6 +1045,21 @@ h3 {
   background: #4a7dff;
   color: #ffffff;
   text-transform: uppercase;
+}
+
+.waitlist-form.is-submitted input,
+.waitlist-form.is-submitted button,
+.waitlist-form.is-submitted label {
+  display: none;
+}
+
+.waitlist-form.is-submitted .notice {
+  margin: 0;
+  color: #ffffff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .waitlist-consent {
