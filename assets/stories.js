@@ -5,6 +5,7 @@ const CONFIG = {
   supabasePublishableKey: "sb_publishable_Bm4WRrxanbMLwlnfNarjaQ_edjN45Zj",
   createCheckoutUrl: "https://setykcvlivqiuufjkjuu.supabase.co/functions/v1/create-checkout",
   updatePreferencesUrl: "https://setykcvlivqiuufjkjuu.supabase.co/functions/v1/update-preferences",
+  waitlistSignupUrl: "https://setykcvlivqiuufjkjuu.supabase.co/functions/v1/waitlist-signup",
 };
 
 const supabase = createClient(CONFIG.supabaseUrl, CONFIG.supabasePublishableKey);
@@ -1049,15 +1050,79 @@ async function renderAccount() {
   `).join("") || `<p class="notice">Purchased episodes will appear here.</p>`;
 }
 
+function renderWaitlist() {
+  const form = document.querySelector("[data-waitlist-form]");
+  if (!form) return;
+
+  const emailInput = form.querySelector("[data-waitlist-email]");
+  const consentInput = form.querySelector("[data-waitlist-consent]");
+  const submitButton = form.querySelector("[data-waitlist-submit]");
+  const notice = form.querySelector("[data-waitlist-notice]");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    notice.textContent = "";
+    notice.classList.remove("error");
+
+    const email = emailInput.value.trim();
+    if (!email) {
+      notice.textContent = "Enter your email first.";
+      notice.classList.add("error");
+      return;
+    }
+
+    if (!consentInput.checked) {
+      notice.textContent = "Tick the box if you want Blackwater Bay release emails.";
+      notice.classList.add("error");
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Saving...";
+
+    try {
+      const response = await fetch(CONFIG.waitlistSignupUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          marketing_consent: true,
+          series_slug: "blackwater-bay",
+          source: "blackwater_waitlist",
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(payload.error || "Could not join the waitlist.");
+      }
+
+      form.reset();
+      notice.textContent = "You're on the list. I'll email you when Blackwater Bay launches.";
+    } catch (error) {
+      notice.textContent = error.message;
+      notice.classList.add("error");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Get First Access";
+    }
+  });
+}
+
 const renderers = {
   stories: renderStories,
   series: renderSeries,
   season: renderSeason,
   reader: renderReader,
   account: renderAccount,
+  waitlist: renderWaitlist,
 };
 
 await handleAuthRedirect();
-initReaderSettings();
+if (page === "waitlist") {
+  applyTheme("dark");
+} else {
+  initReaderSettings();
+}
 void syncAccountNav();
 await renderers[page]?.();

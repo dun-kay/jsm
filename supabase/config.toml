@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.update-preferences]
 verify_jwt = false
+
+[functions.waitlist-signup]
+verify_jwt = false
