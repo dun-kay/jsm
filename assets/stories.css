@@ -978,7 +978,7 @@ h3 {
   display: grid;
   place-items: center;
   position: relative;
-  margin: 0 0 24px calc(50% - 50dvw);
+  margin: 0 0 0px calc(50% - 50dvw);
   padding: 54px 18px;
   border-top: var(--outline-weight) solid var(--outline);
   border-bottom: var(--outline-weight) solid var(--outline);
@@ -992,7 +992,7 @@ h3 {
   width: min(600px, 100%);
   display: grid;
   justify-items: center;
-  gap: 14px;
+  gap: 20px;
 }
 
 .waitlist-art h2 {
@@ -1138,6 +1138,18 @@ h3 {
 .waitlist-chapter h2 {
   margin-bottom: 22px;
   text-align: left;
+}
+
+.chapter-cta {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.chapter-cta .button {
+  border-color: #4a7dff;
+  background: #4a7dff;
+  color: #ffffff;
 }
 
 @media (max-width: 760px) {
