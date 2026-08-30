@@ -8,12 +8,17 @@ function listId(name: string): number | null {
   return Number.isInteger(value) && value > 0 ? value : null;
 }
 
-function brevoListIds(): number[] {
+function seriesTag(slug: string): string {
+  return slug.toUpperCase().replace(/[^A-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+}
+
+function brevoListIds(tag: string): number[] {
   const ids = [
     listId("BREVO_ALL_READERS_LIST_ID"),
     listId("BREVO_MARKETING_LIST_ID"),
-    listId("BREVO_BLACKWATER_LIST_ID"),
-    listId("BREVO_BLACKWATER_WAITLIST_LIST_ID") ?? 5,
+    tag === "BLACKWATER_BAY" ? listId("BREVO_BLACKWATER_LIST_ID") : null,
+    tag === "BLACKWATER_BAY" ? listId("BREVO_BLACKWATER_WAITLIST_LIST_ID") ?? 5 : null,
+    tag === "TOWERS" ? listId("BREVO_TOWERS_WAITLIST_LIST_ID") : null,
   ].filter((id): id is number => id !== null);
 
   return [...new Set(ids)];
@@ -58,6 +63,7 @@ Deno.serve(async (request) => {
     const body = await request.json();
     const email = String(body.email ?? "").trim().toLowerCase();
     const consent = body.marketing_consent === true;
+    const tag = seriesTag(String(body.series_slug ?? "blackwater-bay"));
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return jsonResponse({ error: "Enter a valid email address." }, 400);
@@ -67,7 +73,7 @@ Deno.serve(async (request) => {
       return jsonResponse({ error: "Marketing consent is required for this waitlist." }, 400);
     }
 
-    const listIds = brevoListIds();
+    const listIds = brevoListIds(tag);
     const contactPayload = {
       email,
       updateEnabled: true,
@@ -76,7 +82,7 @@ Deno.serve(async (request) => {
         JSM_READER: true,
         OPT_IN: true,
         MARKETING_CONSENT: true,
-        SERIES_NOTIFICATIONS: "BLACKWATER_BAY",
+        SERIES_NOTIFICATIONS: tag,
         WAITLIST_SOURCE: String(body.source ?? "blackwater_waitlist"),
       },
     };

@@ -984,7 +984,7 @@ h3 {
   border-bottom: var(--outline-weight) solid var(--outline);
   background:
     linear-gradient(rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0.52)),
-    url("../blackwater-key-art.png") center / cover;
+    var(--waitlist-art-image, url("../blackwater-key-art.png")) var(--waitlist-art-position, center) / cover;
   text-align: center;
 }
 
@@ -1153,6 +1153,11 @@ h3 {
 .waitlist-chapter h2 {
   margin-bottom: 22px;
   text-align: left;
+}
+
+.towers-waitlist {
+  --waitlist-art-image: url("../towers-key-art.jpg");
+  --waitlist-art-position: center 18%;
 }
 
 .chapter-cta {

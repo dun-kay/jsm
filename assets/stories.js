@@ -1061,6 +1061,9 @@ function renderWaitlist() {
   const form = document.querySelector("[data-waitlist-form]");
   if (!form) return;
 
+  const seriesTitle = form.dataset.waitlistTitle || "Blackwater Bay";
+  const seriesSlug = form.dataset.waitlistSeries || "blackwater-bay";
+  const source = form.dataset.waitlistSource || `${seriesSlug.replace(/[^a-z0-9]+/g, "_")}_waitlist`;
   const emailInput = form.querySelector("[data-waitlist-email]");
   const consentInput = form.querySelector("[data-waitlist-consent]");
   const submitButton = form.querySelector("[data-waitlist-submit]");
@@ -1095,8 +1098,8 @@ function renderWaitlist() {
         body: JSON.stringify({
           email,
           marketing_consent: true,
-          series_slug: "blackwater-bay",
-          source: "blackwater_waitlist",
+          series_slug: seriesSlug,
+          source,
         }),
       });
       const payload = await response.json().catch(() => ({}));
@@ -1107,7 +1110,7 @@ function renderWaitlist() {
 
       form.reset();
       form.classList.add("is-submitted");
-      notice.textContent = "You're on the list. I'll email you soon, when Blackwater Bay launches. In the meantime, send this to your friends so you can share in the mystery together.";
+      notice.textContent = `You're on the list. I'll email you soon, when ${seriesTitle} launches. In the meantime, send this to your friends so you can share in the mystery together.`;
       trackLead();
     } catch (error) {
       notice.textContent = error.message;
