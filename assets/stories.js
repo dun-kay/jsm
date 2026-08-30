@@ -428,6 +428,13 @@ function trackBeginCheckout() {
   });
 }
 
+function trackLead() {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "Lead",
+  });
+}
+
 function renderNextEpisodeNav(container, catalog, episode) {
   if (!container || !episode) return;
 
@@ -1101,6 +1108,7 @@ function renderWaitlist() {
       form.reset();
       form.classList.add("is-submitted");
       notice.textContent = "You're on the list. I'll email you soon, when Blackwater Bay launches. In the meantime, send this to your friends so you can share in the mystery together.";
+      trackLead();
     } catch (error) {
       notice.textContent = error.message;
       notice.classList.add("error");
