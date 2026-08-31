@@ -1136,6 +1136,7 @@ h3 {
 
 .single-card .excerpt-card {
   flex-basis: min(100%, 620px);
+  margin-inline: auto;
   max-height: none;
 }
 
