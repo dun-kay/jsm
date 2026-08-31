@@ -1111,6 +1111,13 @@ h3 {
   scroll-snap-type: x mandatory;
 }
 
+.excerpt-strip.single-card {
+  justify-content: center;
+  margin-inline: 0;
+  padding-inline: 0;
+  overflow-x: visible;
+}
+
 .excerpt-card {
   flex: 0 0 min(82vw, 320px);
   max-height: 420px;
@@ -1125,6 +1132,11 @@ h3 {
   line-height: 1.45;
   scroll-snap-align: center;
   overflow-y: auto;
+}
+
+.single-card .excerpt-card {
+  flex-basis: min(100%, 620px);
+  max-height: none;
 }
 
 .excerpt-card p {
