@@ -17,8 +17,8 @@ function brevoListIds(tag: string): number[] {
     listId("BREVO_ALL_READERS_LIST_ID"),
     listId("BREVO_MARKETING_LIST_ID"),
     tag === "BLACKWATER_BAY" ? listId("BREVO_BLACKWATER_LIST_ID") : null,
-    tag === "BLACKWATER_BAY" ? listId("BREVO_BLACKWATER_WAITLIST_LIST_ID") ?? 5 : null,
-    tag === "TOWERS" ? listId("BREVO_TOWERS_WAITLIST_LIST_ID") : null,
+    tag === "BLACKWATER_BAY" ? listId("BREVO_BLACKWATER_WAITLIST_LIST_ID") : null,
+    tag === "TOWERS" ? listId("BREVO_TOWERS_WAITLIST_LIST_ID") ?? 5 : null,
   ].filter((id): id is number => id !== null);
 
   return [...new Set(ids)];
