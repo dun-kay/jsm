@@ -18,10 +18,24 @@ function brevoListIds(tag: string): number[] {
     listId("BREVO_MARKETING_LIST_ID"),
     tag === "BLACKWATER_BAY" ? listId("BREVO_BLACKWATER_LIST_ID") : null,
     tag === "BLACKWATER_BAY" ? listId("BREVO_BLACKWATER_WAITLIST_LIST_ID") : null,
-    tag === "TOWERS" ? listId("BREVO_TOWERS_WAITLIST_LIST_ID") ?? 5 : null,
+    tag === "TOWERS" ? listId("BREVO_TOWERS_WAITLIST_LIST_ID") : null,
   ].filter((id): id is number => id !== null);
 
   return [...new Set(ids)];
+}
+
+function missingRequiredListSecrets(tag: string): string[] {
+  const missing: string[] = [];
+
+  if (tag === "BLACKWATER_BAY" && !listId("BREVO_BLACKWATER_WAITLIST_LIST_ID")) {
+    missing.push("BREVO_BLACKWATER_WAITLIST_LIST_ID");
+  }
+
+  if (tag === "TOWERS" && !listId("BREVO_TOWERS_WAITLIST_LIST_ID")) {
+    missing.push("BREVO_TOWERS_WAITLIST_LIST_ID");
+  }
+
+  return missing;
 }
 
 async function addEmailToBrevoLists(apiKey: string, email: string, listIds: number[]) {
@@ -73,6 +87,12 @@ Deno.serve(async (request) => {
       return jsonResponse({ error: "Marketing consent is required for this waitlist." }, 400);
     }
 
+    const missingListSecrets = missingRequiredListSecrets(tag);
+    if (missingListSecrets.length) {
+      console.error("Waitlist is missing required Brevo list secret(s)", missingListSecrets.join(", "));
+      return jsonResponse({ error: "Waitlist is not configured." }, 500);
+    }
+
     const listIds = brevoListIds(tag);
     const contactPayload = {
       email,
@@ -108,13 +128,15 @@ Deno.serve(async (request) => {
 
       if (!retry.ok) {
         const detail = await retry.text();
-        return jsonResponse({ error: `Brevo ${retry.status}: ${detail}` }, 502);
+        console.error("Brevo waitlist sync failed", retry.status, detail);
+        return jsonResponse({ error: "Waitlist sync failed. Please try again later." }, 502);
       }
     }
 
     const listFailures = await addEmailToBrevoLists(apiKey, email, listIds);
     if (listFailures.length) {
-      return jsonResponse({ error: listFailures.join(" | ") }, 502);
+      console.error("Brevo waitlist explicit list sync failed", listFailures.join(" | "));
+      return jsonResponse({ error: "Waitlist sync failed. Please try again later." }, 502);
     }
 
     return jsonResponse({ ok: true });
