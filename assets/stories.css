@@ -682,11 +682,15 @@ h3 {
   text-underline-offset: 4px;
 }
 
+.site-footer span {
+  flex-basis: 100%;
+  text-align: center;
+}
+
 .legal-page {
   max-width: 680px;
   margin: 0 auto;
-  padding: 42px 0 20px;
-  border-top: var(--outline-weight) solid var(--outline);
+  padding: 20px 0;
 }
 
 .legal-page h1,
