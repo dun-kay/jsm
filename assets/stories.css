@@ -950,13 +950,14 @@ h3 {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
   padding: 42px 0 64px;
+  align-items: center;
 }
 
 .waitlist-hero {
   display: grid;
   gap: 16px;
-  width: min(640px, 100%);
-  margin: 0 auto 26px;
+  width: 100%;
+  margin: 0;
   padding-top: 1rem;
   text-align: center;
 }
@@ -997,6 +998,7 @@ h3 {
   display: grid;
   justify-items: center;
   gap: 20px;
+  padding-top: 10px;
 }
 
 .waitlist-art h2 {
@@ -1022,7 +1024,7 @@ h3 {
   margin: 0 auto;
   color: #ffffff;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
 }
 
@@ -1049,6 +1051,17 @@ h3 {
   background: #4a7dff;
   color: #ffffff;
   text-transform: uppercase;
+}
+
+.waitlist-consent {
+  color: rgba(255, 255, 255, 0.86);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.waitlist-consent input {
+  margin-right: 6px;
 }
 
 .waitlist-form.is-submitted input,
@@ -1153,9 +1166,8 @@ h3 {
 }
 
 .waitlist-chapter {
-  margin-top: 32px;
-  padding-top: 28px;
-  border-top: var(--outline-weight) solid var(--outline);
+  margin-top: 0px;
+  padding-top: 0;
   color: var(--text);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
@@ -1172,9 +1184,58 @@ h3 {
   text-align: left;
 }
 
+.waitlist-glimpse-heading {
+  margin-bottom: 24px;
+}
+
+.waitlist-return-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-color: #4a7dff;
+  background: #4a7dff;
+  color: #ffffff;
+  font-family: Montserrat, Arial, sans-serif;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.waitlist-cta-note {
+  margin-top: -4px;
+  color: var(--muted);
+}
+
+.full-cta {
+  grid-template-columns: 100% minmax(0, 1fr);
+}
+
 .towers-waitlist {
   --waitlist-art-image: url("../towers-key-art.jpg");
   --waitlist-art-position: center 18%;
+}
+
+.towers-book-art {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 0px 50px;
+}
+
+.towers-book-art img {
+  width: min(100%, 350px);
+  height: auto;
+  display: block;
+  transform: rotate(-8.7deg);
+}
+
+.towers-waitlist .waitlist-art {
+  width: 100%;
+  min-height: auto;
+  margin: 0;
+  padding: 22px 18px 0px;
+  border: 0;
+  background: transparent;
 }
 
 .chapter-cta {
@@ -1187,6 +1248,7 @@ h3 {
   border-color: #4a7dff;
   background: #4a7dff;
   color: #ffffff;
+  font: inherit;
 }
 
 @media (max-width: 760px) {
@@ -1285,5 +1347,13 @@ h3 {
 
   .waitlist-art {
     min-height: 430px;
+  }
+
+  .towers-book-art {
+    margin-bottom: 14px;
+  }
+
+  .towers-book-art img {
+    width: min(100%, 250px);
   }
 }

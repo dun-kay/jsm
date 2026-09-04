@@ -34,48 +34,43 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <main class="waitlist-shell towers-waitlist">
     <section class="waitlist-hero">
       <h4>Coming soon</h4>
-      <h1>Towers, a 90s supernatural-mystery novel -- coming soon</h1>
-      <h2><i>"Towers is the terror of what you choose not to show, it's the shift of a killer's eyes... the surreal glide of headlights over asphalt... and the warmth we manage to find in our friends."</i></h2>
+      <h1>Towers, a 90s supernatural-mystery-thriller novel<br><i style="font-size: 22px;">...launching in <span data-launch-countdown><strong>95</strong> days</span>.</i></h1><br>
+    </section>
+
+    <section class="towers-book-art" aria-label="Towers book artwork">
+      <img src="../Towers-Book-Key-Art1.png" alt="Towers book artwork">
     </section>
 
     <section class="waitlist-art" aria-label="Towers artwork">
       <div class="waitlist-art-inner">
-        <h2>Be the first to read it</h2>
-        <p class="waitlist-logline">
-          Spring, 1994. Twins Laura and Johnno form an unlikely detective gang to investigate a string of disappearances in their isolated Australian town. Together, they uncover a terrifying creature—and secrets the town’s most powerful families would rather keep hidden—as they race to save those still missing.
-        </p>
-
-        <p class="waitlist-subhead">Leave your email & get first access when Towers launches.</p>
+        <p class="waitlist-subhead"><b>Secure your copy of Towers!</b><br>Don't worry it's free, all I need is an email to let you know as soon as it launches.</p>
 
         <form id="waitlist-form" class="waitlist-form" data-waitlist-form data-waitlist-title="Towers" data-waitlist-series="towers" data-waitlist-source="towers_waitlist">
           <input type="email" autocomplete="email" placeholder="Email address" data-waitlist-email required>
-          <button class="button" type="submit" data-waitlist-submit>Get First Access</button>
+          <button class="button" type="submit" data-waitlist-submit>Secure my copy</button>
           <label class="waitlist-consent">
             <input type="checkbox" data-waitlist-consent required>
-            <span>Email me about the Towers release.</span>
+            <span>Yes, please email me about the Towers release.</span>
           </label>
           <p class="notice" data-waitlist-notice aria-live="polite"></p>
         </form>
       </div>
     </section>
 
-    <section class="waitlist-section" aria-labelledby="glimpse-title">
-      <h3 id="glimpse-title">A glimpse inside Towers:</h3>
-      <div class="excerpt-strip single-card" aria-label="Towers story card">
-        <article class="excerpt-card">
-          <p>Dawesville is the second-last town before Perth, the world’s most isolated major city. But in the spring of 1994, on the banks of the 52 square mile Dawesville Estuary, things are changing.</p>
-          <p>Twins Laura and Johnno Harris, fifteen, have noticed it, but it seems like they’re the only ones: fish and crabs dying without explanation, toxic algae blooms, taps that won’t run, sick seabirds. Something is wrong. Then people start disappearing.</p>
-          <p>When Mary Macy’s twelve-year-old sister goes missing during the annual Prince of Peel sailing regatta, the twins are left with no choice: embrace the darkness and descend into a world of lake monsters, tipping ecosystems, and corrupt townspeople.</p>
-          <p>With the help of an unlikely gang—rural it girl Mary Macy, town outcast Kayden Ty, and Noah Peel, the youngest son of the mayor—they begin uncovering the truth behind the disappearances.</p>
-          <p>The trail leads to ex-mayor Thomas Peel’s sprawling family dynasty, illegal land clearing, poisoned water, and a terrifying creature forced up from beneath the estuary in search of clean water: Grendel.</p>
-          <p>To save those still missing, Laura and Johnno must confront not only the supernatural terror in the water, but the families who profited while the ecosystem collapsed.</p>
-        </article>
-      </div>
-
+    <section class="waitlist-section">
       <article class="waitlist-chapter">
+        <h3 id="preview" class="waitlist-glimpse-heading"><i>A glimpse into the world of Towers...</i></h3><br>
         <h3>Chapter 1 Preview</h3>
-        <h2>Coming soon...</h2>
-        <p>Towers is still in development. Join the waitlist and I’ll send you the first preview when it’s ready.</p>
+        <h2><i>The Disappearance</i></h2>
+        <p>“Jesus, Laura, will you shut up for once!” Johnno stopped abruptly and swung round to face her. The tape recorder in her hand went dead with a click. For a moment, there was only the soft rustling of the paperbark trees above them. “You’re not FBI Special Agent Dale Cooper and this isn’t Twin Peaks. This is real life. If Ty Senior catches us following him, we’re going to be in serious trouble.” The moonlight caught Johnno’s face between the branches; he looked wide-eyed and pale, his red hair damp against his forehead.</p>
+        <p>Laura lowered the tape recorder. “Well, you’re certainly doing a lot of talking for someone who’s telling me to shut up.” She narrowed her eyes and smiled at him. “Now, if you don’t mind, instead of yelling at me for doing my job, next time you’re afraid, just tell me—and I’ll give you a little cuddle and we can get back to solving this case.”</p>
+        <p>Johnno looked down, pawing at the dirt with his boot. “I’m not afraid, all right.”</p>
+        <p>But she was already gone, ducking beneath the low branches and moving towards the water. By the time he caught up, she had raised the recorder to her lips again. “Detective Laura Harris resuming her report. It’s nearly midnight on the first of September 1994—conditions on the southern edge of the Dawesville Estuary are clear, approximately twenty degrees, with a full moon providing excellent visibility. We are currently pursuing the suspect, Mr Daniel Ty—”</p>
+        <p>“Oh my God, will you at least whisper?” he hissed.</p>
+        <p>She lowered her voice. “—who is approximately one hundred metres offshore and appears to be operating some kind of fishing device.”</p>
+        <p><i>... more coming very soon.</i></p>
+        <p><a class="chapter-cta waitlist-return-cta button" href="#waitlist-form">Secure my copy of Towers</a></p>
+        <p class="waitlist-consent waitlist-cta-note full-cta">Don't worry it's free, all I need is an email to let you know as soon as it launches.</p>
       </article>
     </section>
     <footer class="site-footer">
@@ -86,6 +81,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span>&copy; Jump Ship Media 2026</span>
     </footer>
   </main>
+  <style>
+    [data-launch-countdown] strong {
+      font-weight: 700;
+    }
+  </style>
+  <script>
+    (() => {
+      const countdown = document.querySelector("[data-launch-countdown]");
+      if (!countdown) return;
+
+      const launchDate = Date.UTC(2026, 11, 8);
+      const perthDateParts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Australia/Perth",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).formatToParts(new Date()).reduce((parts, part) => {
+        if (part.type !== "literal") parts[part.type] = Number(part.value);
+        return parts;
+      }, {});
+
+      const perthToday = Date.UTC(perthDateParts.year, perthDateParts.month - 1, perthDateParts.day);
+      const days = Math.max(0, Math.ceil((launchDate - perthToday) / 86400000));
+      countdown.innerHTML = `<strong>${days}</strong> ${days === 1 ? "day" : "days"}`;
+    })();
+  </script>
   <script type="module" src="../assets/stories.js"></script>
 </body>
 </html>
