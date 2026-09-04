@@ -1110,7 +1110,7 @@ function renderWaitlist() {
 
       form.reset();
       form.classList.add("is-submitted");
-      notice.textContent = `You're on the list. I'll email you soon, when ${seriesTitle} launches. In the meantime, send this to your friends so you can share in the mystery together.`;
+      notice.textContent = "You're on the list, I'll be in touch soon. Don't forget to share it with your book club ;)";
       trackLead();
     } catch (error) {
       notice.textContent = error.message;
