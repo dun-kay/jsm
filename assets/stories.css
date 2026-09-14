@@ -1223,7 +1223,7 @@ h3 {
 }
 
 .towers-book-art img {
-  width: min(100%, 350px);
+  width: min(10%, 35px);
   height: auto;
   display: block;
 }
@@ -1353,6 +1353,6 @@ h3 {
   }
 
   .towers-book-art img {
-    width: min(100%, 250px);
+    width: min(10%, 25px);
   }
 }
