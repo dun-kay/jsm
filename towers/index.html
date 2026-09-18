@@ -34,7 +34,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <main class="waitlist-shell towers-waitlist">
     <section class="waitlist-hero">
       <h4>Coming soon</h4>
-      <h1>Towers. The world’s next great mystery franchise. A ’90s Australian thriller.<br><i style="font-size: 22px;">...launching in <span data-launch-countdown><strong>85</strong> days</span>.</i></h1><br>
+      <h1>Towers. The world’s next great mystery franchise. A ’90s Australian thriller.<br><i style="font-size: 22px;">BOOK ONE OUT THIS NOVEMBER</i></h1><br>
     </section>
 
     <section class="towers-book-art" aria-label="Towers book artwork">
@@ -70,32 +70,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span>&copy; Jump Ship Media 2026</span>
     </footer>
   </main>
-  <style>
-    [data-launch-countdown] strong {
-      font-weight: 700;
-    }
-  </style>
   <script>
-    (() => {
-      const countdown = document.querySelector("[data-launch-countdown]");
-      if (!countdown) return;
-
-      const launchDate = Date.UTC(2026, 11, 8);
-      const perthDateParts = new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Australia/Perth",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }).formatToParts(new Date()).reduce((parts, part) => {
-        if (part.type !== "literal") parts[part.type] = Number(part.value);
-        return parts;
-      }, {});
-
-      const perthToday = Date.UTC(perthDateParts.year, perthDateParts.month - 1, perthDateParts.day);
-      const days = Math.max(0, Math.ceil((launchDate - perthToday) / 86400000));
-      countdown.innerHTML = `<strong>${days}</strong> ${days === 1 ? "day" : "days"}`;
-    })();
-
     (() => {
       const ctaLabel = "JOIN THE WAITLIST";
       const chapterTwo = [...document.querySelectorAll(".waitlist-chapter h3")]
