@@ -20,6 +20,7 @@
 .question h1{font-size:calc(clamp(2.25rem,9vw,4.5rem) - 13px)}
 .complete h1,.fail h1{font-size:calc(clamp(3.2rem,15vw,6rem) - 13px)}
 body{font-size:18px}
+html,body{max-width:100%;overflow-x:hidden}.question h1,.result-card h2,.full-plan h1{overflow-wrap:anywhere}@media(max-width:420px){.shell{padding:1.25rem}.intro h1{font-size:clamp(2.35rem,12vw,3.4rem)}.question h1{font-size:clamp(2rem,10vw,3.1rem)}.result-card{padding:1.35rem}.result-card .number{font-size:5.6rem}.sheet{padding-left:1.25rem;padding-right:1.25rem}}
 .intro .lead{font-size:calc(1.12rem + 2px)}
 .field{font-size:calc(1.5rem + 2px)}
 .primary,.secondary,.score-btn{font-size:calc(1rem + 2px)}
