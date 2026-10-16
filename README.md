@@ -1,5 +1,29 @@
 # JSM Stories
 
+## Is My Boyfriend Stupid? quiz
+
+The mobile game lives at `/quiz/ismyboyfriendstupid/` and is static GitHub Pages code. It stores only a first name, progress, score, section totals, and payment status. LocalStorage resumes the browser session; Supabase provides durable recovery for that same UUID session.
+
+Run `npm run dev`, then open `http://localhost:5173/quiz/ismyboyfriendstupid/`. Generate its browser-safe live configuration from the ignored `ENV.txt` with `node scripts/generate-quiz-config.mjs`. It contains only the Supabase URL and publishable key—never secrets.
+
+### Live payment setup
+
+1. Set `QUIZ_STRIPE_PRICE_ID` to the live 99¢ Stripe Price (a Product ID is not sufficient).
+2. Set `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `QUIZ_STRIPE_PRICE_ID`, and `SITE_URL` as Edge Function secrets.
+3. Apply the migrations and deploy:
+
+```sh
+supabase db push
+supabase functions deploy quiz-create-checkout
+supabase functions deploy quiz-get-remediation-plan
+supabase functions deploy stripe-webhook
+```
+
+4. Reuse the established `stripe-webhook` endpoint and ensure its Stripe subscription receives `checkout.session.completed`.
+5. Commit the generated browser-safe `quiz-config.js` with the GitHub Pages site.
+
+The established `stripe-webhook` marks quiz payments only after Stripe signature verification. A payment return URL never unlocks the plan: the plan function checks the server-side paid flag.
+
 Static GitHub Pages frontend for Jump Ship Media and the JSM Stories MVP.
 
 ## Structure

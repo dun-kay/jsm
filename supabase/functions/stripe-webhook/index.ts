@@ -200,9 +200,29 @@ Deno.serve(async (request) => {
     }
 
     const session = event.data.object;
+    const quizSessionId = session.metadata?.quiz_session_id;
     const userId = session.metadata?.user_id;
     const productId = session.metadata?.product_id;
     const paid = session.payment_status === "paid" || session.status === "complete";
+
+    // The quiz uses the established Stripe endpoint too. Its UUID is an
+    // unguessable capability; only this signature-verified path can mark it paid.
+    if (quizSessionId && paid) {
+      const supabaseUrl = requiredEnv("SUPABASE_URL");
+      await supabaseRest(
+        `${supabaseUrl}/rest/v1/quiz_sessions?id=eq.${encodeURIComponent(quizSessionId)}`,
+        supabaseSecretKey(),
+        {
+          method: "PATCH",
+          body: {
+            paid: true,
+            stripe_checkout_session_id: session.id,
+            updated_at: new Date().toISOString(),
+          },
+        },
+      );
+      return jsonResponse({ received: true });
+    }
 
     if (!userId || !productId || !paid) {
       return jsonResponse({ received: true });

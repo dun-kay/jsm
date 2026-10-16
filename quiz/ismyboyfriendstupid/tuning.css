@@ -1,0 +1,35 @@
+/* Final type scale adjustments. */
+/* Keep typography straightforward: no custom tracking anywhere in the game. */
+*,*::before,*::after{letter-spacing:normal!important}
+.eyebrow{font-size:calc(.72rem + 7px)}
+.question .eyebrow{font-size:calc(.72rem + 17px)}
+.sheet > .eyebrow{display:none}
+.score-btn.selected{background:var(--lime);color:#07100c}
+.score-btn em{font-style:italic;font-weight:600}
+.section-bars{text-align:left;display:grid;gap:.65rem;margin-top:1.5rem}.section-bar{display:grid;gap:.3rem;font-size:.85rem;font-weight:800}.section-bar>div{height:.55rem;background:#c5cbbc;border-radius:99px;overflow:hidden}.section-bar i{display:block;height:100%;background:#7ca800;border-radius:inherit}
+.modal-card .eyebrow{display:none}
+.result-card .score-total-label{color:#728074}
+.plan-offer{margin:1.5rem 0;text-align:left;border:1px solid var(--line);border-radius:1rem;padding:1.3rem}.plan-offer h2{font-size:1.5rem;line-height:1.05}.plan-screen{max-width:43rem}.plan-screen h1{font-size:2.4rem;line-height:.95}.plan-screen ol{padding-left:1.4rem;line-height:1.5}.plan-screen li{margin:1rem 0}.plan-meta{color:var(--muted)}.stamp{display:inline-block;border:4px solid var(--red);color:var(--red);font-weight:900;font-size:1.35rem;padding:.5rem;transform:rotate(-4deg);margin:1rem 0}@media print{body{background:#fff;color:#000}.shell>*:not(.plan-screen){display:none}.plan-screen{padding:1rem}}
+.quick-result-actions{margin-top:0}
+.plan-choice-actions{display:grid;grid-template-columns:1fr;gap:.7rem;margin-top:.7rem}.plan-choice-actions .primary{font-size:.9rem}.plan-popup .eyebrow{display:none}
+.plan-choice-actions small{display:block;margin-top:.2rem;font-size:.7rem;font-weight:600}
+.full-plan{line-height:1.5;padding-bottom:3rem}.full-plan h1{font-size:2.15rem;line-height:1}.full-plan h2{margin-top:2.3rem}.full-plan h3{margin:1.8rem 0 .4rem;font-size:1.25rem}.full-plan p{margin:.65rem 0}.full-plan hr{border:0;border-top:1px solid var(--line);margin:2rem 0}
+.full-plan .secondary small{display:block;margin-top:.2rem;font-size:calc(.82em - 2px)}
+.plan-choice-actions .primary>span{font-size:calc(1em + 1px)}.plan-choice-actions small{font-size:calc(.7rem + 2px)}.actions .secondary small{display:block;margin-top:.2rem;font-size:calc(.82em - 2px)}
+.intro h1{font-size:calc(clamp(3rem,13vw,5.8rem) - 13px)}
+.question h1{font-size:calc(clamp(2.25rem,9vw,4.5rem) - 13px)}
+.complete h1,.fail h1{font-size:calc(clamp(3.2rem,15vw,6rem) - 13px)}
+body{font-size:18px}
+.intro .lead{font-size:calc(1.12rem + 2px)}
+.field{font-size:calc(1.5rem + 2px)}
+.primary,.secondary,.score-btn{font-size:calc(1rem + 2px)}
+.small{font-size:calc(.82rem + 2px)}
+.meta{font-size:calc(.75rem + 2px)}
+.hint{font-size:calc(1.05rem + 2px)}
+.sheet h2{font-size:calc(1.8rem + 2px)}
+.sheet .answer{font-size:calc(1.1rem + 2px)}
+.result-card .number{font-size:calc(7rem + 2px)}
+.result-card h2{font-size:calc(2rem + 2px)}
+.icon-button{font-size:calc(2rem + 2px)}
+.field{border-bottom-color:var(--lime)}
+.result-actions{margin-top:1rem}.result-actions .primary small,.result-actions .secondary small{display:block;margin-top:.24rem;font-size:.78em;font-weight:600}.result-actions .primary{line-height:1.15}.plan-screen .actions{margin-top:2.5rem}.plan-screen .secondary small{display:block;margin-top:.25rem}.section-bars{margin-bottom:0}.plan-screen{padding-bottom:2rem}
