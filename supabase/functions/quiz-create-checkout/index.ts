@@ -13,7 +13,7 @@ Deno.serve(async (request) => {
     const url = requiredEnv("SUPABASE_URL"), secret = supabaseSecretKey();
     const rows = await supabaseRest<{ id: string; paid: boolean }[]>(`${url}/rest/v1/quiz_sessions?id=eq.${encodeURIComponent(session_id)}&select=id,paid`, secret);
     if (!rows[0] || rows[0].paid) return jsonResponse({ error: "Quiz session is unavailable." }, 404);
-    const params = new URLSearchParams({ mode: "payment", "line_items[0][price]": requiredEnv("QUIZ_STRIPE_PRICE_ID"), "line_items[0][quantity]": "1", allow_promotion_codes: "true", success_url, cancel_url, client_reference_id: session_id, "metadata[quiz_session_id]": session_id });
+    const params = new URLSearchParams({ mode: "payment", "line_items[0][price]": requiredEnv("QUIZ_STRIPE_PRICE_ID"), "line_items[0][quantity]": "1", success_url, cancel_url, client_reference_id: session_id, "metadata[quiz_session_id]": session_id });
     const response = await fetch("https://api.stripe.com/v1/checkout/sessions", { method: "POST", headers: { Authorization: `Bearer ${requiredEnv("STRIPE_SECRET_KEY")}`, "Content-Type": "application/x-www-form-urlencoded" }, body: params });
     const checkout = await response.json();
     if (!response.ok) return jsonResponse({ error: checkout.error?.message ?? "Checkout could not be created." }, 400);
