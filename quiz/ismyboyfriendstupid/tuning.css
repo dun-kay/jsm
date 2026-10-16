@@ -33,5 +33,5 @@ html,body{max-width:100%;overflow-x:hidden}.question h1,.result-card h2,.full-pl
 .result-card h2{font-size:calc(2rem + 2px)}
 .icon-button{font-size:calc(2rem + 2px)}
 .field{border-bottom-color:var(--lime)}
-.promo-box{margin-top:1rem;text-align:left}.promo-box summary{cursor:pointer;font-weight:800}.promo-box .field{margin-top:.65rem;font-size:1rem}.promo-box .secondary{min-height:2.75rem;padding:.55rem 0}
+.promo-box{margin-top:1rem;text-align:left}.promo-box summary{cursor:pointer;font-weight:800}.promo-box .field{margin-top:.65rem;font-size:1rem;color:#07100c;border-bottom-color:#07100c}.promo-box .secondary{min-height:2.75rem;padding:.55rem 0;color:#07100c}
 .result-actions{margin-top:1rem}.result-actions .primary small,.result-actions .secondary small{display:block;margin-top:.24rem;font-size:.78em;font-weight:600}.result-actions .primary{line-height:1.15}.plan-screen .actions{margin-top:2.5rem}.plan-screen .secondary small{display:block;margin-top:.25rem}.section-bars{margin-bottom:0}.plan-screen{padding-bottom:2rem}
